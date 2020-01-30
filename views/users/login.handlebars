@@ -1,0 +1,39 @@
+<div class="container margin-y--big">
+  <div class="card col-12 col-md-9 col-lg-7 col-xl-6 m-auto">
+    <div class="card-header bg-white">
+      <h3 class="mb-0 py-2 font--xs font--sm">Login to Your Account!</h3>
+    </div>
+    <div class="card-body">
+      {{> _errors}}
+      {{> _msg}}
+      <form action="/users/login" method="post" id="loginForm" class="py-2">
+        {{!-- Email --}}
+        <div class="input-group input-group--white mb-3">
+          <div class="input-group-prepend">
+            <span id="addonEmail" class="input-group-text">
+              <i class="fas fa-envelope"></i>
+            </span>
+          </div>
+          <input type="email" id="email" class="form-control form-control-lg" name="email" placeholder="Email"
+            maxlength="64" minlength="7" aria-label="Email" aria-describedby="addonEmail" value="{{email}}" required />
+        </div>
+        {{!-- Password --}}
+        <div class="input-group input-group--white mb-3">
+          <div class="input-group-prepend password-icon">
+            <span id="addonPassword1" class="input-group-text">
+              <i class="fas fa-lock"></i>
+            </span>
+          </div>
+          <input type="password" id="password1" class="form-control form-control-lg" name="password1"
+            placeholder="Password" maxlength="64" minlength="6" aria-label="Password" aria-describedby="addonPassword1"
+            value="{{password1}}" required />
+        </div>
+        {{!-- <a href="faculty-profile.html" class="form-control btn btn-block btn-lg btn-primary mb-3">Sign Up</a> --}}
+        {{!-- Sign Up --}}
+        <button type="submit" class="form-control btn btn-block btn-lg btn-primary mb-3">
+          Login
+        </button>
+      </form>
+    </div>
+  </div>
+</div>

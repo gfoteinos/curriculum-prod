@@ -1,0 +1,903 @@
+
+
+{{!-- {{user}}
+<h1>{{user.name}}</h1> --}}
+<!-- ======== HEADER ======== -->
+<header id="main-header" class="profile-header py-4 bg-dark text-light">
+  <div class="container">
+    <div class="card text-center bg-dark text-light border-0 card-profile-heading">
+      <div class="row">
+        <!-- AVATAR -->
+        <div class="col-md-4 d-flex justify-content-center align-items-center">
+          {{!-- <img src="img/Tutors/m-2.jpg" class="img-fluid avatar-medium avatar--rounded avatar--border-blue"
+            alt="Faculty member photo"> --}}
+            <i class="fas fa-user icon-user"></i>
+        </div>
+        <!-- BODY -->
+        <div class="col-md-8 pl-lg-0 d-flex align-items-center">
+          <div class="card-body">
+            <h3 class="card-title text-md-left">{{user.name}}</h3>
+            <h4 class="card-subtitle mb-3 text-md-left">Department Head</h4>
+            <h5 class="card-details text-md-left">School of Mathematical Sciences</h5>
+            <h5 class="card-details text-md-left">Associate Professor</h5>
+            <!-- Social Media -->
+            <div class="d-flex justify-content-center justify-content-md-start card-social-media my-4">
+              <span class="mr-5">
+                <a href="#" class="text-light">
+                  <i class="fab fa-facebook-f" style="padding-right: .25rem;"></i>
+                </a>
+              </span>
+              <span class="mr-5">
+                <a href="#" class="text-light">
+                  <i class="fab fa-twitter" style="padding-right: .25rem;"></i>
+                </a>
+              </span>
+              <span>
+                <a href="#" class="text-light">
+                  <i class="fab fa-linkedin-in" style="padding-right: .25rem;"></i>
+                </a>
+              </span>
+            </div>
+            <!-- Email - Tel -->
+            <div class="d-flex justify-content-center justify-content-md-start">
+              <small class="text-muted mr-5  card-email">
+                <i class="far fa-envelope " data-toggle="tooltip" data-placement="top"
+                  title="henrywarren@mathdep.com"></i>
+                <span class="d-none d-lg-inline">{{user.email}}</span>
+              </small>
+              <small class="text-muted mr-5  card-tel">
+                <i class="fas fa-phone" data-toggle="tooltip" data-placement="top" title="1234 555 555"></i>
+                <span class="d-none d-lg-inline">1234 555 555</span>
+              </small>
+              <small class="text-muted card-office">
+                <i class="far fa-building" data-toggle="tooltip" data-placement="top" title="Office: BA327"></i>
+                <span class="d-none d-lg-inline">Office: BA327</span>
+              </small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ======== BODY ======== -->
+<section id="facultyDashboard">
+  <div class="container py-5 bg-white">
+    <div class="row">
+      <!-- NAVIGATION LIST -->
+      <div class="col-12 col-lg-4 mb-3">
+        <div class="list-group" id="list-tab" role="tablist">
+          <a class="list-group-item list-group-item-action active" id="account-list" data-toggle="list" href="#account"
+            role="tab" aria-controls="account">Account</a>
+          <a class="list-group-item list-group-item-action" id="profile-list" data-toggle="list" href="#profile"
+            role="tab" aria-controls="profile">Profile</a>
+          <a class="list-group-item list-group-item-action" id="module-list" data-toggle="list" href="#modules"
+            role="tab" aria-controls="modules">Modules</a>
+        </div>
+      </div>
+      <!-- WORK AREA-->
+      <div class="col-12 col-lg-8 pl-lg-0 mb-3">
+        <div class="tab-content" id="nav-tabContent">
+          <!-- Account Settings-->
+          <div class="tab-pane active" id="account" role="tabpanel" aria-labelledby="account-list">
+            <div class="card card-manage-account">
+              <div class="card-header">
+                <h3 class="mb-0">Account Info</h3>
+                <small class="">
+                  Edit your account settings and change your password here
+                </small>
+              </div>
+              <div class="card-body">
+                <form>
+                  <!-- Email -->
+                  <div class="form-group mb-4">
+                    <label for="email">Email</label>
+                    <div class="input-group input-group--white">
+                      <div class="input-group-prepend">
+                        <span id="addonEmail" class="input-group-text">
+                          <i class="fas fa-envelope"></i>
+                        </span>
+                      </div>
+                      <input type="email" name="" id="email" class="form-control form-control-lg" placeholder=""
+                        maxlength="64" minlength="7" required="" aria-label="Email" aria-describedby="addonEmail" />
+                      <div class="input-group-append">
+                        <span class="input-group-text">
+                          <a href="#" class="" data-toggle="modal" data-target="#changeEmailModal">
+                            <i class="fas fa-pencil-alt"></i>
+                          </a>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <hr>
+                  <!-- Password -->
+                  <h4 class="mb-0">Password</h4>
+                  <small id="passwordHelpBlock" class="form-text text-muted mb-3">
+                    Your password must be 8-20 characters long, contain letters and numbers, and must not contain
+                    spaces, special characters, or emoji.
+                  </small>
+                  <!-- Current Password -->
+                  <div class="form-group">
+                    <label for="currentPassword">Current Password</label>
+                    <div class="input-group input-group--white">
+                      <div class="input-group-prepend">
+                        <span id="addonCurrentPassword" class="input-group-text">
+                          <i class="fas fa-lock"></i>
+                        </span>
+                      </div>
+                      <input type="password" name="" id="currentPassword" class="form-control form-control-lg"
+                        placeholder="" maxlength="64" minlength="6" required="" aria-label="Current Password"
+                        aria-describedby="addonCurrentPassword" />
+                    </div>
+                  </div>
+                  <!-- New Password -->
+                  <div class="form-group">
+                    <label for="newPassword">Enter New Password</label>
+                    <div class="input-group input-group--white">
+                      <div class="input-group-prepend">
+                        <span id="addonNewPassword" class="input-group-text">
+                          <i class="fas fa-lock"></i>
+                        </span>
+                      </div>
+                      <input type="password" name="" id="newPassword" class="form-control form-control-lg"
+                        placeholder="" maxlength="64" minlength="6" required="" aria-label="Enter New Password"
+                        aria-describedby="addonNewPassword" />
+                    </div>
+                  </div>
+                  <!-- Confirm New Password -->
+                  <div class="form-group">
+                    <label for="confirmPassword">Re-type New Password</label>
+                    <div class="input-group input-group--white">
+                      <div class="input-group-prepend">
+                        <span id="addonConfirmPassword" class="input-group-text">
+                          <i class="fas fa-lock"></i>
+                        </span>
+                      </div>
+                      <input type="password" name="" id="confirmPassword" class="form-control form-control-lg"
+                        placeholder="" maxlength="64" minlength="6" required="" aria-label="Re-type New Password"
+                        aria-describedby="addonConfirmPassword" />
+                    </div>
+                  </div>
+                  <div class="d-flex justify-content-end">
+                    <button type="button" class="btn btn-primary">
+                      Change Password
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+          <!-- Profile Settings-->
+          <div class="tab-pane" id="profile" role="tabpanel" aria-labelledby="profile-list">
+            <div class="card card-manage-profile">
+              <div class="card-header">
+                <h3 class="mb-0">Profile</h3>
+                <small class="">Add Information About Yourself</small>
+              </div>
+              <div class="card-body">
+                <form>
+                  <!-- NAME -->
+                  <div class="form-group mb-4">
+                    <label for="fullName">Full Name</label>
+                    <div class="input-group input-group--white mb-3">
+                      <div class="input-group-prepend">
+                        <span id="addonFullName" class="input-group-text">
+                          <i class="fas fa-user"></i>
+                        </span>
+                      </div>
+                      <input type="text" name="" id="fullName" class="form-control form-control-lg" placeholder=""
+                        maxlength="64" required="" aria-label="Full Name" aria-describedby="addonFullName" />
+                    </div>
+                  </div>
+                  <hr>
+                  <!-- BIO -->
+                  <div class="form-group mb-4">
+                    <h4>Bio</h4>
+                    <!-- Few Words about yourself -->
+                    <div class="form-group">
+                      <small>Write a few words about youself in the text-area bellow</small>
+                      <label for="bio" class="sr-only">Bio</label>
+                      <textarea id="bio" name="editor1" class="form-control">
+                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquid unde at fugiat explicabo temporibus, tempora animi sunt iusto quod beatae optio veritatis velit natus odit error! Possimus esse quisquam quibusdam eveniet autem! Minus dolore quisquam nemo similique doloribus perspiciatis tempore.
+                          </textarea>
+                    </div>
+                    <!-- Upload CV file -->
+                    <div class="form-group">
+                      <small>For more details not hesitate to upload your CV file bellow. <span
+                          class="text-danger">(Optional)</span></small>
+                      <!-- Custom File Input -->
+                      <div class="custom-file">
+                        <input type="file" id="myfile" class="custom-file-input">
+                        <label class="custom-file-label" for="myfile">Choose your CV file</label>
+                        <small class="form-text text-muted" id="fileHelp">Max 3mb size pdf file</small>
+                      </div>
+                    </div>
+                  </div>
+                  <hr>
+                  <!-- SOCIAL MEDIA -->
+                  <div class="form-group">
+                    <h4>Social Media <small><span class="text-danger">(Optional)</span></small></h4>
+                    <!-- Facebook -->
+                    <label for="facebook">Facebook Profile</label>
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span id="addonFacebook" class="input-group-text">
+                          <span class="d-sm-none">
+                            <i class="fab fa-facebook-f"></i>
+                          </span>
+                          <span class="d-none d-sm-block">
+                            http://www.facebook.com/
+                          </span>
+                        </span>
+                      </div>
+                      <input type="text" name="" id="facebook" class="form-control form-control-lg" placeholder=""
+                        aria-label="Text input with checkbox" aria-describedby="addonFacebook" />
+                    </div>
+                    <small id="facebookHelp" class="form-text text-muted mb-3">
+                      Input your Facebook username (e.g. johndoe).
+                    </small>
+                    <!-- Twitter -->
+                    <label for="twitter">Twitter Profile</label>
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span id="addonTwitter" class="input-group-text">
+                          <span class="d-sm-none">
+                            <i class="fab fa-twitter"></i>
+                          </span>
+                          <span class="d-none d-sm-block">
+                            http://twitter.com/
+                          </span>
+                        </span>
+                      </div>
+                      <input type="text" name="" id="twitter" class="form-control form-control-lg" placeholder=""
+                        aria-label="Text input with checkbox" aria-describedby="addonTwitter" />
+                    </div>
+                    <small id="twitterHelp" class="form-text text-muted mb-3">
+                      Add your Twitter username (e.g. johndoe).
+                    </small>
+                    <!-- Linkedin -->
+                    <label for="linkedin">Linkedin Profile</label>
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span id="addonLinkedin" class="input-group-text">
+                          <span class="d-sm-none">
+                            <i class="fab fa-linkedin-in"></i>
+                          </span>
+                          <span class="d-none d-sm-block">
+                            http://www.linkedin.com/
+                          </span>
+                        </span>
+                      </div>
+                      <input type="text" name="" id="linkedin" class="form-control form-control-lg" placeholder=""
+                        aria-label="Text input with checkbox" aria-describedby="addonLinkedin" />
+                    </div>
+                    <small id="linkedinHelp" class="form-text text-muted mb-3">
+                      Input your LinkedIn resource id (e.g. in/johndoe).
+                    </small>
+                  </div>
+                  <div class="d-flex justify-content-end">
+                    <button type="button" class="btn btn-primary">
+                      Save
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+          <!-- Modules Settings-->
+          <div class="tab-pane" id="modules" role="tabpanel" aria-labelledby="module-list">
+            <div class="card card-manage-modules">
+              <div class="card-header">
+                <ul class="nav nav-tabs card-header-tabs nav-fill" id="modulesTabs" role="tablist">
+                  <li class="nav-item">
+                    <a class="nav-link active" href="#taughtModules" role="tab" aria-controls="taughtModules"
+                      aria-selected="true">
+                      <h4 class="card-title mb-0">Modules</h4>
+                      <small>List</small>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="#courseworksCalendar" role="tab" aria-controls="courseworksCalendar"
+                      aria-selected="false">
+                      <h4 class="card-text mb-0">Courseworks</h4>
+                      <small>Calendar</small>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="#examsCalendar" role="tab" aria-controls="examsCalendar"
+                      aria-selected="false">
+                      <h4 class="card-text mb-0">Exams</h4>
+                      <small>Calendar</small>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="#modulesGrades" role="tab" aria-controls="modulesGrades"
+                      aria-selected="false">
+                      <h4 class="card-text mb-0">Modules</h4>
+                      <small>Grades</small>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+              <div class="card-body">
+                <div class="tab-content mt-3">
+                  <!-- Module List -->
+                  <div class="tab-pane active" id="taughtModules" role="tabpanel">
+                    <div class="table-responsive">
+                      <table class="table">
+                        <caption class="h5 py-0">Taught Modules</caption>
+                        <thead>
+                          <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Modules</th>
+                            <th scope="col">Courses</th>
+                            <th scope="col">Level</th>
+                            <th scope="col">
+                              <div class="custom-control custom-checkbox checkThemAll">
+                                <input type="checkbox" class="custom-control-input" id="tmCheckAll">
+                                <label class="custom-control-label" for="tmCheckAll"></label>
+                              </div>
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <!-- <tr>
+                                <th scope="row">1</th>
+                                <td>Statistics</td>
+                                <td>Mathematics</td>
+                                <td>Bachelor</td>
+                                <td>
+                                  <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="listStatistics">
+                                    <label class="custom-control-label" for="listStatistics"></label>
+                                  </div>
+                                </td>
+                              </tr>
+                              <tr>
+                                <th scope="row">2</th>
+                                <td>Computation</td>
+                                <td>Artificial Inteligence</td>
+                                <td>Master</td>
+                                <td>
+                                  <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="listMathematics">
+                                    <label class="custom-control-label" for="listMathematics"></label>
+                                  </div>
+                                </td>
+                              </tr>
+                              <tr>
+                                <th scope="row">3</th>
+                                <td>Data Structures</td>
+                                <td>Computing</td>
+                                <td>Bachelor</td>
+                                <td>
+                                  <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="listDataStructures">
+                                    <label class="custom-control-label" for="listDataStructures"></label>
+                                  </div>
+                                </td>
+                              </tr>
+                              <tr>
+                                <th scope="row">4</th>
+                                <td>Data Mining</td>
+                                <td>Computing</td>
+                                <td>Master</td>
+                                <td>
+                                  <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="listDataMining">
+                                    <label class="custom-control-label" for="listDataMining"></label>
+                                  </div>
+                                </td>
+                              </tr>
+                              <tr>
+                                <th scope="row">5</th>
+                                <td>Multivariate calculus and mathematical models</td>
+                                <td>Mathematics</td>
+                                <td>Bachelor</td>
+                                <td>
+                                  <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="listMCMM">
+                                    <label class="custom-control-label" for="listMCMM"></label>
+                                  </div>
+                                </td>
+                              </tr> -->
+                        </tbody>
+                      </table>
+                    </div>
+                    <div class="d-flex justify-content-end mt-3">
+                      <button id="addModuleCollapseBtn" type="button" class="btn btn-primary mr-2"
+                        data-toggle="collapse" data-target="#addModulesCollapse">
+                        Add Module
+                      </button>
+                      <!-- Delete module trigger modal -->
+                      <button id="deleteModules" type="button" class="btn btn-danger">
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                  <!-- Courseworks Calendar -->
+                  <div class="tab-pane" id="courseworksCalendar" role="tabpanel"
+                    aria-labelledby="courseworksCalendar-tab">
+                    <div class="table-responsive">
+                      <table id="courseworksTbl" class="table">
+                        <caption class="h5 py-0">Courseworks</caption>
+                        <thead>
+                          <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Modules</th>
+                            <th scope="col">Due Date</th>
+                            <th scope="col">Edit</th>
+                            <th scope="col">
+                              <div class="custom-control custom-checkbox checkThemAll">
+                                <input type="checkbox" class="custom-control-input" id="cwCheckAll">
+                                <label class="custom-control-label" for="cwCheckAll"></label>
+                              </div>
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <!-- <tr>
+                                <th scope="row">1</th>
+                                <td>Statistics</td>
+                                <td>3/4/2019</td>
+                                <td>
+                                  <button type="button" class="btn btn-sm btn-primary ">
+                                    <i class="fas fa-pencil-alt"></i>
+                                  </button>
+                                </td>
+                                <td>
+                                  <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="cwStatistics">
+                                    <label class="custom-control-label" for="cwStatistics"></label>
+                                  </div>
+                                </td>
+                              </tr>
+                              <tr>
+                                <th scope="row">2</th>
+                                <td>Computation</td>
+                                <td>16/5/2019</td>
+                                <td>
+                                  <button type="button" class="btn btn-sm btn-primary ">
+                                    <i class="fas fa-pencil-alt"></i>
+                                  </button>
+                                </td>
+                                <td>
+                                  <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="cwComputation">
+                                    <label class="custom-control-label" for="cwComputation"></label>
+                                  </div>
+                                </td>
+                              </tr>
+                              <tr>
+                                <th scope="row">3</th>
+                                <td>
+                                  <select class="custom-select">
+                                    <option selected>Select Module</option>
+                                    <option value="1">Data Structures</option>
+                                    <option value="2">Data Mining</option>
+                                    <option value="3">Multivariate calculus and mathematical models</option>
+                                  </select>
+                                </td>
+                                <td>
+                                  <label for="courseworksDate" class="sr-only">Coursework Date</label>
+                                  <input type="date" class="form-control" id="courseworksDate">
+                                </td>
+                                <td>
+                                  <button type="button" class="btn btn-sm btn-primary">
+                                    <i class="fas fa-plus"></i>
+                                  </button>
+                                </td>
+                                <td>
+                                  <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="cwNew" disabled>
+                                    <label class="custom-control-label" for="cwNew"></label>
+                                  </div>
+                                </td>
+                              </tr> -->
+                        </tbody>
+                      </table>
+                    </div>
+                    <div class="d-flex justify-content-end mt-3">
+                      <button id="addCourseworksCollapseBtn" type="button" class="btn btn-primary mr-2"
+                        data-toggle="collapse" data-target="#addCourseworksCollapse">
+                        Add Coursework
+                      </button>
+                      <button id="deleteCourseworks" type="button" class="btn btn-danger">
+                        Delete
+                      </button>
+                    </div>
+                    <!-- Add Coursework (Collapse) -->
+                    <div class="col-12 mt-3">
+                      <div class="collapse" id="addCourseworksCollapse">
+                        <div class="card card-body">
+                          <div class="table-responsive">
+                            <table id="addCourseworksTbl" class="table">
+                              <caption class="h5 py-0">Taught Modules</caption>
+                              <thead>
+                                <tr>
+                                  <th scope="col">#</th>
+                                  <th scope="col">Modules</th>
+                                  <th scope="col">Due Date</th>
+                                  <th scope="col">
+                                    <div class="custom-control custom-checkbox checkThemAll">
+                                      <input type="checkbox" class="custom-control-input" id="acwCheckAll">
+                                      <label class="custom-control-label" for="acwCheckAll"></label>
+                                    </div>
+                                  </th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <!-- <tr>
+                                      <th scope="row">1</th>
+                                      <td>Statistics</td>
+                                      <td>
+                                        <label for="courseworksDate" class="sr-only">Coursework Date</label>
+                                        <input type="date" class="form-control" id="courseworksDate">
+                                      </td>
+                                      <td>
+                                        <div class="custom-control custom-checkbox">
+                                          <input type="checkbox" class="custom-control-input" id="cwStatistics">
+                                          <label class="custom-control-label" for="cwStatistics"></label>
+                                        </div>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="row">2</th>
+                                      <td>Computation</td>
+                                      <td>
+                                        <label for="courseworksDate" class="sr-only">Coursework Date</label>
+                                        <input type="date" class="form-control" id="courseworksDate">
+                                      </td>
+                                      <td>
+                                        <div class="custom-control custom-checkbox">
+                                          <input type="checkbox" class="custom-control-input" id="cwComputation">
+                                          <label class="custom-control-label" for="cwComputation"></label>
+                                        </div>
+                                      </td>
+                                    </tr> -->
+                              </tbody>
+                            </table>
+                          </div>
+                          <div class="d-flex justify-content-end mt-3">
+                            <button id="addCourseworksBtn" type="button" class="btn btn-primary mr-2">
+                              <i class="fas fa-plus"></i>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- Exams Calendar -->
+                  <div class="tab-pane" id="examsCalendar" role="tabpanel" aria-labelledby="examsCalendar-tab">
+                    <div class="table-responsive">
+                      <table id="examsTbl" class="table">
+                        <caption class="h5 py-0">Exams</caption>
+                        <thead>
+                          <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Module</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">Time</th>
+                            <th scope="col">Class</th>
+                            <th scope="col"></th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <!-- <tr>
+                                <th scope="row">1</th>
+                                <td>Statistics</td>
+                                <td>16/6/2019 10:00 pm</td>
+                                <td>3B12</td>
+                                <td>
+                                  <button type="button" class="btn btn-sm btn-primary ">
+                                    <i class="fas fa-pencil-alt"></i>
+                                  </button>
+                                </td>
+                                <td>
+                                  <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="exStatistics">
+                                    <label class="custom-control-label" for="exStatistics"></label>
+                                  </div>
+                                </td> 
+                              </tr>
+                              <tr>
+                                <th scope="row">2</th>
+                                <td>Computation</td>
+                                <td>27/6/2019 12:00 pm</td>
+                                <td>4A07</td>
+                                <td>
+                                  <button type="button" class="btn btn-sm btn-primary ">
+                                    <i class="fas fa-pencil-alt"></i>
+                                  </button>
+                                </td>
+                                <td>
+                                  <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="exComputation">
+                                    <label class="custom-control-label" for="exComputation"></label>
+                                  </div>
+                                </td>
+                              </tr>
+                              <tr>
+                                <th scope="row">3</th>
+                                <td>
+                                  <select class="custom-select">
+                                    <option selected>Select Module</option>
+                                    <option value="1">Data Structures</option>
+                                    <option value="2">Data Mining</option>
+                                    <option value="3">Multivariate calculus and mathematical models</option>
+                                  </select>
+                                </td>
+                                <td>
+                                  <label for="examDate" class="sr-only">Exam Date</label>
+                                  <input type="date" class="form-control" id="examDate">
+                                </td>
+                                <td>
+                                  <label for="class" class="sr-only">Class</label>
+                                  <input type="text" name="" id="class" class="form-control short-width" max-length="6">
+                                </td>
+                                <td>
+                                  <button type="button" class="btn btn-sm btn-primary">
+                                    <i class="fas fa-plus"></i>
+                                  </button>
+                                </td>
+                                <td>
+                                  <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="exNew" disabled>
+                                    <label class="custom-control-label" for="exNew"></label>
+                                  </div>
+                                </td>
+                              </tr> -->
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                  <!-- Modules Grades                    -->
+                  <div class="tab-pane" id="modulesGrades" role="tabpanel" aria-labelledby="modulesGrades-tab">
+                    <div class="table-responsive">
+                      <table class="table">
+                        <caption class="h5 py-0">Grades</caption>
+                        <thead>
+                          <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Module</th>
+                            <th scope="col">Edit</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <th scope="row">1</th>
+                            <td>Statistics</td>
+                            <td>
+                              <button type="button" class="btn btn-sm btn-primary" data-toggle="modal"
+                                data-target="#editModuleMarksModal">
+                                <i class="fas fa-pencil-alt"></i>
+                              </button>
+                            </td>
+                          </tr>
+                          <tr>
+                            <th scope="row">2</th>
+                            <td>Computation</td>
+                            <td>
+                              <button type="button" class="btn btn-sm btn-primary" data-toggle="modal"
+                                data-target="#editModuleMarksModal">
+                                <i class="fas fa-pencil-alt"></i>
+                              </button>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Add Module (Collapse) -->
+      <div class="col-12 mt-3">
+        <div class="collapse" id="addModulesCollapse">
+          <div class="card card-body">
+            <div class="table-responsive">
+              <table class="table">
+                <caption class="h5 py-0">All Modules</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Modules</th>
+                    <th scope="col">Courses</th>
+                    <th scope="col">Level</th>
+                    <th scope="col">
+                      <div class="custom-control custom-checkbox checkThemAll">
+                        <input type="checkbox" class="custom-control-input" id="amCheckAll">
+                        <label class="custom-control-label" for="amCheckAll"></label>
+                      </div>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- <tr class="text-muted">
+                        <th scope="row">1</th>
+                        <td>Statistics</td>
+                        <td>Mathematics</td>
+                        <td>Bachelor</td>
+                        <td>
+                          <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="addStatistics" disabled>
+                            <label class="custom-control-label" for="addStatistics"></label>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <th scope="row">2</th>
+                        <td>Data Mining</td>
+                        <td>Computing</td>
+                        <td>Master</td>
+                        <td>
+                          <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="addDataMining">
+                            <label class="custom-control-label" for="addDataMining"></label>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr class="text-muted">
+                        <th scope="row">3</th>
+                        <td>Data Structures</td>
+                        <td>Computing</td>
+                        <td>Bachelor</td>
+                        <td>
+                          <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="addDataStructures" disabled>
+                            <label class="custom-control-label" for="addDataStructures"></label>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <th scope="row">4</th>
+                        <td>Geometry</td>
+                        <td>Mathematics</td>
+                        <td>Bachelor</td>
+                        <td>
+                          <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="addGeometry">
+                            <label class="custom-control-label" for="addGeometry"></label>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <th scope="row">5</th>
+                        <td>Databases</td>
+                        <td>Computing</td>
+                        <td>Bachelor</td>
+                        <td>
+                          <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="addDataBases">
+                            <label class="custom-control-label" for="addDataBases"></label>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <th scope="row">6</th>
+                        <td>Analysis</td>
+                        <td>Mathematics</td>
+                        <td>Bachelor</td>
+                        <td>
+                          <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="addAnalysis">
+                            <label class="custom-control-label" for="addAnalysis"></label>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <th scope="row">7</th>
+                        <td>Multivariate calculus and mathematical models</td>
+                        <td>Mathematics</td>
+                        <td>Bachelor</td>
+                        <td>
+                          <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="addMCMM">
+                            <label class="custom-control-label" for="addMCMM"></label>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr class="text-muted">
+                        <th scope="row">8</th>
+                        <td class="text-muted">Computation</td>
+                        <td>Artificial Inteligence</td>
+                        <td>Master</td>
+                        <td>
+                          <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="addArtificialInteligence" disabled>
+                            <label class="custom-control-label" for="addArtificialInteligence"></label>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <th scope="row">9</th>
+                        <td>Introduction to Object-Oriented Programming</td>
+                        <td>Computing</td>
+                        <td>Bachelor</td>
+                        <td>
+                          <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="addIOOP">
+                            <label class="custom-control-label" for="addIOOP"></label>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <th scope="row">10</th>
+                        <td>Databases and the Web</td>
+                        <td>Computing</td>
+                        <td>Master</td>
+                        <td>
+                          <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="addDataBasesWeb">
+                            <label class="custom-control-label" for="addDataBasesWeb"></label>
+                          </div>
+                        </td>
+                      </tr>
+                      </tr>
+                      <tr>
+                        <th scope="row">9</th>
+                        <td>Introduction to Object-Oriented Programming</td>
+                        <td>Computing</td>
+                        <td>Bachelor</td>
+                        <td>
+                          <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="addIOOP">
+                            <label class="custom-control-label" for="addIOOP"></label>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <th scope="row">10</th>
+                        <td>Databases and the Web</td>
+                        <td>Computing</td>
+                        <td>Master</td>
+                        <td>
+                          <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="addDataBasesWeb">
+                            <label class="custom-control-label" for="addDataBasesWeb"></label>
+                          </div>
+                        </td>
+                      </tr>
+                      </tr>
+                      <tr>
+                        <th scope="row">9</th>
+                        <td>Introduction to Object-Oriented Programming</td>
+                        <td>Computing</td>
+                        <td>Bachelor</td>
+                        <td>
+                          <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="addIOOP">
+                            <label class="custom-control-label" for="addIOOP"></label>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <th scope="row">10</th>
+                        <td>Databases and the Web</td>
+                        <td>Computing</td>
+                        <td>Master</td>
+                        <td>
+                          <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="addDataBasesWeb">
+                            <label class="custom-control-label" for="addDataBasesWeb"></label>
+                          </div>
+                        </td>
+                      </tr> -->
+                </tbody>
+              </table>
+            </div>
+            <div class="d-flex justify-content-end mt-3">
+              <button id="addModulesBtn" type="button" class="btn btn-primary mr-2">
+                <i class="fas fa-plus"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

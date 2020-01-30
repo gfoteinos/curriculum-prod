@@ -1,0 +1,67 @@
+<nav id="main-navigation" class="navbar navbar-expand-lg navbar-light bg-light py-4 main-nav">
+  <div class="container">
+    {{!-- Navbar Brand --}}
+    <a href="/" class="navbar-brand">
+      <h3 class="d-inline align-middle">
+        University
+        <span>
+          <h2><strong>Curriculum</strong></h2>
+        </span>
+      </h3>
+    </a>
+    {{!-- Humberger for small screens --}}
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
+      aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    {{!-- Nav Menu --}}
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+      {{!-- Main menu --}}
+      <ul class="navbar-nav mb-3 mb-lg-0 mx-auto">
+        <li class="nav-item">
+          <a href="#courses" class="nav-link">Courses</a>
+        </li>
+        <li class="nav-item">
+          <a href="#modules" class="nav-link">Modules</a>
+        </li>
+        <li class="nav-item">
+          <a href="#facultyMembers" class="nav-link">Faculty Members</a>
+        </li>
+        <li class="nav-item">
+          <a href="#students" class="nav-link">Students</a>
+        </li>
+      </ul>
+      {{!-- Show athentication menu only if the user is not logged in --}}
+      {{#if user}}
+      <ul class="navbar-nav ml-auto c-nav-register">
+        {{!-- Logout --}}
+        <li class="nav-item mb-2 mb-lg-0 mr-lg-2">
+          <a href="/users/logout" class="nav-link btn btn-outline-secondary">
+            Logout
+          </a>
+        </li>
+      </ul>
+      {{else}}
+      {{!-- Authentication Menu --}}
+      <ul class="navbar-nav ml-auto c-nav-register">
+        {{!-- Login --}}
+        <li class="nav-item mb-2 mb-lg-0 mr-lg-2">
+          <!-- A Trigger "Login" Modal -->
+          {{!-- <a href="#" class="nav-link btn btn-outline-secondary" data-toggle="modal" data-target="#loginModal">Log
+              In</a> --}}
+          <a href="/users/login" class="nav-link btn btn-outline-secondary">Log
+            In</a>
+        </li>
+        {{!-- Sign Up --}}
+        <li class="nav-item">
+          <!-- A Trigger "Sign Up" Modal -->
+          {{!-- <a href="#" class="nav-link btn btn-primary text-light" data-toggle="modal" data-target="#signUpModal">Sign
+              Up</a> --}}
+          <a href="/users/signup" class="nav-link btn btn-primary text-light">Sign Up</a>
+        </li>
+      </ul>
+      {{/if}}
+    </div>
+  </div>
+</nav>

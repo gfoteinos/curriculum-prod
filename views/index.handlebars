@@ -1,0 +1,283 @@
+<!-- ======== BODY ======== -->
+<!-- SHOWCASE SECTION -->
+<section id="showcase" class="p-5">
+  <div class="c-dark-overlay">
+    <div class="row">
+      <div class="col d-flex align-items-center text-center">
+        <div class="container pt-5 ">
+          <h1 class="display-4 mb-3 mb-lg-4">A Curriculum For Everyone</h1>
+          <p class="lead mb-4 ">Simple And Effective</p>
+          <a href="#" class="btn btn-outline-primary btn-lg text-white" role="button">
+            Start
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COURSES SECTION -->
+<section id="courses" class="bg-white">
+  <div class="container">
+    <div class="row py-5 px-md-5 c-py-lg-6">
+      <div class="col-lg-6 pt-4 pt-lg-0">
+        <img src="/img/homepage/courses.jpg" alt="" class="img-fluid rounded-lg c-shadow-img" />
+      </div>
+      <div class="col-lg-6 align-self-center px-4 px-md-5 px-lg-4 pt-3 pt-lg-0">
+        <div class="card border-0 card--home-page">
+          <div class="card-body">
+            <h3 class="card-title">Courses</h3>
+            <p class="card-text">
+              Lorem ipsum dolor, sit amet consectetur adipisicing elit. Dolor
+              optio reiciendis quia possimus, nostrum quam, quod amet quos
+              deleniti quo in magnam voluptatum, autem sint!
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MODULES SECTION -->
+<section id="modules" class="bg-light">
+  <div class="container">
+    <div class="row py-5 px-md-5 c-py-lg-6">
+      <div class="col-lg-6 order-lg-2 pt-4 pt-lg-0">
+        <img src="img/homepage/modules.jpg" alt="" class="img-fluid rounded-lg c-shadow-img" />
+      </div>
+      <div class="col-lg-6 align-self-center px-4 px-md-5 px-lg-4 pt-3 pt-lg-0">
+        <div class="card border-0 card--home-page">
+          <div class="card-body">
+            <h3 class="card-title">Modules</h3>
+            <p class="card-text">
+              Lorem ipsum dolor, sit amet consectetur adipisicing elit. Dolor
+              optio reiciendis quia possimus, nostrum quam, quod amet quos
+              deleniti quo in magnam voluptatum, autem sint!
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FACULTY MEMBERS SECTION -->
+<section id="facultyMembers" class="bg-white">
+  <div class="container">
+    <div class="row py-5 px-md-5 c-py-lg-6">
+      <div class="col-lg-6 pt-4 pt-lg-0">
+        <img src="img/homepage/facultyMembers.jpg" alt="" class="img-fluid rounded-lg c-shadow-img" />
+      </div>
+      <div class="col-lg-6 align-self-center px-4 px-md-5 px-lg-4 pt-3 pt-lg-0">
+        <div class="card border-0 card--home-page">
+          <div class="card-body">
+            <h3 class="card-title">Faculty Members</h3>
+            <p class="card-text">
+              Lorem ipsum dolor, sit amet consectetur adipisicing elit. Dolor
+              optio reiciendis quia possimus, nostrum quam, quod amet quos
+              deleniti quo in magnam voluptatum, autem sint!
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STUDENTS MEMBERS SECTION -->
+<section id="students" class="bg-light">
+  <div class="container">
+    <div class="row py-5 px-md-5 c-py-lg-6">
+      <div class="col-lg-6 order-lg-2 pt-4 pt-lg-0">
+        <img src="img/homepage/students.jpg" alt="" class="img-fluid rounded-lg c-shadow-img" />
+      </div>
+      <div class="col-lg-6 align-self-center px-4 px-md-5 px-lg-4 pt-3 pt-lg-0">
+        <div class="card border-0 card--home-page">
+          <div class="card-body">
+            <h3 class="card-title">Students</h3>
+            <p class="card-text">
+              Lorem ipsum dolor, sit amet consectetur adipisicing elit. Dolor
+              optio reiciendis quia possimus, nostrum quam, quod amet quos
+              deleniti quo in magnam voluptatum, autem sint!
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ======== MODALS ======== -->
+
+<!-- LOGIN MODAL -->
+<div id="loginModal" class="modal fade modal--default" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header d-flex align-items-center">
+        <h5 class="modal-title">Log In to Your Carricilum Account!</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form class="py-2">
+          {{!-- Email --}}
+          <div class="input-group input-group--white mb-3">
+            <div class="input-group-prepend">
+              <span id="addonEmail" class="input-group-text">
+                <i class="fas fa-envelope"></i>
+              </span>
+            </div>
+            <input type="email" id="email" class="form-control form-control-lg" name="email" placeholder="Email"
+              maxlength="64" minlength="7" aria-label="Email" aria-describedby="addonEmail" required />
+          </div>
+          {{!-- Password --}}
+          <div class="input-group input-group--white mb-3">
+            <div class="input-group-prepend">
+              <span id="addonPassword" class="input-group-text">
+                <i class="fas fa-lock"></i>
+              </span>
+            </div>
+            <input type="password" id="password" class="form-control form-control-lg" name="password"
+              placeholder="Password" maxlength="64" minlength="6" aria-label="Password" aria-describedby="addonPassword"
+              required />
+          </div>
+          {{!-- Login --}}
+          <button type="submit" class="form-control btn btn-block btn-lg btn-primary mb-3">
+            Log In
+          </button>
+          {{!-- Forgot Password --}}
+          <p class="text-center">or <a href="#" data-toggle="modal" data-target="#forgotPassword"
+              data-dismiss="modal">forgot password</a></p>
+        </form>
+      </div>
+      {{!-- Return to "Sign Up" if Don't Have an Account --}}
+      <div class="modal-footer justify-content-center">
+        Don't have an account?
+        <!-- A Trigger "Sign Up" Modal -->
+        <a href="#" data-toggle="modal" data-target="#signUpModal" data-dismiss="modal">Sign Up</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SIGNUP MODAL -->
+<div id="signUpModal" class="modal fade modal--default" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header d-flex align-items-center">
+        <h5 class="modal-title">Create An Account</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form action="/" method="post" id="signUpForm" class="py-2">
+          {{!-- Full Name --}}
+          <div class="input-group input-group--white mb-3">
+            <div class="input-group-prepend">
+              <span id="addonFullName" class="input-group-text">
+                <i class="fas fa-user"></i>
+              </span>
+            </div>
+            <input type="text" id="fullName" class="form-control form-control-lg" name="fullName"
+              placeholder="Full Name" maxlength="64" aria-label="Full Name" aria-describedby="addonFullName"
+              value="{{fullName}}" required="" />
+          </div>
+          {{!-- Email --}}
+          <div class="input-group input-group--white mb-3">
+            <div class="input-group-prepend">
+              <span id="addonEmail" class="input-group-text">
+                <i class="fas fa-envelope"></i>
+              </span>
+            </div>
+            <input type="email" id="email" class="form-control form-control-lg" name="email" placeholder="Email"
+              maxlength="64" minlength="7" aria-label="Email" aria-describedby="addonEmail" value="{{email}}" required />
+          </div>
+          {{!-- Password --}}
+          <div class="input-group input-group--white mb-3">
+            <div class="input-group-prepend password-icon">
+              <span id="addonPassword1" class="input-group-text">
+                <i class="fas fa-lock"></i>
+              </span>
+            </div>
+            <input type="password" id="password1" class="form-control form-control-lg" name="password1"
+              placeholder="Password" maxlength="64" minlength="6" aria-label="Password"
+              aria-describedby="addonPassword1" value="{{password1}}" required />
+          </div>
+          {{!-- Password --}}
+          <div class="input-group input-group--white mb-3">
+            <div class="input-group-prepend password-icon">
+              <span id="addonPassword2" class="input-group-text">
+                <i class="fas fa-lock"></i>
+              </span>
+            </div>
+            <input type="password" id="password2" class="form-control form-control-lg" name="password2"
+              placeholder="Confirm Password" maxlength="64" minlength="6" aria-label="Confirm Password"
+              aria-describedby="addonPassword2" value="{{password2}}" required />
+          </div>
+          {{!-- Type of User (Faculty or Student) --}}
+          <div class="form-group d-flex justify-content-between col-10 mx-auto py-2">
+            <div class="custom-control custom-radio custom-control-inline">
+              <input type="radio" id="facultyMember" class="custom-control-input" name="userType" value="facultyMember"
+                required>
+              <label for="facultyMember" class="custom-control-label">As Faculty Member</label>
+            </div>
+            <div class="custom-control custom-radio custom-control-inline">
+              <input type="radio" id="student" class="custom-control-input" name="userType" value="Student">
+              <label for="student" class="custom-control-label">As Student</label>
+            </div>
+          </div>
+          {{!-- <a href="faculty-profile.html" class="form-control btn btn-block btn-lg btn-primary mb-3">Sign Up</a> --}}
+          {{!-- Sign Up --}}
+          <button type="submit" class="form-control btn btn-block btn-lg btn-primary mb-3">
+            Sign Up
+          </button>
+        </form>
+      </div>
+      {{!-- Return to Login if Have an Account --}}
+      <div class="modal-footer justify-content-center">
+        Already have an account?
+        <!-- A Trigger "Login" Modal -->
+        <a href="#" data-toggle="modal" data-target="#loginModal" data-dismiss="modal">Log In</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FORGOT PASSWORD -->
+<div id="forgotPassword" class="modal fade modal--default" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header d-flex align-items-center">
+        <h5 class="modal-title">Forgot Password</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form class="py-2">
+          {{!-- Email --}}
+          <div class="input-group mb-3 input-group--white">
+            <div class="input-group-prepend">
+              <span id="addonEmail" class="input-group-text">
+                <i class="fas fa-envelope"></i>
+              </span>
+            </div>
+            <input type="email" name="" id="email" class="form-control form-control-lg" placeholder="Email"
+              maxlenght="64" minlenght="7" required="" aria-label="Email" aria-describedby="addonEmail" />
+          </div>
+          {{!-- Reset Password --}}
+          <button type="submit" class="btn btn-block btn-lg btn-primary mb-3">
+            Reset Password
+          </button>
+          {{!-- Return to Login --}}
+          <p class="text-center">or <a href="#" data-toggle="modal" data-target="#loginModal" data-dismiss="modal">Log
+              In</a></p>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

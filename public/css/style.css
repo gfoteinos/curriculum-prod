@@ -1,0 +1,499 @@
+/* 
+* 
+*
+* TO DO: What i'm going to do with card-profile-contact? Is it going to broke into 2 classes "card-profile" for the general styling 
+* and "card-profile--contact for specific contact styling and "card-profile--course" for specific course styling?
+*
+ */
+body {
+  font-family: "Montserrat", sans-serif;
+}
+.c-shadow-img {
+  box-shadow: 0 29px 32px -20px rgba(0, 0, 0, 0.5);
+}
+
+/* Box Model */
+.margin-y--big {
+  margin-top: 6rem;
+  margin-bottom: 6rem;
+}
+
+/* TEMPS */
+
+/* ==== FONT-SIZES ====*/
+.font--xs {
+  font-size: 1rem;
+}
+
+/* ---- ICONS ---- */
+.icon-user {
+  font-size: 100px;
+}
+
+/* FORMS */
+form label {
+  margin-bottom: 0.25rem;
+}
+
+.short-width {
+  max-width: 10rem;
+}
+
+.very-short-width {
+  max-width: 3rem;
+}
+
+/* TABLES */
+caption {
+  caption-side: top;
+}
+
+.table td,
+.table th {
+  vertical-align: middle;
+}
+
+.table i {
+  text-align: center;
+  width: 1rem;
+}
+
+/* ICONS */
+/* Create same size border box for different size icons */
+.input-group i {
+  font-size: 1.25rem;
+  min-width: 1.25rem;
+  text-align: center;
+  vertical-align: middle;
+}
+
+/* MODULES */
+/* Avatar */
+.avatar-small {
+  width: 100px;
+  height: 100px;
+}
+.avatar-medium {
+  width: 250px;
+  height: 250px;
+}
+.avatar--rounded {
+  border-radius: 50%;
+  object-fit: cover;
+}
+.avatar--border-blue {
+  border: 0.3rem solid rgba(0, 123, 255, 0.6);
+}
+
+/* Drop caps */
+.card--drop-caps {
+  margin: 0 0 0 -0.1em;
+}
+.card--drop-caps:first-letter {
+  font-size: 7rem;
+  /*       line-height: 2rem; */
+  float: left;
+  margin: 0.5rem 0 0 -0.75rem;
+}
+
+/* Bootstrap cards */
+/* Home-Page */
+.card--home-page {
+  background-color: transparent;
+}
+.card--home-page .card-body {
+  padding: 0;
+  padding-top: 1.25rem;
+}
+
+/* Header-Profile Pages */
+.card-profile-heading .img-course {
+  width: 75%;
+}
+.card-profile-heading .card-title {
+  font-size: 1.5rem;
+}
+.card-profile-heading .card-subtitle {
+  font-size: 1.25rem;
+}
+.card-profile-heading .card-details {
+  font-size: 0.75rem;
+}
+.card-profile-heading .card-social-media {
+  font-size: 1.5rem;
+}
+.card-profile-heading .card-email i,
+.card-profile-heading .card-tel i,
+.card-profile-heading .card-office i {
+  padding-right: 0.25rem;
+}
+
+.card-manage-account .card-header,
+.card-manage-profile .card-header,
+.card-manage-modules .card-header {
+  background-color: #fff;
+}
+.card-manage-modules .nav-item {
+  text-align: left;
+}
+
+/* Course Page */
+/* Images with the same height */
+.card-module__img {
+  position: relative;
+  padding-bottom: 75%;
+  overflow: hidden;
+  width: 100%;
+}
+.card-module__img img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+.card-module .card-body {
+  font-size: 0.8rem;
+}
+.card-module .card-title {
+  font-size: 1em;
+}
+.card-module small {
+  font-size: 0.8em;
+}
+.card-module a {
+  padding: 0.25em 0.5em;
+  font-size: 0.875em;
+  line-height: 1.5;
+  border-radius: 0.2em;
+  font-weight: 500;
+}
+
+.card-profile img {
+  margin-top: -75px;
+}
+.card-profile .card-title {
+  font-size: 1.5rem;
+}
+.card-profile .card-subtitle {
+  font-size: 1rem;
+}
+.card-profile .card-details,
+.card-profile .card-footer a {
+  font-size: 0.75rem;
+}
+.card-profile .card-footer a {
+  font-weight: 500;
+}
+
+/* Bootstrap input-group */
+.input-group--white .input-group-text {
+  background-color: #fff;
+  /* color: #ced4da;
+    color: #495057; */
+  color: #7e7e7e;
+}
+
+/* Bootstrap Modal */
+.modal--default .modal-title {
+  font-size: 1rem;
+}
+.modal--default .modal-header span {
+  font-size: 2.75rem;
+  font-weight: 400;
+}
+.modal--default .modal-footer a {
+  padding-left: 0.25rem;
+  font-weight: 700;
+}
+
+/* NAVIGATIONS */
+.main-nav .nav-item {
+  font-size: 1.25rem;
+}
+.main-nav .navbar-brand span {
+  color: #dc3545;
+  color: #007bff;
+  /* font-weight: bold; */
+  display: table;
+}
+.main-nav .btn-outline-secondary:hover {
+  background-color: #f8f9fa;
+}
+.main-nav .btn-primary:hover {
+  color: #f8f9fa !important;
+}
+
+/* PROGRESS BARS */
+.progress-callout_text {
+  padding: 0.15rem 0 0.15rem 0.4rem;
+  margin-right: 4rem;
+  border-left: 6px solid;
+  border-radius: 0.25rem;
+}
+.progress-callout_number {
+  font-weight: 500;
+}
+
+/* ACCORDIONS */
+#moduleSelection-accordion a {
+  font-weight: 500;
+  text-align: left;
+}
+
+/* SHOWCASES   */
+#showcase {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  background: url("/img/homepage/showcase.jpg");
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-size: cover;
+  color: #fff;
+}
+#showcase .col {
+  min-height: 600px;
+}
+#showcase .display-2 {
+  margin-top: 5rem;
+}
+#showcase h1 {
+  font-weight: 500;
+}
+#showcase .lead {
+  font-size: 2rem;
+}
+
+#showcase-course {
+  position: relative;
+  width: 100vw;
+  height: 75vh;
+  background: url("../img/Courses/Mathematics-3.jpg");
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-size: cover;
+  color: #fff;
+}
+#showcase-course .row {
+  height: 75vh;
+}
+#showcase-course .card-body {
+  font-size: 1.2rem;
+  max-width: 750px;
+}
+#showcase-course .card-title {
+  font-size: 2.5em;
+}
+#showcase-course .card-subtitle {
+  font-size: 1.5em;
+}
+#showcase-course .card-text {
+  font-size: 0.8em;
+  padding: 0 1rem;
+}
+
+.c-dark-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+}
+
+#main-footer,
+#main-footer .btn-outline-primary {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+#main-footer hr {
+  background-color: rgba(255, 255, 255, 0.75);
+}
+
+#main-footer ul {
+  padding-right: 0;
+}
+#main-footer ul p {
+  display: none;
+}
+#main-footer ul li {
+  padding: 1rem 0.5rem;
+}
+
+/* Devicon Icon Set */
+.devicon-html5-plain,
+.devicon-css3-plain,
+.devicon-javascript-plain,
+.devicon-bootstrap-plain,
+.devicon-nodejs-plain,
+.devicon-express-original,
+.devicon-mongodb-plain {
+  font-size: 1.5rem;
+  /* color: #007bff;
+  color: rgba(0, 0, 0, 0.7);
+  color: #f8f9fa; */
+  color: rgba(255, 255, 255, 0.75);
+}
+
+/* ==== MEDIA QUERIES ==== */
+
+/* Small devices (450px and up) */
+@media (min-width: 450px) {
+  /* TEMPS */
+  #showcase-course .card-body {
+    font-size: 1.4rem;
+    padding: 0 2rem;
+  }
+
+  /* ==== FONT-SIZES ==== */
+  .font--sm {
+    font-size: 1.75rem;
+  }
+
+  /* MODULES */
+  /* Bootstrap cards */
+  /* Course Page */
+  .card-module .card-body {
+    font-size: 1rem;
+  }
+  .card-module .card-body a {
+    font-weight: 400;
+  }
+}
+
+/* Small devices (landscape phones, between 450px and 576px) */
+@media (min-width: 450px) and (max-width: 575.98px) {
+}
+
+/* Small devices (landscape phones, 576px and up) */
+@media (min-width: 576px) {
+  /* TEMPS */
+  #showcase-course .card-body {
+    font-size: 1.6rem;
+  }
+  /* #showcase-course .card-text {
+    font-size: 2.5rem;
+  } */
+
+  /* ---- ICONS ---- */
+  .icon-user {
+    font-size: 150px;
+  }
+
+  /* PROGRESS BAR */
+  .progress-bar h5 {
+    font-size: 1rem;
+  }
+
+  /* MODULES */
+  /* Bootstrap cards */
+  .card-profile-heading .card-title {
+    font-size: 2rem;
+  }
+  .card-profile-heading .card-subtitle {
+    font-size: 1.75rem;
+  }
+  .card-profile-heading .card-details {
+    font-size: 1rem;
+  }
+  .card-profile-heading .card-social-media {
+    font-size: 1.75rem;
+  }
+}
+
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) {
+  /* TEMPS */
+  /* #showcase-course .card-text {
+    font-size: 2.5rem;
+  } */
+
+  /* ---- ICONS ---- */
+  .icon-user {
+    font-size: 200px;
+  }
+
+  /* PROGRESS BAR */
+  .progress-bar h5 {
+    font-size: 1.25rem;
+  }
+}
+
+/* Large devices (desktops, 992px and up) */
+@media (min-width: 992px) {
+  .c-py-lg-6 {
+    padding: 8rem 0 !important;
+  }
+
+  /* MODULES */
+  /* Bootstrap cards */
+  .card--home-page .card-body {
+    padding: 0;
+  }
+
+  /* Header-Profile Pages */
+  .card-profile-heading .img-course {
+    width: 100%;
+  }
+
+  /* NAVIGATIONS */
+  .main-nav .nav-item ~ .nav-item {
+    padding-left: 0.75rem;
+  }
+  .main-nav--login-main-links .nav-item ~ .nav-item,
+  .main-nav--login-secondary-links .nav-item ~ .nav-item {
+    padding-left: 0;
+  }
+
+  #main-footer ul p {
+    display: block;
+  }
+}
+
+/* Extra large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {
+  /* TEMPS */
+  #showcase-course .card-body {
+    max-width: 850px;
+  }
+
+  /* LAYOUT */
+  .container--wider {
+    max-width: 1140px;
+  }
+  /* MODULES */
+  /* Bootstrap cards */
+  .card--home-page .card-title {
+    font-size: 2.5rem;
+  }
+  .card--home-page .card-text {
+    font-size: 1.25rem;
+  }
+
+  /* NAVIGATIONS */
+  .main-nav .nav-item {
+    font-size: 1.4rem;
+  }
+  .main-nav--login-main-links .nav-item ~ .nav-item {
+    padding-left: 0.75rem;
+  }
+
+  .main-nav--login-secondary-links .nav-item {
+    font-size: 1rem;
+  }
+
+  #showcase h1 {
+    font-size: 5rem;
+  }
+  #showcase p {
+    font-size: 3rem !important;
+  }
+  #showcase a {
+    font-size: 1.75rem;
+  }
+}
+
+/* Extra large devices (desktops, 1669px and up) */
+@media (min-width: 1669px) {
+}
