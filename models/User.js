@@ -21,6 +21,30 @@ const UserSchema = new Schema({
   userType: {
     type: String,
     required: true
+  },
+  phone: {
+    type: String,
+    required: false
+  },
+  officeNumber: {
+    type: String,
+    required: false
+  },
+  photo: {
+    type: String
+  },
+  bio: {
+    type: String,
+    required: false
+  },
+  facebook: {
+    type: String
+  },
+  twitter: {
+    type: String
+  },
+  linkedin: {
+    type: String
   }
 });
 

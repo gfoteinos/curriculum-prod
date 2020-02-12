@@ -53,22 +53,21 @@ router.get('/signup', (req, res) => {
 //     })  
 // });
 
+// Login user form 
 router.post('/login', passport.authenticate('local', { 
   failureRedirect: '/users/login',
   failureFlash: true
  }), function(req, res) {
+  // Find user via email  
   User.findOne({ email: req.body.email })
+    // Redirect to the right view according to user type (faculty member or not)
     .then(user => {
-      // console.log(user.userType)
       if(user.userType === 'facultyMember') {
-        // console.log('ok')
         res.redirect('/dashboards/facultyMember')
       } else {
         res.redirect('/dashboards/student')
-        // console.log('none')
       }
     })
-  // res.redirect('/users/' + req.user.username)
 });
 
 // Sign up user form 

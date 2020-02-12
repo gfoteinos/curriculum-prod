@@ -20,19 +20,34 @@ body {
 
 /* TEMPS */
 
+/* ==== BUTTONS ==== */
+.button--border-grey-light {
+  border-color: #ced4da; 
+}
+
 /* ==== FONT-SIZES ====*/
 .font--xs {
   font-size: 1rem;
 }
 
-/* ---- ICONS ---- */
-.icon-user {
-  font-size: 100px;
-}
-
 /* FORMS */
 form label {
   margin-bottom: 0.25rem;
+}
+
+/* ==== HR ==== */
+.hr--y-wide {
+  margin: 1.25rem 0;
+}
+
+/* ==== ICONS ==== */
+.icon--disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.icon-user {
+  font-size: 100px;
 }
 
 .short-width {
@@ -69,17 +84,24 @@ caption {
 
 /* MODULES */
 /* Avatar */
-.avatar-small {
+.avatar--pico {
+  width: 50px;
+  height: 50px;
+}
+.avatar--small {
   width: 100px;
   height: 100px;
 }
-.avatar-medium {
+.avatar--medium {
   width: 250px;
   height: 250px;
 }
 .avatar--rounded {
   border-radius: 50%;
   object-fit: cover;
+}
+.avatar--border-blue-thin {
+  border: 0.18rem solid rgba(0, 123, 255, 0.6);
 }
 .avatar--border-blue {
   border: 0.3rem solid rgba(0, 123, 255, 0.6);

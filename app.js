@@ -2,8 +2,10 @@
 // ======== Import Required Modules ========
 
 const express = require('express');
+// const fs = require('fs'); // Access & interact with the file system
 const path = require('path');
 const exphbs = require('express-handlebars');
+const methodOverride = require('method-override');
 const flash = require('connect-flash');
 const session = require('express-session');
 const bodyParser = require('body-parser');
@@ -27,11 +29,13 @@ const dashboards = require('./routes/dashboards');
 require('./config/passport')(passport);
 
 
-
 // ======== Database ========
 
+// DB config - Link the config/database.js file 
+const db = require('./config/database');
+
 // Connect to the database (with mongoose)
-mongoose.connect('mongodb://localhost/curriculum-dev', {
+mongoose.connect(db.mongoURI, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 })
@@ -45,9 +49,35 @@ mongoose.connect('mongodb://localhost/curriculum-dev', {
 
 // ======== Middlewares ========
 
+// var hbs = exphbs.create({
+//   // Specify helpers which are only registered on this instance.
+//   helpers: {
+//     ifEquals: function (arg1, arg2, options) { 
+//       return (arg1 == arg2) ? options.fn(this) : options.inverse(this); 
+//     },
+//   }
+// });
+
+var hbs = exphbs.create({
+  // Specify helpers which are only registered on this instance.
+  helpers: {
+    equal: function (lvalue, rvalue, options) {
+      if (arguments.length < 3)
+        throw new Error("Handlebars Helper equal needs 2 parameters");
+      if (lvalue != rvalue) {
+        return options.inverse(this);
+      } else {
+        return options.fn(this);
+      }
+    }
+  }
+});
+
 // Handlebars middleware 
 app.engine('handlebars', exphbs());
+app.engine('handlebars', hbs.engine);
 app.set('view engine', 'handlebars');
+
 
 // Body-parse middleware 
 // app.use(express.urlencoded({ extended: false }))
@@ -87,6 +117,10 @@ app.use(function (req, res, next) {
 // Path middleware - Set "public" folder to be the "express static" folder 
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Method-override middleware
+app.use(methodOverride('_method'));
+
+
 
 // ======== Routes ========
 
@@ -107,7 +141,10 @@ app.use('/dashboards', dashboards);
 
 
 // ======== Start up the server on port 5000 ========
-const port = 5000;
+
+// Listen to certain port 
+const port = process.env.PORT || 5000;
+
 app.listen(port, () => {
   console.log(`Server started on port ${port}`);
 });

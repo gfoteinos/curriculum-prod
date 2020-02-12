@@ -1,1 +1,659 @@
-<h1>ok</h1>
+<!-- ======== HEADER ======== -->
+<header id="main-header" class="profile-header py-4 bg-dark text-light">
+  <div class="container">
+    <div class="card text-center bg-dark text-light border-0 card-profile-heading">
+      <div class="row">
+        <!-- AVATAR -->
+        <div class="col-md-4 d-flex justify-content-center align-items-center">
+          {{!-- <img src="img/Students/m-2.jpg" class="img-fluid avatar-medium avatar--rounded avatar--border-blue"
+            alt="Student photo"> --}}
+          <i class="fas fa-user icon-user"></i>
+        </div>
+        <!-- BODY -->
+        <div class="col-md-8 pl-lg-0 d-flex align-items-center">
+          <div class="card-body">
+          <h3 class="card-title text-md-left">{{student.name}}</h3>
+            <h4 class="card-subtitle text-md-left">Mathematics</h4>
+            <!-- Social Media -->
+            <div class="d-flex justify-content-center justify-content-md-start card-social-media my-4">
+              <span class="mr-5">
+                <a href="#" class="text-light">
+                  <i class="fab fa-facebook-f" style="padding-right: .25rem;"></i>
+                </a>
+              </span>
+              <span class="mr-5">
+                <a href="#" class="text-light">
+                  <i class="fab fa-twitter" style="padding-right: .25rem;"></i>
+                </a>
+              </span>
+              <span>
+                <a href="#" class="text-light">
+                  <i class="fab fa-linkedin-in" style="padding-right: .25rem;"></i>
+                </a>
+              </span>
+            </div>
+            <!-- Email - Tel -->
+            <div class="d-flex justify-content-center justify-content-md-start">
+              <small class="text-muted mr-5 card-email">
+                <i class="far fa-envelope " data-toggle="tooltip" data-placement="top" title="johndoeatmathdep.com"></i>
+                <span class="d-none d-sm-inline">{{student.email}}</span>
+              </small>
+              <small class="text-muted card-tel">
+                <i class="fas fa-phone" data-toggle="tooltip" data-placement="top" title="1234 555 555"></i>
+                <span class="d-none d-sm-inline">1234 555 555</span>
+              </small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ======== BODY ======== -->
+<section id="studentDashboard">
+  <div class="container py-5 bg-white">
+    <div class="row">
+      <!-- Navigation List -->
+      <div class="col-12 col-lg-4 mb-3">
+        <div class="list-group" id="list-tab" role="tablist">
+          <a class="list-group-item list-group-item-action active" id="account-list" data-toggle="list" href="#account"
+            role="tab" aria-controls="account">Account</a>
+          <a class="list-group-item list-group-item-action" id="profile-list" data-toggle="list" href="#profile"
+            role="tab" aria-controls="profile">Profile</a>
+          <a class="list-group-item list-group-item-action" id="module-list" data-toggle="list" href="#modules"
+            role="tab" aria-controls="modules">Modules</a>
+        </div>
+      </div>
+      <!-- WORK AREA-->
+      <div class="col-12 col-lg-8 pl-lg-0 mb-3">
+        <div class="tab-content" id="nav-tabContent">
+          <!-- Account Settings-->
+          <div class="tab-pane active" id="account" role="tabpanel" aria-labelledby="account-list">
+            <div class="card card-manage-account">
+              <div class="card-header">
+                <h3 class="mb-0">Account Info</h3>
+                <small class="">
+                  Edit your account settings and change your password here
+                </small>
+              </div>
+              <div class="card-body">
+                <form>
+                  <!-- Email -->
+                  <div class="form-group mb-4">
+                    <label for="email">Email</label>
+                    <div class="input-group input-group--white">
+                      <div class="input-group-prepend">
+                        <span id="addonEmail" class="input-group-text">
+                          <i class="fas fa-envelope"></i>
+                        </span>
+                      </div>
+                      <input type="email" name="" id="email" class="form-control form-control-lg" placeholder=""
+                        maxlength="64" minlength="7" required="" aria-label="Email" aria-describedby="addonEmail" />
+                      <div class="input-group-append">
+                        <span class="input-group-text">
+                          <a href="#" class="" data-toggle="modal" data-target="#changeEmailModal">
+                            <i class="fas fa-pencil-alt"></i>
+                          </a>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <hr>
+                  <!-- Password -->
+                  <h4 class="mb-0">Password</h4>
+                  <small id="passwordHelpBlock" class="form-text text-muted mb-3">
+                    Your password must be 8-20 characters long, contain letters and numbers, and must not contain
+                    spaces, special characters, or emoji.
+                  </small>
+                  <!-- Current Password -->
+                  <div class="form-group">
+                    <label for="currentPassword">Current Password</label>
+                    <div class="input-group input-group--white">
+                      <div class="input-group-prepend">
+                        <span id="addonCurrentPassword" class="input-group-text">
+                          <i class="fas fa-lock"></i>
+                        </span>
+                      </div>
+                      <input type="password" name="" id="currentPassword" class="form-control form-control-lg"
+                        placeholder="" maxlength="64" minlength="6" required="" aria-label="Current Password"
+                        aria-describedby="addonCurrentPassword" />
+                    </div>
+                  </div>
+                  <!-- New Password -->
+                  <div class="form-group">
+                    <label for="newPassword">Enter New Password</label>
+                    <div class="input-group input-group--white">
+                      <div class="input-group-prepend">
+                        <span id="addonNewPassword" class="input-group-text">
+                          <i class="fas fa-lock"></i>
+                        </span>
+                      </div>
+                      <input type="password" name="" id="newPassword" class="form-control form-control-lg"
+                        placeholder="" maxlength="64" minlength="6" required="" aria-label="Enter New Password"
+                        aria-describedby="addonNewPassword" />
+                    </div>
+                  </div>
+                  <!-- Confirm New Password -->
+                  <div class="form-group">
+                    <label for="confirmPassword">Re-type New Password</label>
+                    <div class="input-group input-group--white">
+                      <div class="input-group-prepend">
+                        <span id="addonConfirmPassword" class="input-group-text">
+                          <i class="fas fa-lock"></i>
+                        </span>
+                      </div>
+                      <input type="password" name="" id="confirmPassword" class="form-control form-control-lg"
+                        placeholder="" maxlength="64" minlength="6" required="" aria-label="Re-type New Password"
+                        aria-describedby="addonConfirmPassword" />
+                    </div>
+                  </div>
+                  <div class="d-flex justify-content-end">
+                    <button type="button" class="btn btn-primary">
+                      Change Password
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+          <!-- Profile Settings-->
+          <div class="tab-pane" id="profile" role="tabpanel" aria-labelledby="profile-list">
+            <div class="card card-manage-profile">
+              <div class="card-header">
+                <h3 class="mb-0">Profile</h3>
+                <small class="">Add Information About Yourself</small>
+              </div>
+              <div class="card-body">
+                <form>
+                  <!-- Name -->
+                  <div class="form-group mb-4">
+                    <label for="fullName">Full Name</label>
+                    <div class="input-group input-group--white mb-3">
+                      <div class="input-group-prepend">
+                        <span id="addonFullName" class="input-group-text">
+                          <i class="fas fa-user"></i>
+                        </span>
+                      </div>
+                      <input type="text" name="" id="fullName" class="form-control form-control-lg" placeholder=""
+                        maxlength="64" required="" aria-label="Full Name" aria-describedby="addonFullName" />
+                    </div>
+                  </div>
+                  <hr>
+                  <!-- Bio -->
+                  <div class="form-group mb-4">
+                    <h4>Bio <small><span class="text-danger">(Optional)</span></small></h4>
+                    <!-- Few Word About Yourself -->
+                    <div class="form-group">
+                      <small>Write a few words about youself in the text-area bellow.</small>
+                      <label for="bio" class="sr-only">Bio</label>
+                      <textarea id="bio" name="editor1" class="form-control">
+                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquid unde at fugiat explicabo temporibus, tempora animi sunt iusto quod beatae optio veritatis velit natus odit error! Possimus esse quisquam quibusdam eveniet autem! Minus dolore quisquam nemo similique doloribus perspiciatis tempore.
+                          </textarea>
+                    </div>
+                    <!-- Upload CV File -->
+                    <div class="form-group">
+                      <small>For more details not hesitate to upload your CV file bellow.</small>
+                      <div class="custom-file">
+                        <input type="file" id="myfile" class="custom-file-input">
+                        <label class="custom-file-label" for="myfile">Choose your CV file</label>
+                        <small class="form-text text-muted" id="fileHelp">Max 3mb size pdf file</small>
+                      </div>
+                    </div>
+                  </div>
+                  <hr>
+                  <!-- Social Media -->
+                  <div class="form-group ">
+                    <h4>Social Media <small><span class="text-danger">(Optional)</span></small></h4>
+                    <!-- Facebook -->
+                    <label for="facebook">Facebook Profile</label>
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span id="addonFacebook" class="input-group-text">
+                          <span class="d-sm-none">
+                            <i class="fab fa-facebook-f"></i>
+                          </span>
+                          <span class="d-none d-sm-block">
+                            http://www.facebook.com/
+                          </span>
+                        </span>
+                      </div>
+                      <input type="text" name="" id="facebook" class="form-control form-control-lg" placeholder=""
+                        aria-label="Text input with checkbox" aria-describedby="addonFacebook" />
+                    </div>
+                    <small id="facebookHelp" class="form-text text-muted mb-3">
+                      Input your Facebook username (e.g. johndoe).
+                    </small>
+                    <!-- Twitter -->
+                    <label for="twitter">Twitter Profile</label>
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span id="addonTwitter" class="input-group-text">
+                          <span class="d-sm-none">
+                            <i class="fab fa-twitter"></i>
+                          </span>
+                          <span class="d-none d-sm-block">
+                            http://twitter.com/
+                          </span>
+                        </span>
+                      </div>
+                      <input type="text" name="" id="twitter" class="form-control form-control-lg" placeholder=""
+                        aria-label="Text input with checkbox" aria-describedby="addonTwitter" />
+                    </div>
+                    <small id="twitterHelp" class="form-text text-muted mb-3">
+                      Add your Twitter username (e.g. johndoe).
+                    </small>
+                    <!-- Linkedin -->
+                    <label for="linkedin">Linkedin Profile</label>
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span id="addonLinkedin" class="input-group-text">
+                          <span class="d-sm-none">
+                            <i class="fab fa-linkedin-in"></i>
+                          </span>
+                          <span class="d-none d-sm-block">
+                            http://www.linkedin.com/
+                          </span>
+                        </span>
+                      </div>
+                      <input type="text" name="" id="linkedin" class="form-control form-control-lg" placeholder=""
+                        aria-label="Text input with checkbox" aria-describedby="addonLinkedin" />
+                    </div>
+                    <small id="linkedinHelp" class="form-text text-muted mb-3">
+                      Input your LinkedIn resource id (e.g. in/johndoe).
+                    </small>
+                  </div>
+                  <!-- Save Button -->
+                  <div class="d-flex justify-content-end">
+                    <button type="button" class="btn btn-primary">
+                      Save
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+          <!-- Module Info -->
+          <div class="tab-pane" id="modules" role="tabpanel" aria-labelledby="module-list">
+            <!-- MODULE PROGRESS -->
+            <section id="moduleProgress" class="mb-5">
+              <div class="card shadow">
+                <div class="card-body">
+                  <h3 class="card-title">Progress</h3>
+                  <div class="progress mb-3" style="height: 1.75rem;">
+                    <div class="progress-bar" role="progressbar" style="width: 40%" aria-valuenow="40" aria-valuemin="0"
+                      aria-valuemax="100">
+                      <h5 class="d-none d-sm-block mb-0">4 of 10</h5>
+                    </div>
+                    <div class="progress-bar bg-danger" role="progressbar" style="width: 10%" aria-valuenow="10"
+                      aria-valuemin="0" aria-valuemax="100">
+                      <h5 class="d-none d-sm-block mb-0">1 of 2</h5>
+                    </div>
+                    <div class="progress-bar bg-info" role="progressbar" style="width: 30%" aria-valuenow="30"
+                      aria-valuemin="0" aria-valuemax="100">
+                      <h5 class="d-none d-sm-block mb-0">3</h5>
+                    </div>
+                  </div>
+                  <div class="d-flex flex-column flex-sm-row progress-callout pl-2">
+                    <span class="progress-callout_text border-primary mb-2 mb-sm-0">Module Pass <span
+                        class="progress-callout_number d-sm-none">4 of 10</span></span>
+                    <span class="progress-callout_text border-danger mb-2 mb-sm-0">Module Fail <span
+                        class="progress-callout_number d-sm-none">1 of 2</span></span>
+                    <span class="progress-callout_text border-info">Module On Going <span
+                        class="progress-callout_number d-sm-none">3</span></span>
+                  </div>
+                </div>
+              </div>
+            </section>
+            <!-- MODULE DETAILS -->
+            <section id="moduleDetails">
+              <!-- Courseworks -->
+              <div class="card shadow mb-5">
+                <div class="card-body">
+                  <h3 class="card-title">Courseworks</h3>
+                  <div class="table-responsive">
+                    <table class="table">
+                      <caption class="h5 py-0 sr-only">Courseworks</caption>
+                      <thead>
+                        <tr>
+                          <th scope="col">#</th>
+                          <th scope="col">Module</th>
+                          <th scope="col">Due Date</th>
+                          <th scope="col">Grades</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <th scope="row">1</th>
+                          <td>Geometry</td>
+                          <td>3/4/2019</td>
+                          <td>35%</td>
+                        </tr>
+                        <tr>
+                          <th scope="row">2</th>
+                          <td>Complex analysis</td>
+                          <td>16/5/2019</td>
+                          <td>65%</td>
+                        </tr>
+                        <tr>
+                          <th scope="row">3</th>
+                          <td>Metric spaces</td>
+                          <td>16/5/2019</td>
+                          <td>89%</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              <!-- Exams -->
+              <div class="card shadow mb-5">
+                <div class="card-body">
+                  <h3 class="card-title">Exams</h3>
+                  <div class="table-responsive">
+                    <table class="table">
+                      <caption class="h5 py-0 sr-only">Exams</caption>
+                      <thead>
+                        <tr>
+                          <th scope="col">#</th>
+                          <th scope="col">Module</th>
+                          <th scope="col">Date</th>
+                          <th scope="col">Class</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <th scope="row">1</th>
+                          <td>Geometry</td>
+                          <td>16/6/2019 10:00 am</td>
+                          <td>3B12</td>
+                        </tr>
+                        <tr>
+                          <th scope="row">2</th>
+                          <td>Complex analysis</td>
+                          <td>20/6/2019 12:00 pm</td>
+                          <td>4A07</td>
+                        </tr>
+                        <tr>
+                          <th scope="row">3</th>
+                          <td>Metric spaces</td>
+                          <td>27/6/2019 14:00 pm</td>
+                          <td>3B12</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              <!-- Module Grades -->
+              <div class="card shadow mb-5">
+                <div class="card-body">
+                  <h3 class="card-title">Module Marks</h3>
+                  <div class="table-responsive">
+                    <table class="table">
+                      <caption class="h5 py-0 sr-only">Exams</caption>
+                      <thead>
+                        <tr>
+                          <th scope="col">#</th>
+                          <th scope="col">Module</th>
+                          <th scope="col">Semester</th>
+                          <th scope="col">Grades</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <th scope="row">1</th>
+                          <td>Statistics</td>
+                          <td>Spring</td>
+                          <td>55%</td>
+                        </tr>
+                        <tr>
+                          <th scope="row">2</th>
+                          <td>Algebra</td>
+                          <td>Spring</td>
+                          <td>72%</td>
+                        </tr>
+                        <tr>
+                          <th scope="row">3</th>
+                          <td>Analysis</td>
+                          <td>Spring</td>
+                          <td>65%</td>
+                        </tr>
+                        <tr>
+                          <th scope="row">4</th>
+                          <td>Probability and statistics</td>
+                          <td>Spring</td>
+                          <td>72%</td>
+                        </tr>
+                        <tr>
+                          <th scope="row">5</th>
+                          <td>Multivariate calculus and mathematical models</td>
+                          <td>Autumn</td>
+                          <td class="text-danger font-weight-bold">35%</td>
+                        </tr>
+                        <tr>
+                          <th scope="row">6</th>
+                          <td>Geometry</td>
+                          <td>Spring</td>
+                          <td></td>
+                        </tr>
+                        <tr>
+                          <th scope="row">7</th>
+                          <td>Complex analysis</td>
+                          <td>Spring</td>
+                          <td></td>
+                        </tr>
+                        <tr>
+                          <th scope="row">8</th>
+                          <td>Metric spaces</td>
+                          <td>Spring</td>
+                          <td></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </section>
+            <!-- MODULE SELECTION -->
+            <section id="moduleSelection">
+              <div class="card shadow">
+                <div class="card-body">
+                  <h3 class="card-title">Modules Selection</h3>
+                  <div class="accordion" id="moduleSelection-accordion">
+                    <!-- Spring Semester -->
+                    <div id="SpringSemesterSelection" class="card-text mb-2">
+                      <a class="btn btn-block border" data-toggle="collapse" href="#collapseSpring" role="button"
+                        aria-expanded="true" aria-controls="collapseSpring">
+                        <i class="far fa-arrow-alt-circle-down"></i> Spring Semester
+                      </a>
+                    </div>
+                    <div id="collapseSpring" class="collapse" aria-labelledby="SpringSemesterSelection"
+                      data-parent="#moduleSelection-accordion">
+                      <div class="card-body">
+                        <div class="table-responsive">
+                          <table class="table">
+                            <caption class="h5 py-0">Add Modules</caption>
+                            <thead>
+                              <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Modules</th>
+                                <th scope="col">Tutors</th>
+                                <th scope="col">
+                                  <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="addModuleAll">
+                                    <label class="custom-control-label" for="addModuleAll"></label>
+                                  </div>
+                                </th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr class="text-muted">
+                                <th scope="row">1</th>
+                                <td>Statistics</td>
+                                <td>Henry Warren</td>
+                                <td>
+                                  <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="addStatistics" disabled>
+                                    <label class="custom-control-label" for="addStatistics"></label>
+                                  </div>
+                                </td>
+                              </tr>
+                              <tr class="text-muted">
+                                <th scope="row">2</th>
+                                <td>Algebra</td>
+                                <td>Kathryn Johnson</td>
+                                <td>
+                                  <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="addAlgebra" disabled>
+                                    <label class="custom-control-label" for="addAlgebra"></label>
+                                  </div>
+                                </td>
+                              </tr>
+                              <tr class="text-muted">
+                                <th scope="row">3</th>
+                                <td>Analysis</td>
+                                <td>Richard Tucker </td>
+                                <td>
+                                  <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="addAnalysis" disabled>
+                                    <label class="custom-control-label" for="addAnalysis"></label>
+                                  </div>
+                                </td>
+                              </tr>
+                              <tr class="text-muted">
+                                <th scope="row">4</th>
+                                <td>Probability and statistics</td>
+                                <td>Lauren Patterson</td>
+                                <td>
+                                  <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="addProbabilityStatistics"
+                                      disabled>
+                                    <label class="custom-control-label" for="addProbabilityStatistics"></label>
+                                  </div>
+                                </td>
+                              </tr>
+                              <tr>
+                                <th scope="row">5</th>
+                                <td>Geometry and dynamics</td>
+                                <td>Adam Rodriguez</td>
+                                <td>
+                                  <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="addGeometryDynamics">
+                                    <label class="custom-control-label" for="addGeometryDynamics"></label>
+                                  </div>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                        <div class="d-flex justify-content-end mt-3">
+                          <button type="button" class="btn btn-primary mr-2" data-dismiss="modal">
+                            Save Selection
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- Autumn Semester -->
+                    <div id="autumnSemesterSelection" class="card-text">
+                      <a class="btn btn-block border" data-toggle="collapse" href="#collapseAutumn" role="button"
+                        aria-expanded="false" aria-controls="collapseAutumn">
+                        <i class="far fa-arrow-alt-circle-down"></i> Autumn Semester
+                      </a>
+                    </div>
+                    <div id="collapseAutumn" class="collapse" aria-labelledby="autumnSemesterSelection"
+                      data-parent="#moduleSelection-accordion">
+                      <div class="card-body">
+                        <div class="table-responsive">
+                          <table class="table">
+                            <caption class="h5 py-0">Add Modules</caption>
+                            <thead>
+                              <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Modules</th>
+                                <th scope="col">Tutors</th>
+                                <th scope="col">
+                                  <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="addModuleAll">
+                                    <label class="custom-control-label" for="addModuleAll"></label>
+                                  </div>
+                                </th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr class="text-muted">
+                                <th scope="row">1</th>
+                                <td>Multivariate calculus and mathematical models</td>
+                                <td>Laura Dixon</td>
+                                <td>
+                                  <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="addMCMM" disabled>
+                                    <label class="custom-control-label" for="addMCMM"></label>
+                                  </div>
+                                </td>
+                              </tr>
+                              <tr class="text-muted">
+                                <th scope="row">2</th>
+                                <td>Geometry</td>
+                                <td>Henry Duncan</td>
+                                <td>
+                                  <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="addGeometry" disabled>
+                                    <label class="custom-control-label" for="addGeometry"></label>
+                                  </div>
+                                </td>
+                              </tr>
+                              <tr class="text-muted">
+                                <th scope="row">3</th>
+                                <td class="text-muted">Complex analysis</td>
+                                <td>Megan Payne</td>
+                                <td>
+                                  <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="addComplexAnalysis"
+                                      disabled>
+                                    <label class="custom-control-label" for="addComplexAnalysis"></label>
+                                  </div>
+                                </td>
+                              </tr>
+                              <tr class="text-muted">
+                                <th scope="row">4</th>
+                                <td class="text-muted">Metric spaces</td>
+                                <td>Julie Lawrence</td>
+                                <td>
+                                  <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="addMetricSpaces" disabled>
+                                    <label class="custom-control-label" for="addMetricSpaces"></label>
+                                  </div>
+                                </td>
+                              </tr>
+                              <tr>
+                                <th scope="row">5</th>
+                                <td>Differential equations</td>
+                                <td>Diana Dean</td>
+                                <td>
+                                  <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="addDifferentialEquations">
+                                    <label class="custom-control-label" for="addDifferentialEquations"></label>
+                                  </div>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                        <div class="d-flex justify-content-end mt-3">
+                          <button type="button" class="btn btn-primary mr-2" data-dismiss="modal">
+                            Save Selection
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
