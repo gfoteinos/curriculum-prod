@@ -8,6 +8,9 @@ const bcrypt = require('bcryptjs');
 const router = express.Router();
 const multer = require('multer'); // Used for uploading files
 
+/**
+ * On that version the "multer" works perfect for uploading images to heroku 
+ */
 
 // ======== Upload Images ========
 
