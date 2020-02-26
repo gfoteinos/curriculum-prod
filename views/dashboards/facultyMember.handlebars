@@ -12,6 +12,11 @@
 <script>profileClick()</script>
 {{/equal}}
 
+{{#equal error_msg 'Error: Only image files are allowed to upload'  }}
+{{!-- Load Profile Form --}}
+<script>profileClick()</script>
+{{/equal}}
+
 {{!---- In case of success ----}}
 {{#equal success_msg 'Profile updated.' }}
 {{!-- Load Profile Form --}}

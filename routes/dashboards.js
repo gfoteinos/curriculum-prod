@@ -1,32 +1,51 @@
 // ======== Import Required Modules ========
 
 const express = require('express');
+const path = require('path');
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 // const passport = require('passport');
 const router = express.Router();
 const multer = require('multer'); // Used for uploading files
 
+
+// ======== Upload Images ========
+
+// ---- Set Storage Engine ----
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, './public/img/facultyMembers')
+    // cb(null, './public/img/facultyMembers')
+    cb(null, path.join(__dirname, '../public', 'img', 'facultyMembers'))
   },
   filename: function (req, file, cb) {
-    let extsn = file.mimetype;
-    extsn = extsn.split('/');
-    cb(null, file.fieldname + '-' + Date.now() + '.' + extsn[1])
+    cb(null, file.fieldname + '-' + Date.now() + '.' + path.extname(file.originalname))
   }
 })
 
-const uploadFacultyMember = multer({
+// ---- Init Upload ----
+const upload = multer({
   storage: storage,
-  limits: { fileSize: 3 * 1024 * 1024 }
-});
+  // File size 3MB only
+  limits: { fileSize: 3000000 },
+  // Only images are allowed
+  fileFilter: function(req, file, cb) {
+    // Allowed Extentions
+    const filetypes = /jpeg|jpg|png|gif/;
+    
+    // Check Extentions
+    const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
 
-const upload = uploadFacultyMember.single('photo');
-// const uploadFacultyMember = multer({ dest: './public/img/facultyMembers' })
-// const uploadStudent = multer({ dest: './public/img/students' })
-// const uploadCourse = multer({ dest: './public/img/courses' })
+    // Check Mime Type
+    const mimetype = filetypes.test(file.mimetype);
+
+    if(mimetype && extname) {
+      return cb(null, true);
+    } else {
+      cb('Error: Only image files are allowed to upload');
+    }
+  }
+}).single('photo');
+
 
 // ======== Load User Model ========
 
@@ -154,16 +173,13 @@ router.put('/facultyMember/profile/:id', (req, res) => {
       error = `Error uploading photo: ${err.message}`;
     } else if (err) {
       error = `An unknown error occurred when uploading.`;
+      error = err;
     }
 
     // ---- Handle form fields errors ----
     // Check if the there are any required form fields empty 
     if (req.body.fullName === '' || req.body.phone === '' || req.body.officeNumber === '' || req.body.bio === '') {
       error = 'One or more of the fields "Full Name, Phone, Office, Bio" are empty. Please fill in the fields where missing.';
-
-      // // Trigger error message & redirect back to the page  
-      // req.flash('error_msg', 'One or more of the fields "Full Name, Phone, Office, Bio" are empty. Please fill in the fields where missing.');
-      // res.redirect('/dashboards/facultyMember');
     }
 
     // If error flash error message & redirect back to the page 
@@ -171,13 +187,6 @@ router.put('/facultyMember/profile/:id', (req, res) => {
       req.flash('error_msg', error);
       res.redirect('/dashboards/facultyMember');
     } else {
-      // console.log(req.file)
-      // console.log(upload)
-      // console.log(req.user);
-      // let extsn = req.file.mimetype;
-      // extsn = extsn.split('/');
-      // console.log(extsn[1]);
-
       // Find the user via id 
       User.findOne({ _id: req.params.id })
         .then(user => {
