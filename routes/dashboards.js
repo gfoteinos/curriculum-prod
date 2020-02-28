@@ -64,6 +64,7 @@ router.get('/facultyMember', (req, res) => {
   const faculty = {
     id: req.user.id,
     name: req.user.name,
+    academicRank: req.user.academicRank,
     email: req.user.email,
     phone: req.user.phone,
     officeNumber: req.user.officeNumber,
@@ -73,7 +74,7 @@ router.get('/facultyMember', (req, res) => {
     twitter: req.user.twitter,
     linkedin: req.user.linkedin
   };
-  // Pass the user to the view
+  // Pass the faculty member object to the view
   res.render('dashboards/facultyMember', {
     faculty
   });
@@ -175,14 +176,14 @@ router.put('/facultyMember/profile/:id', (req, res) => {
     if (err instanceof multer.MulterError) {
       error = `Error uploading photo: ${err.message}`;
     } else if (err) {
-      error = `An unknown error occurred when uploading.`;
-      error = err;
+      error = err; // Error: Only image files are allowed to upload 
+      //see: "---- Init Upload ----" at "==== Upload Images ====" section
     }
 
     // ---- Handle form fields errors ----
     // Check if the there are any required form fields empty 
-    if (req.body.fullName === '' || req.body.phone === '' || req.body.officeNumber === '' || req.body.bio === '') {
-      error = 'One or more of the fields "Full Name, Phone, Office, Bio" are empty. Please fill in the fields where missing.';
+    if (req.body.fullName === '' || req.body.academicRank === '' || req.body.phone === '' || req.body.officeNumber === '' || req.body.bio === '') {
+      error = 'One or more of the fields "Full Name, Academic Rank, Phone, Office, Bio" are empty. Please fill in the fields where missing.';
     }
 
     // If error flash error message & redirect back to the page 
@@ -193,7 +194,7 @@ router.put('/facultyMember/profile/:id', (req, res) => {
       // Find the user via id 
       User.findOne({ _id: req.params.id })
         .then(user => {
-          // ---- Fill in photo in diferent cases ----
+          // ---- Fill in photo in different cases ----
           let photo;
           // In case of uploding a profile photo 
           if (req.file) {
@@ -210,6 +211,7 @@ router.put('/facultyMember/profile/:id', (req, res) => {
           // ---- Update the user's profile info ----  
           // Basics 
           user.name = req.body.fullName;
+          user.academicRank = req.body.academicRank;
           user.phone = req.body.phone;
           user.officeNumber = req.body.officeNumber
           user.photo = photo;

@@ -1,7 +1,7 @@
 {{!==== Load the profile tab when click "save" profile ====}}
 
 {{!---- In case of form fields error ----}}
-{{#equal error_msg 'One or more of the fields "Full Name, Phone, Office, Bio" are empty. Please fill in the fields where missing.' }}
+{{#equal error_msg 'One or more of the fields "Full Name, Academic Rank, Phone, Office, Bio" are empty. Please fill in the fields where missing.' }}
 {{!-- Load Profile Form --}}
 <script>profileClick()</script>
 {{/equal}}
@@ -43,7 +43,7 @@
             <h3 class="card-title text-md-left">{{faculty.name}}</h3>
             <h4 class="card-subtitle mb-3 text-md-left">Department Head</h4>
             <h5 class="card-details text-md-left">School of Mathematical Sciences</h5>
-            <h5 class="card-details text-md-left">Associate Professor</h5>
+            <h5 class="card-details text-md-left">{{faculty.academicRank}}</h5>
             <!-- Social Media -->
             <div class="d-flex justify-content-center justify-content-md-start card-social-media my-4">
               <!-- ==== Disable/enable social media icons ==== -->
@@ -235,23 +235,46 @@
                 <form action="/dashboards/facultyMember/profile/{{faculty.id}}?_method=PUT" method="post"
                   enctype="multipart/form-data">
                   <input type="hidden" name="_method" value="PUT">
+
                   <!-- ==== BASICS ==== -->
                   <h4>Basics</h4>
                   <!-- Full Name -->
-                  <div class="form-group">
-                    <label for="fullName">Full Name</label>
-                    <div class="input-group input-group--white">
-                      <div class="input-group-prepend">
-                        <span class="input-group-text" aria-label="Input a full name">
-                          <i class="fas fa-user"></i>
-                        </span>
+                  <div class="form-row">
+                    <div class="form-group col-md-6">
+                      <label for="fullName">Full Name</label>
+                      <div class="input-group input-group--white">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text" aria-label="Input a full name">
+                            <i class="fas fa-user"></i>
+                          </span>
+                        </div>
+                        <input type="text" name="fullName" id="fullName" class="form-control form-control-lg"
+                          placeholder="" maxlength="64" value="{{faculty.name}}" required />
                       </div>
-                      <input type="text" name="fullName" id="fullName" class="form-control form-control-lg"
-                        placeholder="" maxlength="64" value="{{faculty.name}}" required />
+                    </div>
+                    <div class="form-group col-md-6">
+                      <label for="academicRank">Academic Rank</label>
+                      <div class="input-group input-group--white">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text" aria-label="Input an academic rank">
+                            <i class="fas fa-graduation-cap"></i>
+                          </span>
+                        </div>
+                        {{!-- <input type="text" name="academicRank" id="academicRank" class="form-control form-control-lg"
+                          placeholder="" maxlength="64" value="{{faculty.academicRank}}" required /> --}}
+                        <select name="academicRank" id="academicRank" class="custom-select custom-select-lg" required>
+                          <option selected>{{faculty.academicRank}}</option>
+                          <option value="Professor">Professor</option>
+                          <option value="Principal Teaching Fellow">Principal Teaching Fellow</option>
+                          <option value="Senior Lecturer">Senior Lecturer</option>
+                          <option value="Lecturer">Lecturer</option>
+                          <option value="Teaching associate">Teaching associate</option>
+                        </select>
+                      </div>
                     </div>
                   </div>
+                  <!-- Phone & Office Number-->
                   <div class="form-row">
-                    <!-- Phone -->
                     <div class="form-group col-md-6">
                       <label for="phone">Phone</label>
                       <div class="input-group input-group--white mb-1">
@@ -261,19 +284,19 @@
                           </span>
                         </div>
                         <input type="tel" name="phone" id="phone" class="form-control form-control-lg"
-                          pattern="[0]{1}-[0-9]{4}-[0-9]{6}" aria-describedby="phoneHelp" value="{{faculty.phone}}" />
+                          pattern="[0]{1}-[0-9]{4}-[0-9]{6}" aria-describedby="phoneHelp" value="{{faculty.phone}}"
+                          required />
                       </div>
                       <small id="phoneHelp" class="form-text text-muted">
                         Format: 0-1234-567890
                       </small>
                     </div>
-                    <!-- Office Number -->
                     <div class="form-group col-md-6">
                       <label for="office">Office</label>
                       <div class="input-group input-group--white mb-1">
                         <div class="input-group-prepend">
                           <span class="input-group-text" aria-label="Input an office number">
-                            <i class="far fa-building"></i>
+                            <i class="fas fa-building"></i>
                           </span>
                         </div>
                         <input type="text" name="officeNumber" id="office" class="form-control form-control-lg"
@@ -285,7 +308,10 @@
                       </small>
                     </div>
                   </div>
+
+                  <!-- ==== PROFILE PHOTO ==== -->
                   {{#if faculty.photo}}
+                  <!-- Delete Profile Photo-->
                   <hr class="hr--y-wide">
                   <div class="form-group">
                     <div class="d-flex flex-row justify-content-center">
@@ -311,8 +337,9 @@
                     <input type="checkbox" class="form-check-input" id="deletePhoto">
                     <label class="form-check-label" for="deletePhoto">Delete profile photo</label>
                   </div> --}}
+
                   {{else}}
-                  <!-- Upload CV file -->
+                  <!-- Upload Profile Photo -->
                   <div class="form-group">
                     <label for="photo">Photo</label>
                     <small><span class="text-danger">(Optional)</span></small>
@@ -325,6 +352,7 @@
                   </div>
                   {{/if}}
                   <hr class="hr--y-wide">
+
                   <!-- ==== BIO ==== -->
                   <h4 id="bio-label">Bio</h4>
                   <div class="form-group">
@@ -334,6 +362,7 @@
                     </textarea>
                   </div>
                   <hr class="hr--y-wide">
+
                   <!-- ==== SOCIAL MEDIA ==== -->
                   <h4>Social Media <small><span class="text-danger">(Optional)</span></small></h4>
                   <!-- Facebook -->
