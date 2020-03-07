@@ -1,8 +1,15 @@
 
-// Click "profile" link on dashboard faculty/student menu 
+// Click "Profile" link on dashboard faculty/student menu 
 const profileClick = function () {
   window.onload = function () {
     document.getElementById("profile-list").click();
+  };
+}
+
+// Click "Courses" link on dashboard faculty menu 
+const coursesClick = function () {
+  window.onload = function () {
+    document.getElementById("course-list").click();
   };
 }
 

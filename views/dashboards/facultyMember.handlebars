@@ -1,5 +1,4 @@
-{{!==== Load the profile tab when click "save" profile ====}}
-
+{{!==== Load the "Profile" tab when click "Save" profile ====}}
 {{!---- In case of form fields error ----}}
 {{#equal error_msg 'One or more of the fields "Full Name, Academic Rank, Phone, Office, Bio" are empty. Please fill in the fields where missing.' }}
 {{!-- Load Profile Form --}}
@@ -22,6 +21,34 @@
 {{!-- Load Profile Form --}}
 <script>profileClick()</script>
 {{/equal}}
+
+
+{{!==== Load the "Course" tab when click "Create Course" ====}}
+{{!---- In case of form fields error ----}}
+{{#equal error_msg "One or more of the form's fields are empty. Please fill in the form fields where missing." }}
+{{!-- Load Profile Form --}}
+<script>coursesClick()</script>
+{{/equal}}
+
+{{!---- In case of course already exist ----}}
+{{#equal error_msg "Course already exist." }}
+{{!-- Load Profile Form --}}
+<script>coursesClick()</script>
+{{/equal}}
+
+{{!---- In case of course name is missing ----}}
+{{#equal error_msg '"Course name" is missing. Please enter cource name."' }}
+{{!-- Load Profile Form --}}
+<script>coursesClick()</script>
+{{/equal}}
+
+{{!---- In case of success ----}}
+{{#equal success_msg 'New course added.' }}
+{{!-- Load Profile Form --}}
+<script>coursesClick()</script>
+{{/equal}}
+
+
 
 <!-- ======== HEADER ======== -->
 <header id="main-header" class="profile-header py-4 bg-dark text-light">
@@ -125,6 +152,8 @@
             role="tab" aria-controls="profile">Profile</a>
           <a class="list-group-item list-group-item-action" id="module-list" data-toggle="list" href="#modules"
             role="tab" aria-controls="modules">Modules</a>
+          <a class="list-group-item list-group-item-action" id="course-list" data-toggle="list" href="#courses"
+            role="tab" aria-controls="courses">Courses</a>
         </div>
         {{> _msg}}
       </div>
@@ -141,6 +170,7 @@
                 </small>
               </div>
               <div class="card-body">
+                <!-- ======== Change Email ======== -->
                 <form action="/dashboards/facultyMember/email/{{faculty.id}}?_method=PUT" method="post">
                   <input type="hidden" name="_method" value="PUT">
                   <!-- Email -->
@@ -163,10 +193,10 @@
                     </div>
                   </div>
                 </form>
+                <!-- ======== Change Password ======== -->
                 <form action="/dashboards/facultyMember/password/{{faculty.id}}?_method=PUT" method="post">
                   <input type="hidden" name="_method" value="PUT">
                   <hr>
-                  <!-- Password -->
                   <h4 class="mb-0">Password</h4>
                   <small class="form-text text-muted mb-3">
                     Your password must be 8-20 characters long, contain letters and numbers, and must not contain
@@ -238,7 +268,7 @@
 
                   <!-- ==== BASICS ==== -->
                   <h4>Basics</h4>
-                  <!-- Full Name -->
+                  <!-- Full Name & Academic Rank-->
                   <div class="form-row">
                     <div class="form-group col-md-6">
                       <label for="fullName">Full Name</label>
@@ -495,75 +525,22 @@
                           </tr>
                         </thead>
                         <tbody>
-                          <!-- <tr>
-                                <th scope="row">1</th>
-                                <td>Statistics</td>
-                                <td>Mathematics</td>
-                                <td>Bachelor</td>
-                                <td>
-                                  <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input" id="listStatistics">
-                                    <label class="custom-control-label" for="listStatistics"></label>
-                                  </div>
-                                </td>
-                              </tr>
-                              <tr>
-                                <th scope="row">2</th>
-                                <td>Computation</td>
-                                <td>Artificial Inteligence</td>
-                                <td>Master</td>
-                                <td>
-                                  <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input" id="listMathematics">
-                                    <label class="custom-control-label" for="listMathematics"></label>
-                                  </div>
-                                </td>
-                              </tr>
-                              <tr>
-                                <th scope="row">3</th>
-                                <td>Data Structures</td>
-                                <td>Computing</td>
-                                <td>Bachelor</td>
-                                <td>
-                                  <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input" id="listDataStructures">
-                                    <label class="custom-control-label" for="listDataStructures"></label>
-                                  </div>
-                                </td>
-                              </tr>
-                              <tr>
-                                <th scope="row">4</th>
-                                <td>Data Mining</td>
-                                <td>Computing</td>
-                                <td>Master</td>
-                                <td>
-                                  <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input" id="listDataMining">
-                                    <label class="custom-control-label" for="listDataMining"></label>
-                                  </div>
-                                </td>
-                              </tr>
-                              <tr>
-                                <th scope="row">5</th>
-                                <td>Multivariate calculus and mathematical models</td>
-                                <td>Mathematics</td>
-                                <td>Bachelor</td>
-                                <td>
-                                  <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input" id="listMCMM">
-                                    <label class="custom-control-label" for="listMCMM"></label>
-                                  </div>
-                                </td>
-                              </tr> -->
+
                         </tbody>
                       </table>
                     </div>
                     <div class="d-flex justify-content-end mt-3">
+                      <!-- Create Module Button -->
+                      <button id="createModulesBtn" type="button" class="btn btn-success mr-2" data-toggle="modal"
+                        data-target="#createModulesModal">
+                        Create Module
+                      </button>
+                      <!-- Add Module Button -->
                       <button id="addModuleCollapseBtn" type="button" class="btn btn-primary mr-2"
                         data-toggle="collapse" data-target="#addModulesCollapse">
                         Add Module
                       </button>
-                      <!-- Delete module trigger modal -->
+                      <!-- Delete Module Button -->
                       <button id="deleteModules" type="button" class="btn btn-danger">
                         Delete
                       </button>
@@ -846,8 +823,89 @@
               </div>
             </div>
           </div>
+          <!-- Courses Settings-->
+          <div class="tab-pane" id="courses" role="tabpanel" aria-labelledby="course-list">
+            <div class="card card-manage-account">
+              <div class="card-header">
+                <h3 class="mb-0">Course Info</h3>
+                <small class="">
+                  Create a new course
+                </small>
+              </div>
+              <div class="card-body">
+                <form action="/dashboards/facultyMember/courses/" method="post">
+                  <!-- -------- Course Name -------- -->
+                  <div class="form-group">
+                    <label for="createCourseName">Course Name</label>
+                    <div class="input-group input-group--white">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text" aria-label="Input a course name">
+                          <i class="fas fa-award"></i>
+                        </span>
+                      </div>
+                      <input type="text" name="name" id="createCourseName" class="form-control form-control-lg"
+                        maxlength="64" required>
+                    </div>
+                  </div>
+                  <!-- -------- Academic Degree & Color -------- -->
+                  <div class="form-row">
+                    <div class="form-group col-md-6">
+                      <label for="createCourseLevel">Academic Degree</label>
+                      <div class="input-group input-group--white">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text"
+                            aria-label="Select a course academic degree for example 'Bachelor's degree' or 'Master's degree">
+                            <i class="fas fa-certificate"></i>
+                          </span>
+                        </div>
+                        <select name="degree" id="createCourseLevel" class="custom-select custom-select-lg" required>
+                          <option disabled="" selected="">Choose ...</option>
+                          <option value="Bachelor">Bachelor</option>
+                          <option value="Master">Master</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                      <label for="createCourseColor">Color</label>
+                      <div class="input-group input-group--white">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text" aria-label="Select a course color">
+                            <i class="fas fa-palette"></i>
+                          </span>
+                        </div>
+                        <input type="color" name="color" id="createCourseColor" class="form-control form-control-lg"
+                          value="#343a40" required>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- -------- Description -------- -->
+                  <div class="form-group">
+                    <label for="createCourseDescription">Description</label>
+                    {{!-- <small>Write a few words about youself</small> --}}
+                    <textarea id="createCourseDescription" name="description" class="form-control" required></textarea>
+                  </div>
+
+                  <!-- -------- Modules --------  later -->
+
+                  <!-- Save Button -->
+                  <div class="d-flex justify-content-end">
+                    <button type="submit" class="btn btn-success">
+                      Create Course
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
+
+
+      {{!-- ======== Collapses ======== --}}
+
+      <!-- Create Module (Collapse) -->
+
+
       <!-- Add Module (Collapse) -->
       <div class="col-12 mt-3">
         <div class="collapse" id="addModulesCollapse">
@@ -1051,6 +1109,71 @@
           </div>
         </div>
       </div>
+
+
+      {{!-- ======== Modals ======== --}}
+
+      <!-- Create Module -->
+      <div id="createModulesModal" class="modal fade modal--default" role="dialog">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header d-flex align-items-center">
+              <h5 class="modal-title">Create Module</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form action="/dashboards/facultyMember/modules/" method="post">
+                <!-- Module Name -->
+                <div class="form-group">
+                  <label for="createModuleName">Module Name</label>
+                  <div class="input-group input-group--white">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text" aria-label="Input a module name">
+                        <i class="fas fa-book"></i>
+                      </span>
+                    </div>
+                    <input type="text" name="moduleName" id="createModuleName" class="form-control form-control-lg"
+                      maxlength="64" required />
+                  </div>
+                </div>
+                <!-- Course Name -->
+                <div class="form-group">
+                  <label for="createModuleCourseName">Course Name</label>
+                  <div class="input-group input-group--white">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text" aria-label="Input a course name">
+                        <i class="fas fa-award"></i>
+                      </span>
+                    </div>
+                    <select name="courseName" id="createModuleCourseName" class="custom-select custom-select-lg"
+                      required>
+                      <option disabled selected="">Choose ...</option>
+                      <option value="Mathematics-BSc">Mathematics - BSc</option>
+                      <option value="Computing-BSc">Computing - BSc</option>
+                      <option value="Business-MBA">Business - MBA</option>
+                      <option value="Information Technology-MSc">Information Technology - MSc</option>
+                    </select>
+                  </div>
+                </div>
+                <!-- Create Button -->
+                <div class="d-flex justify-content-end">
+                  <button type="submit" class="btn btn-success">
+                    Create
+                  </button>
+                </div>
+              </form>
+            </div>
+            {{!-- <div class="modal-footer justify-content-center">
+              Don't have an account?
+              <!-- A Trigger "Sign Up" Modal -->
+              <a href="#" data-toggle="modal" data-target="#signUpModal" data-dismiss="modal">Sign Up</a>
+            </div> --}}
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 </section>

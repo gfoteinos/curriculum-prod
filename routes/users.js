@@ -10,11 +10,11 @@ const router = express.Router();
 
 // ======== Load User Model ========
 
-require('../models/FacultyMember');
-require('../models/Student');
+// require('../models/FacultyMember');
+// require('../models/Student');
 require('../models/User');
-const facultyMember = mongoose.model('facultyMembers');
-const student = mongoose.model('students');
+// const facultyMember = mongoose.model('facultyMembers');
+// const student = mongoose.model('students');
 const User = mongoose.model('users');
 
 

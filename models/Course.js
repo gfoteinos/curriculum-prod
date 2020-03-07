@@ -5,16 +5,20 @@ const Schema = mongoose.Schema;
 
 
 // ======== Create A Schema ========
-const FacultyMemberSchema = new Schema({
+const CourseSchema = new Schema({
   name: {
     type: String,
     required: true
   },
-  email: {
+  degree: {
     type: String,
     required: true
   },
-  password: {
+  color: {
+    type: String,
+    required: true
+  },
+  description: {
     type: String,
     required: true
   }
@@ -22,4 +26,4 @@ const FacultyMemberSchema = new Schema({
 
 
 // ==== Create A Model & Connect It To The Schema ====
-mongoose.model('facultyMembers', FacultyMemberSchema);
+mongoose.model('courses', CourseSchema);

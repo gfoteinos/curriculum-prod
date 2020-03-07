@@ -101,13 +101,25 @@
     }, 5000);
 
     // ======== CKEditor ========
-    const editor = CKEDITOR.replace('bio', {
+    // -------- Bio Faculty Member textarea --------
+    const bio = CKEDITOR.replace('bio', {
       plugins: 'wysiwygarea, toolbar, basicstyles, link',
       extraPlugins: 'notification'
+    });  
+
+    bio.on('required', function (evt) {
+      bio.showNotification('This field is required.', 'warning');
+      evt.cancel();
     });
 
-    editor.on('required', function (evt) {
-      editor.showNotification('This field is required.', 'warning');
+    // -------- Create Course Description textarea --------
+    const description = CKEDITOR.replace('createCourseDescription', {
+      plugins: 'wysiwygarea, toolbar, basicstyles, link',
+      extraPlugins: 'notification'
+    });  
+
+    description.on('required', function (evt) {
+      description.showNotification('This field is required.', 'warning');
       evt.cancel();
     });
   </script>
