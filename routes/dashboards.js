@@ -79,10 +79,43 @@ router.get("/facultyMember", (req, res) => {
     twitter: req.user.twitter,
     linkedin: req.user.linkedin
   };
-  // Pass the faculty member object to the view
-  res.render("dashboards/facultyMember", {
-    faculty
+
+  // Find Courses Names 
+  Course.find({}, { name: 1, _id: 0 }).then(courses => {
+    // Find another collection 
+    User.find({}).then(users => {
+      console.log(faculty);
+      console.log(courses);
+      console.log(users);
+      // Pass the faculty member object & fetched collection's data to the view
+      res.render("dashboards/facultyMember", {
+        faculty,
+        courses
+      });
+    });
   });
+
+  // Course.find({}, { name: 1, _id: 0 }).then(courses => {
+  //   // Create a faculty member object
+  //   const faculty = {
+  //     id: req.user.id,
+  //     name: req.user.name,
+  //     academicRank: req.user.academicRank,
+  //     email: req.user.email,
+  //     phone: req.user.phone,
+  //     officeNumber: req.user.officeNumber,
+  //     photo: req.user.photo,
+  //     bio: req.user.bio,
+  //     facebook: req.user.facebook,
+  //     twitter: req.user.twitter,
+  //     linkedin: req.user.linkedin
+  //   };
+  //   // Pass the faculty member object to the view
+  //   res.render("dashboards/facultyMember", {
+  //     faculty,
+  //     courses
+  //   });
+  // });
 });
 
 // Load student dashboard
