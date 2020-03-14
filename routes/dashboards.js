@@ -58,8 +58,10 @@ const upload = multer({
 
 require("../models/User");
 require("../models/Course");
+require("../models/Module");
 const User = mongoose.model("users");
 const Course = mongoose.model("courses");
+const Module = mongoose.model("modules");
 
 // ======== Routes ========
 
@@ -80,14 +82,25 @@ router.get("/facultyMember", (req, res) => {
     linkedin: req.user.linkedin
   };
 
-  // Find Courses Names 
-  Course.find({}, { name: 1, _id: 0 }).then(courses => {
-    // Find another collection 
+  // Find All Course's Names & Degrees
+  Course.aggregate([{ $project: { name: 1, degree: 1 } }]).then(courses => {
+    if (courses) {
+      /* Change "courses" view to fit in select "Course Name" tag at
+       * "Create Module" Modal
+       */
+      let selectCourseName = [];
+      courses.forEach(course => {
+        selectCourseName.push({ name: course.name + "-" + course.degree });
+      });
+      courses = selectCourseName;
+    }
+    // Find another collection
     User.find({}).then(users => {
-      console.log(faculty);
-      console.log(courses);
-      console.log(users);
+      // console.log(faculty);
+      // console.log(courses);
+      // console.log(users);
       // Pass the faculty member object & fetched collection's data to the view
+      // Pass data sets to the view
       res.render("dashboards/facultyMember", {
         faculty,
         courses
@@ -324,7 +337,7 @@ router.post("/facultyMember/courses/", (req, res) => {
           name: req.body.name,
           degree: req.body.degree,
           color: req.body.color,
-          description: req.body.description
+          description: req.body.courseDescription
         };
         // ---- Save data to the database ----
         new Course(newCourse)
@@ -349,8 +362,56 @@ router.post("/facultyMember/courses/", (req, res) => {
 
 // Create Module
 router.post("/facultyMember/modules/", (req, res) => {
-  res.send("Create Module");
-  console.log(req.body.moduleName + req.body.courseName);
+  // ======== Error Handling ========
+  // ---- Form fields errors ----
+  if (req.body.moduleName === "" || req.body.courseName === undefined) {
+    error =
+      '"Module Name" or "Course Name" are missing. Please fill in the form fields where missing.';
+    req.flash("error_msg", error);
+    res.redirect("/dashboards/facultyMember");
+  } else {
+    let courseNameDegree = req.body.courseName.split("-");
+    const courseName = courseNameDegree[0];
+    const courseDegree = courseNameDegree[1];
+    // ---- Module already exist ----
+    Module.findOne({
+      $and: [
+        { name: req.body.moduleName },
+        { course: courseName },
+        { degree: courseDegree }
+      ]
+    }).then(module => {
+      if (module) {
+        error = "Module already exist.";
+        req.flash("error_msg", error);
+        res.redirect("/dashboards/facultyMember");
+      } else {
+        // ======== Add data to the database ========
+        // Find course's id to add as a course relation with the new module
+        Course.find(
+          { name: courseName, degree: courseDegree },
+          { _id: 1 }
+        ).then(courseID => {
+          // ---- Prepare data for saving ----
+          courseID = courseID[0]._id;
+          const newModule = {
+            name: req.body.moduleName,
+            courseID: courseID,
+            course: courseName,
+            degree: courseDegree
+          };
+          // ---- Save data to the database ----
+          new Module(newModule)
+            // Save & Redirect with success message
+            .save()
+            .then(module => {
+              req.flash("success_msg", "New module added.");
+              res.redirect("/dashboards/facultyMember");
+            });
+        });
+      }
+    });
+  }
 });
 
 // ======== Export module ========

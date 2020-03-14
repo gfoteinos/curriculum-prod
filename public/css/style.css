@@ -119,6 +119,10 @@ caption {
 }
 
 /* Bootstrap cards */
+#card-header__dashboardTabs .nav-item {
+  text-align: left;
+}
+
 /* Home-Page */
 .card--home-page {
   background-color: transparent;
@@ -148,15 +152,6 @@ caption {
 .card-profile-heading .card-tel i,
 .card-profile-heading .card-office i {
   padding-right: 0.25rem;
-}
-
-.card-manage-account .card-header,
-.card-manage-profile .card-header,
-.card-manage-modules .card-header {
-  background-color: #fff;
-}
-.card-manage-modules .nav-item {
-  text-align: left;
 }
 
 /* Course Page */

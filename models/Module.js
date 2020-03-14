@@ -10,15 +10,18 @@ const ModuleSchema = new Schema({
     type: String,
     required: true
   },
-  course: {
+  courseID: {
     // Relation with the 'users' collection
     type: Schema.Types.ObjectId,
     ref: 'courses'
   },
+  course: {
+    type: String,
+    required: true
+  },
   degree: {
-    // Relation with the 'users' collection
-    type: Schema.Types.ObjectId,
-    ref: 'courses'
+    type: String,
+    required: true
   }
 });
 

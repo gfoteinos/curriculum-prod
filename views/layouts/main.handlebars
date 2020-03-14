@@ -21,11 +21,12 @@
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700&display=swap" rel="stylesheet" />
 
-  <!-- Custom css -->
+  <!-- Custom CSS -->
   <link rel="stylesheet" href="/css/style.css" />
 
-  <!-- Munipulate the DOM -->
+  <!-- Munipulate The DOM -->
   <script type="text/javascript" src="/js/events.js"></script>
+  
   <title>University</title>
 
   {{!-- <style>
@@ -36,12 +37,13 @@
 </head>
 
 <body data-spy="scroll" data-target="#main-navigation">
-  <!-- NAVBAR -->
+  <!-- Navbar -->
   {{> _site-nav}}
 
+  <!-- Body -->
   {{{body}}}
 
-  <!-- FOOTER -->
+  <!-- Footer -->
   {{> _footer}}
 
 
@@ -72,6 +74,12 @@
     // Init tooltips
     $('[data-toggle="tooltip"]').tooltip();
 
+    // Init popovers
+    $('#createModulesBtn').popover({
+      container: 'body',
+      trigger: 'focus'
+    })
+
     // ======== Scrollspy ========
     // Init Scrollspy
     $("body").scrollspy({ target: "#main-navigation" });
@@ -94,7 +102,7 @@
         );
       }
     });
-    
+
     // ======== Alert timeout ========
     setTimeout(function () {
       document.querySelector('.alert').remove();
@@ -105,21 +113,32 @@
     const bio = CKEDITOR.replace('bio', {
       plugins: 'wysiwygarea, toolbar, basicstyles, link',
       extraPlugins: 'notification'
-    });  
+    });
 
     bio.on('required', function (evt) {
       bio.showNotification('This field is required.', 'warning');
       evt.cancel();
     });
 
-    // -------- Create Course Description textarea --------
-    const description = CKEDITOR.replace('createCourseDescription', {
+    // -------- Create/Delete Courses - Course Description textarea --------
+    const courseDescription = CKEDITOR.replace('createCourseDescription', {
       plugins: 'wysiwygarea, toolbar, basicstyles, link',
       extraPlugins: 'notification'
-    });  
+    });
 
-    description.on('required', function (evt) {
-      description.showNotification('This field is required.', 'warning');
+    courseDescription.on('required', function (evt) {
+      courseDescription.showNotification('This field is required.', 'warning');
+      evt.cancel();
+    });
+
+    // -------- Create/Delete Modules - Module Description textarea --------
+    const moduleDescription = CKEDITOR.replace('createModuleDescription', {
+      plugins: 'wysiwygarea, toolbar, basicstyles, link',
+      extraPlugins: 'notification'
+    });
+
+    moduleDescription.on('required', function (evt) {
+      moduleDescription.showNotification('This field is required.', 'warning');
       evt.cancel();
     });
   </script>

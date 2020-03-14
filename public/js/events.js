@@ -13,6 +13,13 @@ const coursesClick = function () {
   };
 }
 
+// Click "Modules" link on dashboard faculty menu 
+const modulesClick = function () {
+  window.onload = function () {
+    document.getElementById("module-list").click();
+  };
+}
+
 const disableElement = function(className) {
   const element = document.querySelector(className);
   element.classList.add('icon--disabled');
