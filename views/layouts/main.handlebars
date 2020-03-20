@@ -26,7 +26,7 @@
 
   <!-- Munipulate The DOM -->
   <script type="text/javascript" src="/js/events.js"></script>
-  
+
   <title>University</title>
 
   {{!-- <style>
@@ -120,6 +120,18 @@
       evt.cancel();
     });
 
+    // -------- Edit Courses - Course Description textarea --------
+    const editCourseDescription = CKEDITOR.replace('editCourseDescription', {
+      plugins: 'wysiwygarea, toolbar, basicstyles, link',
+      extraPlugins: 'notification'
+    });
+
+    editCourseDescription.on('required', function (evt) {
+      editCourseDescription.showNotification('This field is required.', 'warning');
+      evt.cancel();
+    });
+   
+
     // -------- Create/Delete Courses - Course Description textarea --------
     const courseDescription = CKEDITOR.replace('createCourseDescription', {
       plugins: 'wysiwygarea, toolbar, basicstyles, link',
@@ -141,6 +153,7 @@
       moduleDescription.showNotification('This field is required.', 'warning');
       evt.cancel();
     });
+
   </script>
 
 </body>

@@ -858,7 +858,7 @@
               </div>
               <div class="card-body">
                 <div class="table-responsive">
-                  <table class="table">
+                  <table id="coursesTable" class="table">
                     <caption class="h5 py-0">Courses</caption>
                     <thead>
                       <tr>
@@ -875,14 +875,41 @@
                       </tr>
                     </thead>
                     <tbody>
+                      {{#each listCourses}}
                       <tr>
-                        <th scope="row">1</th>
-                        <td>Mathematics</td>
-                        <td>Bachelor</td>
+                        <th scope="row">{{aa}}</th>
+                        <td class="title">
+                          {{name}}
+                          {{!-- <input type="text" name="editCourseTitle" id="editCourseTitle" class="form-control"
+                            maxlength="64" style="display: none"> --}}
+                        </td>
+                        <td class="level">
+                          {{degree}}
+                          {{!-- <input type="text" name="editCourseDegree" id="editCourseDegree" class="form-control"
+                            maxlength="64" style="display: none"> --}}
+                        </td>
+                        <td class="d-none">
+                          {{color}}
+                          {{!-- <input type="text" name="editCourseDegree" id="editCourseDegree" class="form-control"
+                            maxlength="64" style="display: none"> --}}
+                        </td>
+                        <td class="d-none">
+                          {{description}}
+                          {{!-- <input type="text" name="editCourseDegree" id="editCourseDegree" class="form-control"
+                            maxlength="64" style="display: none"> --}}
+                        </td>
+                        {{!-- <td>
+                          <textarea id="editCourseDescription" name="courseDescription" class="form-control"
+                            required></textarea>
+                        </td> --}}
                         <td>
-                          <button type="button" class="btn btn-sm btn-primary ">
-                            <i class="fas fa-pencil-alt"></i>
+                          <button type="submit" id="editCourseBtn1" class="btn btn-sm btn-primary"
+                            data-some-id="uid0123456789" data-toggle="modal" data-target="#editCourseModal">
+                            <i class="fas fa-pencil-alt courseEdit"></i>
                           </button>
+                          {{!-- <button type="button" class="btn btn-sm btn-success" style="display: none">
+                            <i class="fas fa-save courseSave"></i>
+                          </button> --}}
                         </td>
                         <td>
                           <div class="custom-control custom-checkbox">
@@ -891,6 +918,7 @@
                           </div>
                         </td>
                       </tr>
+                      {{/each}}
                     </tbody>
                   </table>
                 </div>
@@ -912,7 +940,7 @@
             <div class="card">
               <div class="card-header bg-white">
                 <h3 class="mb-0">Module Info</h3>
-                <small class="">
+                <small>
                   Create a new module
                 </small>
               </div>
@@ -945,7 +973,7 @@
                         </div>
                         <select name="courseName" id="createModuleCourseName" class="custom-select custom-select-lg">
                           <option disabled selected="">Choose ...</option>
-                          {{#each courses}}
+                          {{#each selectCourseName}}
                           <option value="{{name}}">{{name}}</option>
                           {{/each}}
                         </select>
@@ -1196,60 +1224,99 @@
 
         {{!-- ======== Modals ======== --}}
 
-        {{!-- <!-- Create Module -->
-      <div id="createModulesModal" class="modal fade modal--default" role="dialog">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-header d-flex align-items-center">
-              <h5 class="modal-title">Create Module</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-              <form action="/dashboards/facultyMember/modules/" method="post">
-                <!-- Module Name -->
-                <div class="form-group">
-                  <label for="createModuleName">Module Name</label>
-                  <div class="input-group input-group--white">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text" aria-label="Input a module name">
-                        <i class="fas fa-book"></i>
-                      </span>
+        <!-- Edit Course -->
+        <div id="editCourseModal" class="modal fade modal--default" role="dialog">
+          <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+              <div class="modal-header d-flex align-items-center">
+                <div class="flex-column">
+                  <h3 class="mb-0">Edit Course</h3>
+                  <small>Update any of the course's element</small>
+                </div>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <form action="/dashboards/facultyMember/modules/" method="post">
+                  <!-- ---- Course Name ---- -->
+                  <h2></h2>
+                  <div class="form-group">
+                    <label for="editCourseName">Course Name</label>
+                    <div class="input-group input-group--white">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text" aria-label="Input a course name">
+                          <i class="fas fa-award"></i>
+                        </span>
+                      </div>
+                      <input type="text" name="name" id="editCourseName" class="form-control form-control-lg"
+                        maxlength="64" required>
                     </div>
-                    <input type="text" name="moduleName" id="createModuleName" class="form-control form-control-lg"
-                      maxlength="64" />
                   </div>
-                </div>
-                <!-- Course Name -->
-                <div class="form-group">
-                  <label for="createModuleCourseName">Course Name</label>
-                  <div class="input-group input-group--white">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text" aria-label="Input a course name">
-                        <i class="fas fa-award"></i>
-                      </span>
+                  <!-- ---- Academic Degree & Color ---- -->
+                  <div class="form-row">
+                    <div class="form-group col-md-6">
+                      <label for="editCourseLevel">Academic Degree</label>
+                      <div class="input-group input-group--white">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text"
+                            aria-label="Select a course academic degree for example 'Bachelor's degree' or 'Master's degree">
+                            <i class="fas fa-certificate"></i>
+                          </span>
+                        </div>
+                        <select name="degree" id="editCourseLevel" class="custom-select custom-select-lg" required>
+                          <option disabled="" selected="">Choose ...</option>
+                          <option value="Bachelor">Bachelor</option>
+                          <option value="Master">Master</option>
+                        </select>
+                      </div>
                     </div>
-                    <select name="courseName" id="createModuleCourseName" class="custom-select custom-select-lg">
-                      <option disabled selected="">Choose ...</option>
-                      {{#each courses}}
-                      <option value="{{name}}">{{name}}</option>
-                      {{/each}}
-                    </select>
+                    <div class="form-group col-md-6">
+                      <label for="editCourseColor">Color</label>
+                      <div class="input-group input-group--white">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text" aria-label="Select a course color">
+                            <i class="fas fa-palette"></i>
+                          </span>
+                        </div>
+                        <input type="color" name="color" id="editCourseColor" class="form-control form-control-lg" required>
+                      </div>
+                    </div>
                   </div>
-                </div>
-                <!-- Create Button -->
-                <div class="d-flex justify-content-end">
-                  <button type="submit" class="btn btn-success">
-                    Create
-                  </button>
-                </div>
-              </form>
+                  <!-- ---- Description ---- -->
+                  <div class="form-group">
+                    <label for="editCourseDescription">Description</label>
+                    {{!-- <small>Write a few words about youself</small> --}}
+                    <textarea id="editCourseDescription" name="courseDescription" class="form-control"
+                      required>                           
+                      </textarea>
+                  </div>
+
+                  <!-- ---- Modules ----  later -->
+
+                  <!-- ---- Create Button ---- -->
+                  <div class="d-flex justify-content-end">
+                    <button type="submit" class="btn btn-success">
+                      Save Changes
+                    </button>
+                  </div>
+                </form>
+              </div>
             </div>
           </div>
         </div>
-      </div> --}}
-
       </div>
     </div>
 </section>
+
+{{!-- <script>
+  $(function () {
+    $("#editCourseBtn1").click(function () {
+      var data_var = $(this).data('some-id');
+      $(".modal-body h2").text(data_var);
+    })
+  });
+</script> --}}
+
+
+<script>App.init()</script>

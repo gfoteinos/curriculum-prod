@@ -82,20 +82,24 @@ router.get("/facultyMember", (req, res) => {
     linkedin: req.user.linkedin
   };
 
-  // Find All Course's Names & Degrees
-  Course.aggregate([{ $project: { name: 1, degree: 1 } }]).then(courses => {
+  // Find All Course's
+  Course.aggregate([{ $project: { name: 1, degree: 1, color: 1, description: 1 } }]).then(courses => {
+    let selectCourseName = [];  // For "Course Name" select tag in "Create Module" form
+    let listCourses = []; // For "Courses" table in "Courses" form 
     if (courses) {
-      /* Change "courses" view to fit in select "Course Name" tag at
-       * "Create Module" Modal
-       */
-      let selectCourseName = [];
+      // Fill in bellow tables to pass them later in the view 
+      let counter = 1;
       courses.forEach(course => {
         selectCourseName.push({ name: course.name + "-" + course.degree });
+        listCourses.push({aa: counter, name: course.name, degree: course.degree, color: course.color, description: course.description});
+        counter++;
       });
-      courses = selectCourseName;
     }
+    // console.log('courses: ' + JSON.stringify(courses));
+    // console.log('listCourses: ' + JSON.stringify(listCourses));
     // Find another collection
     User.find({}).then(users => {
+      // console.log('selectCourseName ' + JSON.stringify(selectCourseName));
       // console.log(faculty);
       // console.log(courses);
       // console.log(users);
@@ -103,7 +107,8 @@ router.get("/facultyMember", (req, res) => {
       // Pass data sets to the view
       res.render("dashboards/facultyMember", {
         faculty,
-        courses
+        selectCourseName,
+        listCourses
       });
     });
   });
