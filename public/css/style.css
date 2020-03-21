@@ -22,7 +22,7 @@ body {
 
 /* ==== BUTTONS ==== */
 .button--border-grey-light {
-  border-color: #ced4da; 
+  border-color: #ced4da;
 }
 
 /* ==== FONT-SIZES ====*/
@@ -70,7 +70,8 @@ caption {
 
 .table i {
   text-align: center;
-  width: 1rem;
+  /* width: 1rem; */
+  padding: 0.45rem 0.5rem;
 }
 
 /* ICONS */

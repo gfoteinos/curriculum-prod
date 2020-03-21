@@ -97,8 +97,10 @@ const App = (function(UICtrl) {
       // ======== Gather the info from course table ========
       // Title
       const title = e.target.parentElement.parentElement.parentElement.children[1].innerText;
+
       // Level
       const level = e.target.parentElement.parentElement.parentElement.children[2].innerText;
+
       // -------- Color --------
       // Select the text of DOM element & get rid of spaces 
       let color = e.target.parentElement.parentElement.parentElement.children[3].innerText.match(/([\w]+|\"[\w\s]+\")/g);
@@ -108,7 +110,16 @@ const App = (function(UICtrl) {
       // Description
       const description = e.target.parentElement.parentElement.parentElement.children[4].innerText;
       
+      // Course ID 
+      const courseID = e.target.parentElement.getAttribute("data-id");
+
+      // Set Form Action 
+      const action = `/dashboards/facultyMember/courses/${courseID}?_method=PUT`
+
       // ======== Fill in the "Edit Course" modal form ========
+      //Form Action
+      document.querySelector('#editCourseModal form').setAttribute("action", action); 
+
       // Course Name
       document.querySelector('#editCourseName').value = title; 
 

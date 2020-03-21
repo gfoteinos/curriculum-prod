@@ -83,15 +83,24 @@ router.get("/facultyMember", (req, res) => {
   };
 
   // Find All Course's
-  Course.aggregate([{ $project: { name: 1, degree: 1, color: 1, description: 1 } }]).then(courses => {
-    let selectCourseName = [];  // For "Course Name" select tag in "Create Module" form
-    let listCourses = []; // For "Courses" table in "Courses" form 
+  Course.aggregate([
+    { $project: { _id: 1, name: 1, degree: 1, color: 1, description: 1 } }
+  ]).then(courses => {
+    let selectCourseName = []; // For "Course Name" select tag in "Create Module" form
+    let listCourses = []; // For "Courses" table in "Courses" form
     if (courses) {
-      // Fill in bellow tables to pass them later in the view 
+      // Fill in bellow tables to pass them later in the view
       let counter = 1;
       courses.forEach(course => {
         selectCourseName.push({ name: course.name + "-" + course.degree });
-        listCourses.push({aa: counter, name: course.name, degree: course.degree, color: course.color, description: course.description});
+        listCourses.push({
+          aa: counter,
+          id: course._id,
+          name: course.name,
+          degree: course.degree,
+          color: course.color,
+          description: course.description
+        });
         counter++;
       });
     }
@@ -358,11 +367,78 @@ router.post("/facultyMember/courses/", (req, res) => {
     .catch(err => {
       req.flash(
         "error_msg",
-        '"Course name" is missing. Please enter cource name.'
+        '"Course name" is missing. Please enter course name.'
       );
       res.redirect("/dashboards/facultyMember");
       return;
     });
+});
+
+// Edit Course
+router.put("/facultyMember/courses/:id", (req, res) => {
+  Course.find({}).then(courses => {
+    // ======== Error Handling ========
+    // Initialize the error 
+    let error = "";
+
+    // ---- Another Course With The Same "Name" & "Degree" Exist ----
+    courses.forEach(course => {
+      // Convert object_id to string
+      const courseID = course._id.toString();
+      if (
+        courseID !== req.params.id &&
+        course.name === req.body.name &&
+        course.degree === req.body.degree
+      ) {
+        error = `Fail to update. There is another "Course" with the same "name" and "degree". Click the edit button again to retry.`;
+      }
+    });
+
+    // ---- Nothing To Update. No Changes ----
+    courses.forEach(course => {
+      // Convert object_id to string
+      const courseID = course._id.toString();
+      if (
+        courseID === req.params.id &&
+        course.name === req.body.name &&
+        course.degree === req.body.degree &&
+        course.color === req.body.color &&
+        course.description === req.body.description
+      ) {
+        error = `Fail to update. The there are not any changes. Click the edit button again to retry.`;
+      }
+    });
+
+    // In Case Of Errors Flash Error Message & Redirect Back To The Page
+    if (error !== "") {
+      req.flash("error_msg", error);
+      res.redirect("/dashboards/facultyMember");
+    } else {
+      // ======== Update The "Course" Info ========
+      Course.findOne({ _id: req.params.id }).then(course => {
+        course.name = req.body.name;
+        course.degree = req.body.degree;
+        course.color = req.body.color;
+        course.description = req.body.description;
+        course.save().then(course => {
+          req.flash("success_msg", "Course has been updated.");
+          res.redirect("/dashboards/facultyMember");
+        });
+      })
+      // Catch any errors
+      .catch(err => {
+        req.flash("error_msg", err);
+        res.redirect("/dashboards/facultyMember");
+        return;
+      });
+    }
+  })
+  // Catch any errors
+  .catch(err => {
+    req.flash("error_msg", err);
+    res.redirect("/dashboards/facultyMember");
+    return;
+  });
 });
 
 // Create Module
@@ -418,6 +494,8 @@ router.post("/facultyMember/modules/", (req, res) => {
     });
   }
 });
+
+// console.log(`db.id: ${typeof(courseID)} - req.param.id: ${typeof(req.params.id)}, db.name: ${typeof(course.name)} - req.body.name: ${typeof(req.body.name)}, db.degree: ${typeof(course.name)} - req.body.degree: ${typeof(req.body.degree)}`);
 
 // ======== Export module ========
 
