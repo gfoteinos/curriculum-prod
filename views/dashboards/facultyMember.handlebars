@@ -921,8 +921,8 @@
                             required></textarea>
                         </td> --}}
                         <td>
-                          <button type="submit" id="editCourseBtn1" class="btn btn-sm btn-primary p-0"
-                            data-id={{id}} data-toggle="modal" data-target="#editCourseModal">
+                          <button type="button" id="editCourseBtn1" class="btn btn-sm btn-primary p-0" data-id={{id}}
+                            data-toggle="modal" data-target="#editCourseModal">
                             <i class="fas fa-pencil-alt courseEdit"></i>
                           </button>
                           {{!-- <button type="button" class="btn btn-sm btn-success" style="display: none">
@@ -942,8 +942,8 @@
                 </div>
                 <div class="d-flex justify-content-end mt-3">
                   <!-- Add Course Button -->
-                  <button id="addCourseBtn" type="button" class="btn btn-success mr-2">
-                    Add Course
+                  <button type="button" id="createCourseBtn" class="btn btn-success mr-2" data-toggle="modal" data-target="#createCourseModal">
+                    Create Course
                   </button>
                   <!-- Delete Course Button -->
                   <button id="deleteCourseBtn" type="button" class="btn btn-danger">
@@ -1257,7 +1257,7 @@
               </div>
               <div class="modal-body">
                 <form action="/dashboards/facultyMember/courses/?_method=PUT" method="post">
-                <input type="hidden" name="_method" value="PUT">
+                  <input type="hidden" name="_method" value="PUT">
 
                   <!-- ---- Course Name ---- -->
                   <h2></h2>
@@ -1299,7 +1299,8 @@
                             <i class="fas fa-palette"></i>
                           </span>
                         </div>
-                        <input type="color" name="color" id="editCourseColor" class="form-control form-control-lg" required>
+                        <input type="color" name="color" id="editCourseColor" class="form-control form-control-lg"
+                          required>
                       </div>
                     </div>
                   </div>
@@ -1307,17 +1308,94 @@
                   <div class="form-group">
                     <label for="editCourseDescription">Description</label>
                     {{!-- <small>Write a few words about youself</small> --}}
-                    <textarea id="editCourseDescription" name="description" class="form-control"
-                      required>                           
+                    <textarea id="editCourseDescription" name="description" class="form-control" required>
                       </textarea>
                   </div>
 
-                  <!-- ---- Modules ----  later -->
-
-                  <!-- ---- Create Button ---- -->
+                  <!-- ---- Save Button ---- -->
                   <div class="d-flex justify-content-end">
                     <button type="submit" class="btn btn-success">
                       Save Changes
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Create Course -->
+        <div id="createCourseModal" class="modal fade modal--default" role="dialog">
+          <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+              <div class="modal-header d-flex align-items-center">
+                <div class="flex-column">
+                  <h3 class="mb-0">Course Info</h3>
+                  <small>Create a new course</small>
+                </div>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <form action="/dashboards/facultyMember/courses/" method="post">
+                  <!-- ---- Course Name ---- -->
+                  <h2></h2>
+                  <div class="form-group">
+                    <label for="createCourseName">Course Name</label>
+                    <div class="input-group input-group--white">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text" aria-label="Input a course name">
+                          <i class="fas fa-award"></i>
+                        </span>
+                      </div>
+                      <input type="text" name="name" id="createCourseName" class="form-control form-control-lg"
+                        maxlength="64" required>
+                    </div>
+                  </div>
+                  <!-- ---- Academic Degree & Color ---- -->
+                  <div class="form-row">
+                    <div class="form-group col-md-6">
+                      <label for="createCourseLevel">Academic Degree</label>
+                      <div class="input-group input-group--white">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text"
+                            aria-label="Select a course academic degree for example 'Bachelor's degree' or 'Master's degree">
+                            <i class="fas fa-certificate"></i>
+                          </span>
+                        </div>
+                        <select name="degree" id="createCourseLevel" class="custom-select custom-select-lg" required>
+                          <option disabled="" selected="">Choose ...</option>
+                          <option value="Bachelor">Bachelor</option>
+                          <option value="Master">Master</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                      <label for="createCourseColor">Color</label>
+                      <div class="input-group input-group--white">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text" aria-label="Select a course color">
+                            <i class="fas fa-palette"></i>
+                          </span>
+                        </div>
+                        <input type="color" name="color" id="createCourseColor" class="form-control form-control-lg" value="#343a40"
+                          required>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- ---- Description ---- -->
+                  <div class="form-group">
+                    <label for="createCourseDescription">Description</label>
+                    {{!-- <small>Write a few words about youself</small> --}}
+                    <textarea id="createCourseDescription" name="description" class="form-control" required>
+                      </textarea>
+                  </div>
+
+                  <!-- ---- Create Button ---- -->
+                  <div id="saveCourseBtn" class="d-flex justify-content-end">
+                    <button type="submit" class="btn btn-success">
+                      Save
                     </button>
                   </div>
                 </form>
@@ -1329,14 +1407,5 @@
     </div>
 </section>
 
-{{!-- <script>
-  $(function () {
-    $("#editCourseBtn1").click(function () {
-      var data_var = $(this).data('some-id');
-      $(".modal-body h2").text(data_var);
-    })
-  });
-</script> --}}
-
-
+<!-- Client Events -->
 <script>App.init()</script>

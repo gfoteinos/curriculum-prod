@@ -315,115 +315,60 @@ router.put("/facultyMember/profile/:id", (req, res) => {
 
 // Create Course
 router.post("/facultyMember/courses/", (req, res) => {
+  // Get Rid Of Spaces Before & After The End Of "Course Title"
+  let bodyNameArray = req.body.name.match(/\S.*\S/g);
+  let bodyName;
+  if (bodyNameArray) {
+    bodyName = bodyNameArray[0];
+  } else {
+    bodyName = "";
+  }
+  console.log(`bodyName: ${bodyName}`);
+
+  var error = "";
   // ======== Error Handling ========
-  // ---- Course already exist ----
-  Course.findOne({
-    $and: [{ name: req.body.name }, { degree: req.body.degree }]
-  })
-    .then(course => {
-      // If exist; flash error message & redirect back to the page
-      if (course) {
-        if (
-          course.name === req.body.name &&
-          course.degree === req.body.degree
-        ) {
-          error = "Course already exist.";
-          req.flash("error_msg", error);
-          res.redirect("/dashboards/facultyMember");
-        }
-      }
-      // ---- Form fields errors ----
-      // Required form fields empty
-      else if (
-        req.body.name === "" ||
-        req.body.degree === undefined ||
-        req.body.color === "" ||
-        req.body.description === ""
-      ) {
-        error =
-          "One or more of the form's fields are empty. Please fill in the form fields where missing.";
-        req.flash("error_msg", error);
-        res.redirect("/dashboards/facultyMember");
-      } else {
-        // ======== Add data to the database ========
-        // ---- Prepare data for saving ----
-        const newCourse = {
-          name: req.body.name,
-          degree: req.body.degree,
-          color: req.body.color,
-          description: req.body.courseDescription
-        };
-        // ---- Save data to the database ----
-        new Course(newCourse)
-          // Save & Redirect with success message
-          .save()
-          .then(course => {
-            req.flash("success_msg", "New course added.");
-            res.redirect("/dashboards/facultyMember");
-          });
-      }
+  // ---- Form fields errors ----
+  // Required form fields empty
+  if (
+    bodyName === "" ||
+    req.body.degree === undefined ||
+    req.body.color === "" ||
+    req.body.description === ""
+  ) {
+    error =
+      "One or more of the form's fields are empty. Please fill in the form fields where missing.";
+    req.flash("error_msg", error);
+    res.redirect("/dashboards/facultyMember");
+  } else {
+    // ---- Course already exist ----
+    Course.findOne({
+      $and: [{ name: bodyName }, { degree: req.body.degree }]
     })
-    // Catch any errors
-    .catch(err => {
-      req.flash(
-        "error_msg",
-        '"Course name" is missing. Please enter course name.'
-      );
-      res.redirect("/dashboards/facultyMember");
-      return;
-    });
-});
-
-// Edit Course
-router.put("/facultyMember/courses/:id", (req, res) => {
-  Course.find({}).then(courses => {
-    // ======== Error Handling ========
-    // Initialize the error 
-    let error = "";
-
-    // ---- Another Course With The Same "Name" & "Degree" Exist ----
-    courses.forEach(course => {
-      // Convert object_id to string
-      const courseID = course._id.toString();
-      if (
-        courseID !== req.params.id &&
-        course.name === req.body.name &&
-        course.degree === req.body.degree
-      ) {
-        error = `Fail to update. There is another "Course" with the same "name" and "degree". Click the edit button again to retry.`;
-      }
-    });
-
-    // ---- Nothing To Update. No Changes ----
-    courses.forEach(course => {
-      // Convert object_id to string
-      const courseID = course._id.toString();
-      if (
-        courseID === req.params.id &&
-        course.name === req.body.name &&
-        course.degree === req.body.degree &&
-        course.color === req.body.color &&
-        course.description === req.body.description
-      ) {
-        error = `Fail to update. The there are not any changes. Click the edit button again to retry.`;
-      }
-    });
-
-    // In Case Of Errors Flash Error Message & Redirect Back To The Page
-    if (error !== "") {
-      req.flash("error_msg", error);
-      res.redirect("/dashboards/facultyMember");
-    } else {
-      // ======== Update The "Course" Info ========
-      Course.findOne({ _id: req.params.id }).then(course => {
-        course.name = req.body.name;
-        course.degree = req.body.degree;
-        course.color = req.body.color;
-        course.description = req.body.description;
-        course.save().then(course => {
-          req.flash("success_msg", "Course has been updated.");
-          res.redirect("/dashboards/facultyMember");
-        });
+      .then(course => {
+        if (course) {
+          if (course.name === bodyName && course.degree === req.body.degree) {
+            error = "Course already exist.";
+            req.flash("error_msg", error);
+            res.redirect("/dashboards/facultyMember");
+          }
+        } else {
+          // ======== Add data to the database ========
+          // ---- Prepare data for saving ----
+          const newCourse = {
+            name: bodyName,
+            degree: req.body.degree,
+            color: req.body.color,
+            description: req.body.description
+          };
+          // ---- Save data to the database ----
+          new Course(newCourse)
+            // Save & Redirect with success message
+            .save()
+            .then(course => {
+              req.flash("success_msg", "New course added.");
+              res.redirect("/dashboards/facultyMember");
+            });
+        }
       })
       // Catch any errors
       .catch(err => {
@@ -431,14 +376,76 @@ router.put("/facultyMember/courses/:id", (req, res) => {
         res.redirect("/dashboards/facultyMember");
         return;
       });
-    }
-  })
-  // Catch any errors
-  .catch(err => {
-    req.flash("error_msg", err);
-    res.redirect("/dashboards/facultyMember");
-    return;
-  });
+  }
+});
+
+// Edit Course
+router.put("/facultyMember/courses/:id", (req, res) => {
+  Course.find({})
+    .then(courses => {
+      // ======== Error Handling ========
+      // Initialize the error
+      let error = "";
+
+      // ---- Another Course With The Same "Name" & "Degree" Exist ----
+      courses.forEach(course => {
+        // Convert object_id to string
+        const courseID = course._id.toString();
+        if (
+          courseID !== req.params.id &&
+          course.name === req.body.name &&
+          course.degree === req.body.degree
+        ) {
+          error = `Fail to update. There is another "Course" with the same "name" and "degree". Click the edit button again to retry.`;
+        }
+      });
+
+      // ---- Nothing To Update. No Changes ----
+      courses.forEach(course => {
+        // Convert object_id to string
+        const courseID = course._id.toString();
+        if (
+          courseID === req.params.id &&
+          course.name === req.body.name &&
+          course.degree === req.body.degree &&
+          course.color === req.body.color &&
+          course.description === req.body.description
+        ) {
+          error = `Fail to update. The there are not any changes. Click the edit button again to retry.`;
+        }
+      });
+
+      // In Case Of Errors Flash Error Message & Redirect Back To The Page
+      if (error !== "") {
+        req.flash("error_msg", error);
+        res.redirect("/dashboards/facultyMember");
+      } else {
+        // ======== Update The "Course" Info ========
+        Course.findOne({ _id: req.params.id })
+          .then(course => {
+            course.name = req.body.name;
+            course.degree = req.body.degree;
+            course.color = req.body.color;
+            course.description = req.body.description;
+            course.save().then(course => {
+              req.flash("success_msg", "Course has been updated.");
+              res.redirect("/dashboards/facultyMember");
+            });
+          })
+          // Catch any errors
+          .catch(err => {
+            req.flash("error_msg", err);
+            res.redirect("/dashboards/facultyMember");
+            return;
+          });
+      }
+    })
+    // Catch any errors
+    .catch(err => {
+      req.flash("error_msg", err);
+      res.redirect("/dashboards/facultyMember");
+      return;
+    });
 });
 
 // Create Module

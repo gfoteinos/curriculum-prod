@@ -30,6 +30,7 @@ const UICtrl = (function () {
   // ======== Private var & methods ========
   const UISelectors = {
     coursesTable: '#coursesTable tbody',
+    saveCourseBtn: '#saveCourseBtn'
   }
 
   // ======== Public Methods ========
@@ -52,6 +53,8 @@ const App = (function(UICtrl) {
     // document.querySelector(UISelectors.coursesTable).addEventListener("click", editCoursework);
 
     document.querySelector(UISelectors.coursesTable).addEventListener("click", editCourse);
+
+    document.querySelector(UISelectors.saveCourseBtn).addEventListener("click", saveCourse);
   }
 
   // Edit coursework 
@@ -137,6 +140,17 @@ const App = (function(UICtrl) {
         }
       });
     }
+  }
+
+  const saveCourse = function(e) {
+
+    // const courseName = document.querySelector('#createCourseName').value; 
+    // const academicDegree = document.querySelector('#createCourseLevel').value; 
+    // const color = document.querySelector('#createCourseColor').value; 
+    // const description = document.querySelector('#createCourseDescription').innerText; 
+    // console.log(`courseName: ${courseName}, academicDegree: ${academicDegree}, color: ${color}, description: ${description} `);
+
+    // e.preventDefault();
   }
 
   // ======== Public Methods ========
