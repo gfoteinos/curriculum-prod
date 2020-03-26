@@ -85,7 +85,7 @@ router.get("/facultyMember", (req, res) => {
   // Find All Course's
   Course.aggregate([
     { $project: { _id: 1, name: 1, degree: 1, color: 1, description: 1 } }
-  ]).then(courses => {
+  ]).sort({ name: 'asc' }).then(courses => {
     let selectCourseName = []; // For "Course Name" select tag in "Create Module" form
     let listCourses = []; // For "Courses" table in "Courses" form
     if (courses) {
@@ -300,7 +300,7 @@ router.put("/facultyMember/profile/:id", (req, res) => {
         user
           .save()
           .then(user => {
-            req.flash("success_msg", "Profile updated.");
+            req.flash("success_msg", "Profile has been updated.");
             res.redirect("/dashboards/facultyMember");
           })
           // Catch any errors
@@ -323,7 +323,6 @@ router.post("/facultyMember/courses/", (req, res) => {
   } else {
     bodyName = "";
   }
-  console.log(`bodyName: ${bodyName}`);
 
   var error = "";
   // ======== Error Handling ========
@@ -446,6 +445,40 @@ router.put("/facultyMember/courses/:id", (req, res) => {
       res.redirect("/dashboards/facultyMember");
       return;
     });
+});
+
+// Delete Course
+router.delete("/facultyMember/courses/", (req, res) => {
+  // ======== Delete Courses ========
+  // Get the selected course ids
+  let ids = req.body.ids;
+
+  /* In case of only one "course" is selected to delete the "id" is a string.
+   *  In order to delete the "course" it needs to be converted to an array of
+   *  one object.
+   */
+  //  Convert to an array of one object
+  if (typeof ids === "string") {
+    let idArray = [];
+    idArray.push(ids);
+    ids = idArray;
+  }
+
+  // Delete the courses from the database
+  ids.forEach(id => {
+    // console.log(`id: ${id}`);
+    Course.deleteOne({ _id: id })
+      // Catch any errors
+      .catch(err => {
+        req.flash("error_msg", err);
+        res.redirect("/dashboards/facultyMember");
+        return;
+      });
+  });
+
+  // ======== Flash Success Message & Redirect Back To The Page ========
+  req.flash("success_msg", "Courses deleted successfully.");
+  res.redirect("/dashboards/facultyMember");
 });
 
 // Create Module
