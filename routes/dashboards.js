@@ -85,42 +85,86 @@ router.get("/facultyMember", (req, res) => {
   // Find All Course's
   Course.aggregate([
     { $project: { _id: 1, name: 1, degree: 1, color: 1, description: 1 } }
-  ]).sort({ name: 'asc' }).then(courses => {
-    let selectCourseName = []; // For "Course Name" select tag in "Create Module" form
-    let listCourses = []; // For "Courses" table in "Courses" form
-    if (courses) {
-      // Fill in bellow tables to pass them later in the view
-      let counter = 1;
-      courses.forEach(course => {
-        selectCourseName.push({ name: course.name + "-" + course.degree });
-        listCourses.push({
-          aa: counter,
-          id: course._id,
-          name: course.name,
-          degree: course.degree,
-          color: course.color,
-          description: course.description
+  ])
+    .sort({ name: "asc" })
+    .then(courses => {
+      let selectCourseName = []; // For "Course Name" select tag in "Create Module" form
+      let listCourses = []; // For "Courses" table in "Courses" form
+      if (courses) {
+        // Fill in bellow tables to pass them later in the view
+        let counter = 1;
+        courses.forEach(course => {
+          selectCourseName.push({ name: course.name + "-" + course.degree });
+          listCourses.push({
+            aa: counter,
+            id: course._id,
+            name: course.name,
+            degree: course.degree,
+            color: course.color,
+            description: course.description
+          });
+          counter++;
         });
-        counter++;
-      });
-    }
-    // console.log('courses: ' + JSON.stringify(courses));
-    // console.log('listCourses: ' + JSON.stringify(listCourses));
-    // Find another collection
-    User.find({}).then(users => {
-      // console.log('selectCourseName ' + JSON.stringify(selectCourseName));
-      // console.log(faculty);
-      // console.log(courses);
-      // console.log(users);
-      // Pass the faculty member object & fetched collection's data to the view
-      // Pass data sets to the view
-      res.render("dashboards/facultyMember", {
-        faculty,
-        selectCourseName,
-        listCourses
-      });
+      }
+
+      Module.aggregate([
+        {
+          $project: {
+            _id: 1,
+            name: 1,
+            course: 1,
+            degree: 1,
+            color: 1,
+            description: 1
+          }
+        }
+      ])
+        .sort({ name: "asc" })
+        .then(modules => {
+          // let selectCourseName = []; // For "Course Name" select tag in "Create Module" form
+          let listModules = []; // For "Modules" table in "Modules" form
+          if (modules) {
+            // Fill in bellow tables to pass them later in the view
+            let counter = 1;
+            modules.forEach(module => {
+              // selectCourseName.push({
+              //   name: course.name + "-" + course.degree
+              // });
+              listModules.push({
+                aa: counter,
+                id: module._id,
+                name: module.name,
+                course: module.course,
+                degree: module.degree,
+                color: module.color,
+                description: module.description
+              });
+              counter++;
+            });
+          }
+          // console.log("modules: " + JSON.stringify(modules));
+          // console.log("listModules: " + JSON.stringify(listModules));
+
+          // Find another collection
+          User.find({}).then(users => {
+            // console.log('selectCourseName ' + JSON.stringify(selectCourseName));
+            // console.log(faculty);
+            // console.log(courses);
+            // console.log(users);
+            // Pass the faculty member object & fetched collection's data to the view
+            // Pass data sets to the view
+            res.render("dashboards/facultyMember", {
+              faculty,
+              selectCourseName,
+              listCourses,
+              listModules
+            });
+          });
+        });
+
+      // console.log('courses: ' + JSON.stringify(courses));
+      // console.log('listCourses: ' + JSON.stringify(listCourses));
     });
-  });
 
   // Course.find({}, { name: 1, _id: 0 }).then(courses => {
   //   // Create a faculty member object
@@ -519,7 +563,9 @@ router.post("/facultyMember/modules/", (req, res) => {
             name: req.body.moduleName,
             courseID: courseID,
             course: courseName,
-            degree: courseDegree
+            degree: courseDegree,
+            color: req.body.color,
+            description: req.body.description
           };
           // ---- Save data to the database ----
           new Module(newModule)

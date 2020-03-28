@@ -22,6 +22,14 @@ const ModuleSchema = new Schema({
   degree: {
     type: String,
     required: true
+  },
+  color: {
+    type: String,
+    required: true
+  },
+  description: {
+    type: String,
+    required: true
   }
 });
 

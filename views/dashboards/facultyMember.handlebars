@@ -961,7 +961,8 @@
                       Create Course
                     </button>
                     <!-- Trigger Delete Course Modal -->
-                    <button type="button" id="triggerDeleteCoursesModalBtn" class="btn btn-danger" data-toggle="modal" data-target="#deleteCoursesModal" disabled>
+                    <button type="button" id="triggerDeleteCoursesModalBtn" class="btn btn-danger" data-toggle="modal"
+                      data-target="#deleteCoursesModal" disabled>
                       Delete
                     </button>
                     <!-- Delete Course Button -->
@@ -977,73 +978,94 @@
           <div class="tab-pane" id="modules" role="tabpanel" aria-labelledby="module-list">
             <div class="card">
               <div class="card-header bg-white">
-                <h3 class="mb-0">Module Info</h3>
+                <h3 class="mb-0">Modules</h3>
                 <small>
-                  Create a new module
+                  Manage any module from the list
                 </small>
               </div>
               <div class="card-body">
                 <!-- ======== Create/Delete Modules ======== -->
-                <form action="/dashboards/facultyMember/modules/" method="post">
-                  <!-- ---- Module Name ---- -->
-                  <div class="form-group">
-                    <label for="createModuleName">Module Name</label>
-                    <div class="input-group input-group--white">
-                      <div class="input-group-prepend">
-                        <span class="input-group-text" aria-label="Input a module name">
-                          <i class="fas fa-book"></i>
-                        </span>
-                      </div>
-                      <input type="text" name="moduleName" id="createModuleName" class="form-control form-control-lg"
-                        maxlength="64" />
-                    </div>
-                  </div>
-                  <!-- ---- Course Name & Color ---- -->
-                  <div class="form-row">
-                    <!-- Course Name -->
-                    <div class="form-group col-md-6">
-                      <label for="createModuleCourseName">Course Name</label>
-                      <div class="input-group input-group--white">
-                        <div class="input-group-prepend">
-                          <span class="input-group-text" aria-label="Input a course name">
-                            <i class="fas fa-award"></i>
-                          </span>
-                        </div>
-                        <select name="courseName" id="createModuleCourseName" class="custom-select custom-select-lg">
-                          <option disabled selected="">Choose ...</option>
-                          {{#each selectCourseName}}
-                          <option value="{{name}}">{{name}}</option>
-                          {{/each}}
-                        </select>
-                      </div>
-                    </div>
-                    <div class="form-group col-md-6">
-                      <label for="createCourseColor">Color</label>
-                      <div class="input-group input-group--white">
-                        <div class="input-group-prepend">
-                          <span class="input-group-text" aria-label="Select a course color">
-                            <i class="fas fa-palette"></i>
-                          </span>
-                        </div>
-                        <input type="color" name="color" id="createCourseColor" class="form-control form-control-lg"
-                          value="#343a40" required>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- ---- Description ---- -->
-                  <div class="form-group">
-                    <label for="createModuleDescription">Description</label>
-                    {{!-- <small>Write a few words about youself</small> --}}
-                    <textarea id="createModuleDescription" name="moduleDescription" class="form-control"
-                      required></textarea>
-                  </div>
+                <form action="/dashboards/facultyMember/modules/?_method=DELETE" method="post" id="modulesForm">
 
-                  <!-- ---- Modules ----  later -->
+                  <input type="hidden" name="_method" value="DELETE">
 
-                  <!-- ---- Create Button ---- -->
-                  <div class="d-flex justify-content-end">
-                    <button type="submit" class="btn btn-success">
+                  <div class="table-responsive">
+                    <table id="modulesTable" class="table">
+                      <caption class="h5 py-0">Modules</caption>
+                      <thead>
+                        <tr>
+                          <th scope="col">#</th>
+                          <th scope="col" class="sort-title">
+                            Title
+                            <i class="fas fa-angle-down"></i>
+                          </th>
+                          <th scope="col" class="sort-course">
+                            Course
+                            <i class="fas fa-angle-down"></i>
+                          </th>
+                          <th scope="col" class="sort-level">
+                            Level
+                            <i class="fas fa-angle-down"></i>
+                          </th>
+                          <th scope="col">Edit</th>
+                          <th scope="col">
+                            <div class="custom-control custom-checkbox checkThemAll">
+                              <input type="checkbox" class="custom-control-input" id="modulesCheckAll">
+                              <label class="custom-control-label" for="modulesCheckAll"></label>
+                            </div>
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {{#each listModules}}
+                        <tr>
+                          <th scope="row">{{aa}}</th>
+                          <td class="title">
+                            {{name}}
+                          </td>
+                          <td class="course">
+                            {{course}}
+                          </td>
+                          <td class="level">
+                            {{degree}}
+                          </td>
+                          <td class="d-none">
+                            {{color}}
+                          </td>
+                          <td class="d-none">
+                            {{description}}
+                          </td>
+                          <td>
+                            <button type="button" class="btn btn-sm btn-primary p-0" data-id={{id}} data-toggle="modal"
+                              data-target="#editModuleModal">
+                              <i class="fas fa-pencil-alt moduleEdit"></i>
+                            </button>
+                          </td>
+                          <td>
+                            <div class="custom-control custom-checkbox">
+                              <input type="checkbox" class="custom-control-input" id="{{id}}">
+                              <label class="custom-control-label" for="{{id}}"></label>
+                            </div>
+                          </td>
+                        </tr>
+                        {{/each}}
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="d-flex justify-content-end mt-3">
+                    <!-- Add Module Button -->
+                    <button type="button" id="createModuleBtn" class="btn btn-success mr-2" data-toggle="modal"
+                      data-target="#createModuleModal">
                       Create Module
+                    </button>
+                    <!-- Trigger Delete Course Modal -->
+                    <button type="button" id="triggerDeleteModulesModalBtn" class="btn btn-danger" data-toggle="modal"
+                      data-target="#deleteModulesModal" disabled>
+                      Delete
+                    </button>
+                    <!-- Delete Course Button -->
+                    <button type="submit" id="deleteModuleBtn" class="btn btn-danger d-none">
+                      Delete
                     </button>
                   </div>
                 </form>
@@ -1439,13 +1461,94 @@
               </div>
               <div class="modal-body">
                 <p>
-                  If you delete a course, related modules with that course and information about the modules like  "exams", "grades", " courseworks" e.t.c. will be deleted as well. Are you sure to proceed?
+                  If you delete a course, related modules with that course and information about the modules like
+                  "exams", "grades", " courseworks" e.t.c. will be deleted as well. Are you sure to proceed?
                 </p>
               </div>
               <div class="modal-footer">
                 <button id="cancelDeleteCoursesModalBtn" type="button" class="btn btn-secondary"
                   data-dismiss="modal">No</button>
                 <button id="deleteCoursesModalBtn" type="button" class="btn btn-primary">Yes</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Create Module -->
+        <div id="createModuleModal" class="modal fade modal--default" role="dialog">
+          <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+              <div class="modal-header d-flex align-items-center">
+                <div class="flex-column">
+                  <h3 class="mb-0">Module Info</h3>
+                  <small>Create a new module</small>
+                </div>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <form action="/dashboards/facultyMember/modules/" method="post">
+                  <!-- ---- Module Name ---- -->
+                  <div class="form-group">
+                    <label for="createModuleName">Module Name</label>
+                    <div class="input-group input-group--white">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text" aria-label="Input a module name">
+                          <i class="fas fa-book"></i>
+                        </span>
+                      </div>
+                      <input type="text" name="moduleName" id="createModuleName" class="form-control form-control-lg"
+                        maxlength="64" />
+                    </div>
+                  </div>
+                  <!-- ---- Course Name & Color ---- -->
+                  <div class="form-row">
+                    <!-- Course Name -->
+                    <div class="form-group col-md-6">
+                      <label for="createModuleCourseName">Course Name</label>
+                      <div class="input-group input-group--white">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text" aria-label="Input a course name">
+                            <i class="fas fa-award"></i>
+                          </span>
+                        </div>
+                        <select name="courseName" id="createModuleCourseName" class="custom-select custom-select-lg">
+                          <option disabled selected="">Choose ...</option>
+                          {{#each selectCourseName}}
+                          <option value="{{name}}">{{name}}</option>
+                          {{/each}}
+                        </select>
+                      </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                      <label for="createCourseColor">Color</label>
+                      <div class="input-group input-group--white">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text" aria-label="Select a course color">
+                            <i class="fas fa-palette"></i>
+                          </span>
+                        </div>
+                        <input type="color" name="color" id="createCourseColor" class="form-control form-control-lg"
+                          value="#343a40" required>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- ---- Description ---- -->
+                  <div class="form-group">
+                    <label for="createModuleDescription">Description</label>
+                    {{!-- <small>Write a few words about youself</small> --}}
+                    <textarea id="createModuleDescription" name="description" class="form-control"
+                      required></textarea>
+                  </div>
+
+                  <!-- ---- Create Button ---- -->
+                  <div id="saveModuleBtn" class="d-flex justify-content-end">
+                    <button type="submit" class="btn btn-success">
+                      Save
+                    </button>
+                  </div>
+                </form>
               </div>
             </div>
           </div>

@@ -28,19 +28,26 @@ const disableElement = function(className) {
 const UICtrl = (function() {
   // ======== Private var & methods ========
   const UISelectors = {
+    // Courses Form
     coursesForm: "#coursesForm",
     coursesTable: "#coursesTable",
     coursesTableBody: "#coursesTable tbody",
+    coursesTableColumnTitle: "#coursesTable .sort-title",
+    coursesTableColumnLevel: "#coursesTable .sort-level",
     coursesCheckBoxAll: "#coursesCheckAll",
     coursesCheckBoxes: "#coursesTable tbody .custom-control-input",
     saveCourseBtn: "#saveCourseBtn",
     triggerDeleteCoursesModalBtn: "#triggerDeleteCoursesModalBtn",
+    cancelDeleteCoursesModalBtn: "#cancelDeleteCoursesModalBtn",
     deleteCoursesModalBtn: "#deleteCoursesModalBtn",
     deleteCourseBtn: "#deleteCourseBtn"
   };
 
   // ======== Public Methods ========
   return {
+    getUISelectors: function() {
+      return UISelectors;
+    },
     getCheckBoxes: function(flag) {
       // Gather checkboxes
       // const addModulesCheckboxes = document.querySelectorAll(UISelectors.addModulesCheckboxes);
@@ -85,8 +92,91 @@ const UICtrl = (function() {
         .querySelector(UISelectors.coursesForm)
         .insertAdjacentElement("beforeend", div);
     },
-    getUISelectors: function() {
-      return UISelectors;
+    sortTableColumn: function(columnIndex) {
+      // Initialize variables
+      let table,
+        rows,
+        switching,
+        i,
+        x,
+        y,
+        shouldSwitch,
+        dir,
+        switchcount = 0;
+
+      // Get the table to be sorted
+      table = document.querySelector(UISelectors.coursesTable);
+
+      // Set sort to start
+      switching = true;
+
+      // Set the sorting direction to ascending
+      dir = "asc";
+
+      // Main loop that runs until table is sorted
+      while (switching) {
+        // Start by saying: no switching is done:
+        switching = false;
+        rows = table.rows;
+        /* Loop through all table rows
+         * (except the first, which contains table headers):
+         */
+        for (i = 1; i < rows.length - 1; i++) {
+          // Start by saying there should be no switching:
+          shouldSwitch = false;
+
+          /* Get the two elements you want to compare, one from current row
+           * and one from the next:
+           */
+          x = rows[i].getElementsByTagName("TD")[columnIndex];
+          y = rows[i + 1].getElementsByTagName("TD")[columnIndex];
+
+          /* Check if the two rows should switch place, based on the direction,
+           * asc or desc:
+           */
+          if (dir == "asc") {
+            if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+              // If so, mark as a switch and break the loop:
+              shouldSwitch = true;
+              break;
+            }
+          } else if (dir == "desc") {
+            if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+              // If so, mark as a switch and break the loop:
+              shouldSwitch = true;
+              break;
+            }
+          }
+        }
+        if (shouldSwitch) {
+          /* If a switch has been marked, make the switch
+           * and mark that a switch has been done:
+           */
+          rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+
+          switching = true;
+
+          // Each time a switch is done, increase this count by 1:
+          switchcount++;
+        } else {
+          /* If no switching has been done AND the direction is "asc",
+           * set the direction to "desc" and run the while loop again.
+           */
+          if (switchcount == 0 && dir == "asc") {
+            dir = "desc";
+            switching = true;
+          }
+        }
+      }
+
+      // Renumbering the table
+      let counter = 1;
+      for (const key of table.rows) {
+        if (key.children[0].innerText !== "#") {
+          key.children[0].innerText = counter;
+          counter++;
+        }
+      }
     }
   };
 })();
@@ -99,24 +189,25 @@ const App = (function(UICtrl) {
     // Get UISelectors
     const UISelectors = UICtrl.getUISelectors();
 
-    // ======== Courses Table ========
-    // ---- Sorting courses Table ----
+    // ======== COURSES TABLE ========
+    // -------- Sorting Courses Table --------
     // Sort title column
     document
-      .querySelector("#coursesTable .sort-title")
+      .querySelector(UISelectors.coursesTableColumnTitle)
       .addEventListener("click", sortTable);
 
     // Sort level column
     document
-      .querySelector("#coursesTable .sort-level")
+      .querySelector(UISelectors.coursesTableColumnLevel)
       .addEventListener("click", sortTable);
 
-    // Check/Uncheck All From "Courses" Table
+    // -------- Check/Unckeck Courses Table Rows --------
+    // Check/uncheck all from "courses" table
     document
       .querySelector(UISelectors.coursesCheckBoxAll)
       .addEventListener("click", checkUncheckAllCourses);
 
-    // Check/Uncheck a course from "Courses" Table
+    // Check/uncheck a course from "courses" table
     document
       .querySelector(UISelectors.coursesTableBody)
       .addEventListener("click", enableDeleteBtn);
@@ -130,6 +221,11 @@ const App = (function(UICtrl) {
     document
       .querySelector(UISelectors.saveCourseBtn)
       .addEventListener("click", saveCourse);
+
+    // "No" Button On Delete Course Modal
+    document
+      .querySelector(UISelectors.cancelDeleteCoursesModalBtn)
+      .addEventListener("click", cancelDeleteCourses);
 
     // "Yes" Button On Delete Course Modal
     document
@@ -235,6 +331,37 @@ const App = (function(UICtrl) {
     }
   };
 
+  // Cancel Delete Courses
+  const cancelDeleteCourses = function(e) {
+    // ======== Gather All Necessary Elements ========
+    // Get UISelectors
+    const UISelectors = UICtrl.getUISelectors();
+
+    // Get the checkbox all element
+    const checkBoxAll = document.querySelector(UISelectors.coursesCheckBoxAll);
+
+    // Gather all checkboxes from UI
+    const checkboxes = UICtrl.getCheckBoxes("courses");
+
+    // Get the delete courses button 
+    const deleteBtn = document.querySelector(
+      UISelectors.triggerDeleteCoursesModalBtn
+    );
+
+    // ======== Uncheck All CheckBoxes ========
+    // Uncheck checkbox all element 
+    if(checkBoxAll.checked === true) {
+      checkBoxAll.checked = false;
+    }
+    
+    // Uncheck all ckeckboxes
+    checkboxes.forEach(function(checkbox) {
+      checkbox.checked = false;
+      deleteBtn.disabled = true;
+    });
+
+  };
+
   // Delete Courses
   const deleteCourses = function(e) {
     // Get UISelectors
@@ -261,12 +388,14 @@ const App = (function(UICtrl) {
 
   // Check/Uncheck Checkbox For All Checkboxes On Courses Table
   const checkUncheckAllCourses = function(e) {
+    // ======== Gather All Necessary Elements ========
     // Get UISelectors
     const UISelectors = UICtrl.getUISelectors();
 
     // Gather all checkboxes from UI
     const checkboxes = UICtrl.getCheckBoxes("courses");
 
+    // Get the delete courses button 
     const deleteBtn = document.querySelector(
       UISelectors.triggerDeleteCoursesModalBtn
     );
@@ -294,138 +423,46 @@ const App = (function(UICtrl) {
     // Get UISelectors
     const UISelectors = UICtrl.getUISelectors();
 
-    // ======== Find Which Is The Column Index To Sort ========
+    // ======== Find Which Is The Selected Column To Sort ========
 
-    let columnNames;
-    let columnClassName;
-    let sortSymbolClassName;
-    let clickedColumnSortSymbol;
+    // -------- Gather the variables needed --------
+    let columnNameElements;
+    let selectedColumnClassName;
+    let sortIconClassName;
+    let sortIconElement;
 
-    // Get the column names $ the class name of clicked column
+    // If the selected column contains sort icon gather the vars
     if (e.target.classList.contains("fas")) {
-      columnNames = e.target.parentElement.parentElement.children;
-      columnClassName = e.target.parentElement.className;
-      sortSymbolClassName = e.target.className;
-      clickedColumnSortSymbol = e.target;
+      columnNameElements = e.target.parentElement.parentElement.children;
+      selectedColumnClassName = e.target.parentElement.className;
+      sortIconClassName = e.target.className;
+      sortIconElement = e.target;
     } else {
-      columnNames = e.target.parentElement.children;
-      columnClassName = e.target.className;
-      sortSymbolClassName = e.target.children[0].className;
-      clickedColumnSortSymbol = e.target.children[0];
+      columnNameElements = e.target.parentElement.children;
+      selectedColumnClassName = e.target.className;
+      sortIconClassName = e.target.children[0].className;
+      sortIconElement = e.target.children[0];
     }
 
-    // console.log(target);
-    // console.log(`sortSymbol: ${sortSymbol}`);
-    // console.log(`class name: ${e.target.className}`);
-
-    // console.log("column names");
-    // console.log(columnNames);
-
-    // Get the column index
+    // -------- Get the selected column index --------
     let index = 0;
     let columnIndex;
-    for (const key of columnNames) {
-      console.log(
-        `key.className: ${key.className} e.target.className: ${e.target.className}`
-      );
-      if (key.className === columnClassName) {
-        console.log(key, index);
+    for (const key of columnNameElements) {
+      if (key.className === selectedColumnClassName) {
         columnIndex = index - 1;
       }
       index++;
     }
 
-    // let sortSymbol = document.querySelector(".fa-angle-down");
-    // console.log(sortSymbol);
-    if (sortSymbolClassName === "fas fa-angle-down") {
-      clickedColumnSortSymbol.className = "fas fa-angle-up";
+    // ---- Change the sort icon symbol of selected column ----
+    if (sortIconClassName === "fas fa-angle-down") {
+      sortIconElement.className = "fas fa-angle-up";
     } else {
-      clickedColumnSortSymbol.className = "fas fa-angle-down";
+      sortIconElement.className = "fas fa-angle-down";
     }
 
-    // ======== Sort The Table ========
-    // Initialize vars
-    var table,
-      rows,
-      switching,
-      i,
-      x,
-      y,
-      shouldSwitch,
-      dir,
-      switchcount = 0;
-
-    // Get the table to be sorted
-    table = document.querySelector(UISelectors.coursesTable);
-
-    // Set sort to start
-    switching = true;
-
-    // Set the sorting direction to ascending
-    dir = "asc";
-
-    // Get the column sort symbol
-    // console.log(e.target);
-    // // Get the table to be sorted
-
-    // Main loop that runs until table is sorted
-    while (switching) {
-      // Start by saying: no switching is done:
-      switching = false;
-      rows = table.rows;
-      /* Loop through all table rows
-       * (except the first, which contains table headers):
-       */
-      for (i = 1; i < rows.length - 1; i++) {
-        // Start by saying there should be no switching:
-        shouldSwitch = false;
-
-        /* Get the two elements you want to compare, one from current row
-         * and one from the next:
-         */
-        x = rows[i].getElementsByTagName("TD")[columnIndex];
-        y = rows[i + 1].getElementsByTagName("TD")[columnIndex];
-
-        /* Check if the two rows should switch place, based on the direction,
-         * asc or desc:
-         */
-        if (dir == "asc") {
-          // sortSymbol = document.querySelector(".fa-angle-down");
-          // sortSymbol.className = "fas fa-angle-up";
-          if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
-            // If so, mark as a switch and break the loop:
-            shouldSwitch = true;
-            break;
-          }
-        } else if (dir == "desc") {
-          // sortSymbol = document.querySelector(".fa-angle-up");
-          // sortSymbol.className = "fas fa-angle-down";
-          if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
-            // If so, mark as a switch and break the loop:
-            shouldSwitch = true;
-            break;
-          }
-        }
-      }
-      if (shouldSwitch) {
-        /* If a switch has been marked, make the switch
-         * and mark that a switch has been done:
-         */
-        rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
-        switching = true;
-
-        // Each time a switch is done, increase this count by 1:
-        switchcount++;
-      } else {
-        /* If no switching has been done AND the direction is "asc",
-         * set the direction to "desc" and run the while loop again.
-         */
-        if (switchcount == 0 && dir == "asc") {
-          dir = "desc";
-          switching = true;
-        }
-      }
-    }
+    // ---- Sort the table column ----
+    UICtrl.sortTableColumn(columnIndex);
   };
 
   // ======== Public Methods ========
