@@ -109,7 +109,7 @@
     }, 5000);
 
     // ======== CKEditor ========
-    // -------- Bio Faculty Member textarea --------
+    // -------- Profile Form - Faculty Member "Bio" Textarea --------
     const bio = CKEDITOR.replace('bio', {
       plugins: 'wysiwygarea, toolbar, basicstyles, link',
       extraPlugins: 'notification'
@@ -120,7 +120,7 @@
       evt.cancel();
     });
 
-    // -------- Edit Courses - Course Description textarea --------
+    // -------- "Edit Course" Form - "Description" textarea --------
     const editCourseDescription = CKEDITOR.replace('editCourseDescription', {
       plugins: 'wysiwygarea, toolbar, basicstyles, link',
       extraPlugins: 'notification'
@@ -132,7 +132,7 @@
     });
    
 
-    // -------- Create/Delete Courses - Course Description textarea --------
+    // -------- "Create Course" Form - "Description" Textarea --------
     const courseDescription = CKEDITOR.replace('createCourseDescription', {
       plugins: 'wysiwygarea, toolbar, basicstyles, link',
       extraPlugins: 'notification'
@@ -143,7 +143,18 @@
       evt.cancel();
     });
 
-    // -------- Create/Delete Modules - Module Description textarea --------
+    // -------- "Edit Module" Form - "Description" Textarea --------
+    const editModuleDescription = CKEDITOR.replace('editModuleDescription', {
+      plugins: 'wysiwygarea, toolbar, basicstyles, link',
+      extraPlugins: 'notification'
+    });
+
+    editModuleDescription.on('required', function (evt) {
+      editModuleDescription.showNotification('This field is required.', 'warning');
+      evt.cancel();
+    });
+
+    // -------- "Create Module" Form - "Description" Textarea --------
     const moduleDescription = CKEDITOR.replace('createModuleDescription', {
       plugins: 'wysiwygarea, toolbar, basicstyles, link',
       extraPlugins: 'notification'

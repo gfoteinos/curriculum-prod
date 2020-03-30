@@ -370,7 +370,7 @@ router.post("/facultyMember/courses/", (req, res) => {
 
   var error = "";
   // ======== Error Handling ========
-  // ---- Form fields errors ----
+  // -------- Form fields errors --------
   // Required form fields empty
   if (
     bodyName === "" ||
@@ -383,7 +383,7 @@ router.post("/facultyMember/courses/", (req, res) => {
     req.flash("error_msg", error);
     res.redirect("/dashboards/facultyMember");
   } else {
-    // ---- Course already exist ----
+    // Course already exist
     Course.findOne({
       $and: [{ name: bodyName }, { degree: req.body.degree }]
     })
@@ -510,7 +510,6 @@ router.delete("/facultyMember/courses/", (req, res) => {
 
   // Delete the courses from the database
   ids.forEach(id => {
-    // console.log(`id: ${id}`);
     Course.deleteOne({ _id: id })
       // Catch any errors
       .catch(err => {
@@ -527,9 +526,20 @@ router.delete("/facultyMember/courses/", (req, res) => {
 
 // Create Module
 router.post("/facultyMember/modules/", (req, res) => {
+
+  // Get Rid Of Spaces Before & After The End Of "Course Title"
+  let bodyNameArray = req.body.name.match(/\S.*\S/g);
+  let bodyName;
+  if (bodyNameArray) {
+    bodyName = bodyNameArray[0];
+  } else {
+    bodyName = "";
+  }
+
   // ======== Error Handling ========
-  // ---- Form fields errors ----
-  if (req.body.moduleName === "" || req.body.courseName === undefined) {
+  // -------- Form fields errors --------
+  // Required form fields empty
+  if (bodyName === "" || req.body.courseName === undefined) {
     error =
       '"Module Name" or "Course Name" are missing. Please fill in the form fields where missing.';
     req.flash("error_msg", error);
@@ -538,10 +548,10 @@ router.post("/facultyMember/modules/", (req, res) => {
     let courseNameDegree = req.body.courseName.split("-");
     const courseName = courseNameDegree[0];
     const courseDegree = courseNameDegree[1];
-    // ---- Module already exist ----
+    // Module already exist
     Module.findOne({
       $and: [
-        { name: req.body.moduleName },
+        { name: bodyName },
         { course: courseName },
         { degree: courseDegree }
       ]
@@ -560,7 +570,7 @@ router.post("/facultyMember/modules/", (req, res) => {
           // ---- Prepare data for saving ----
           courseID = courseID[0]._id;
           const newModule = {
-            name: req.body.moduleName,
+            name: bodyName,
             courseID: courseID,
             course: courseName,
             degree: courseDegree,
@@ -579,6 +589,108 @@ router.post("/facultyMember/modules/", (req, res) => {
       }
     });
   }
+});
+
+// Edit Module
+router.put("/facultyMember/modules/:id", (req, res) => {
+  Module.find({})
+    .then(modules => {
+      // ======== Error Handling ========
+      // Initialize the error
+      let error = "";
+
+      // ---- Another Course With The Same "Name" & "Degree" Exist ----
+      modules.forEach(module => {
+        // Convert object_id to string
+        const courseID = module._id.toString();
+        if (
+          courseID !== req.params.id &&   
+          module.name === req.body.name &&  // <--- Is it necessery ?
+          module.degree === req.body.degree // <--- Is it necessery ?
+        ) {
+          error = `Fail to update. There is another "Course" with the same "name" and "degree". Click the edit button again to retry.`;
+        }
+      });
+
+      // ---- Nothing To Update. No Changes ----
+      modules.forEach(module => {
+        // Convert object_id to string
+        const courseID = module._id.toString();
+        if (
+          courseID === req.params.id &&
+          module.name === req.body.name &&
+          module.degree === req.body.degree &&
+          module.color === req.body.color &&
+          module.description === req.body.description
+        ) {
+          error = `Fail to update. The there are not any changes. Click the edit button again to retry.`;
+        }
+      });
+
+      // In Case Of Errors Flash Error Message & Redirect Back To The Page
+      if (error !== "") {
+        req.flash("error_msg", error);
+        res.redirect("/dashboards/facultyMember");
+      } else {
+        // ======== Update The "Course" Info ========
+        Module.findOne({ _id: req.params.id })
+          .then(module => {
+            module.name = req.body.name;
+            module.degree = req.body.degree;
+            module.color = req.body.color;
+            module.description = req.body.description;
+            module.save().then(module => {
+              req.flash("success_msg", "Course has been updated.");
+              res.redirect("/dashboards/facultyMember");
+            });
+          })
+          // Catch any errors
+          .catch(err => {
+            req.flash("error_msg", err);
+            res.redirect("/dashboards/facultyMember");
+            return;
+          });
+      }
+    })
+    // Catch any errors
+    .catch(err => {
+      req.flash("error_msg", err);
+      res.redirect("/dashboards/facultyMember");
+      return;
+    });
+});
+
+// Delete Module
+router.delete("/facultyMember/modules/", (req, res) => {
+  // ======== Delete Modules ========
+  // Get the selected module ids
+  let ids = req.body.ids;
+  
+  /* In case of only one "module" is selected to delete, the "id" is a string.
+   *  In order to delete the "module" it needs to be converted to an array of
+   *  one object.
+   */
+  //  Convert to an array of one object
+  if (typeof ids === "string") {
+    let idArray = [];
+    idArray.push(ids);
+    ids = idArray;
+  }
+
+  // Delete the modules from the database
+  ids.forEach(id => {
+    Module.deleteOne({ _id: id })
+      // Catch any errors
+      .catch(err => {
+        req.flash("error_msg", err);
+        res.redirect("/dashboards/facultyMember");
+        return;
+      });
+  });
+
+  // ======== Flash Success Message & Redirect Back To The Page ========
+  req.flash("success_msg", "Modules deleted successfully.");
+  res.redirect("/dashboards/facultyMember");
 });
 
 // console.log(`db.id: ${typeof(courseID)} - req.param.id: ${typeof(req.params.id)}, db.name: ${typeof(course.name)} - req.body.name: ${typeof(req.body.name)}, db.degree: ${typeof(course.name)} - req.body.degree: ${typeof(req.body.degree)}`);

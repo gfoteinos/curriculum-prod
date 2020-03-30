@@ -23,57 +23,54 @@
 {{/equal}}
 
 
-{{!==== Load the "Courses" management form ====}}
-{{!---- when click "Save Changes" at "Edit Course" form  ----}}
+{{!-- ======== LOAD THE "COURSES" MANAGEMENT FORM ======== --}}
+{{!-- ---- When Click "Save Changes" At "Edit Course" Form ---- --}}
+{{!-- In case of course already exist --}}
 {{#equal error_msg 'Fail to update. There is another "Course" with the same "name" and "degree". Click the edit button again to retry.' }}
-{{!-- Load "Courses" form --}}
 <script>coursesClick()</script>
 {{/equal}}
 
+{{!-- In case of no changes made --}}
 {{#equal error_msg 'Fail to update. The there are not any changes. Click the edit button again to retry.' }}
-{{!-- Load "Courses" form --}}
 <script>coursesClick()</script>
 {{/equal}}
 
-{{!---- In case of success ----}}
+{{!-- In case of success --}}
 {{#equal success_msg 'Course has been updated.' }}
-{{!-- Load Profile Form --}}
 <script>coursesClick()</script>
 {{/equal}}
 
-{{!---- when click "Delete" at "Courses" form  ----}}
-{{#equal success_msg 'Courses deleted successfully.' }}
-{{!-- Load Profile Form --}}
-<script>coursesClick()</script>
-{{/equal}}
-
-{{!==== Load the "Course" tab when click "Create Course" ====}}
-{{!---- In case of form fields error ----}}
+{{!-- ---- When Click "Create Course" At "Courses" Form ---- --}}
+{{!-- In case of form fields error --}}
 {{#equal error_msg "One or more of the form's fields are empty. Please fill in the form fields where missing." }}
-{{!-- Load Profile Form --}}
 <script>coursesClick()</script>
 {{/equal}}
 
-{{!---- In case of course already exist ----}}
+{{!-- In case of course already exist --}}
 {{#equal error_msg "Course already exist." }}
 {{!-- Load Profile Form --}}
 <script>coursesClick()</script>
 {{/equal}}
 
-{{!---- In case of course name is missing ----}}
+{{!-- In case of course name is missing --}}
 {{#equal error_msg '"Course name" is missing. Please enter course name."' }}
-{{!-- Load Profile Form --}}
 <script>coursesClick()</script>
 {{/equal}}
 
-{{!---- In case of success ----}}
+{{!-- In case of success --}}
 {{#equal success_msg 'New course added.' }}
 {{!-- Load Profile Form --}}
 <script>coursesClick()</script>
 {{/equal}}
 
+{{!-- ---- When Click "Delete" At "Courses" Form ---- --}}
+{{!-- In case of success --}}
+{{#equal success_msg 'Courses deleted successfully.' }}
+<script>coursesClick()</script>
+{{/equal}}
 
-{{!==== Load the "Module" tab when click "Create Module" ====}}
+{{!-- ======== LOAD THE "MODULES" MANAGEMENT FORM ======== --}}
+{{!-- ---- When Click "Create Module" At "Modules" Form ---- --}}
 {{!---- In case of form fields error ----}}
 {{#equal error_msg '"Module Name" or "Course Name" are missing. Please fill in the form fields where missing.' }}
 {{!-- Load Profile Form --}}
@@ -86,6 +83,17 @@
 <script>modulesClick()</script>
 {{/equal}}
 
+{{!---- In case of success ----}}
+{{#equal success_msg 'New module added.' }}
+{{!-- Load Profile Form --}}
+<script>modulesClick()</script>
+{{/equal}}
+
+{{!-- ---- When Click "Delete" At "Modules" Form ---- --}}
+{{!-- In case of success --}}
+{{#equal success_msg 'Modules deleted successfully.' }}
+<script>modulesClick()</script>
+{{/equal}}
 
 <!-- ======== HEADER ======== -->
 <header id="main-header" class="profile-header py-4 bg-dark text-light">
@@ -1298,7 +1306,8 @@
                 </button>
               </div>
               <div class="modal-body">
-                <form action="/dashboards/facultyMember/courses/?_method=PUT" method="post">
+                {{!-- action is getting from event.js --}}
+                <form action="" method="post"> 
                   <input type="hidden" name="_method" value="PUT">
 
                   <!-- ---- Course Name ---- -->
@@ -1435,8 +1444,8 @@
                   </div>
 
                   <!-- ---- Create Button ---- -->
-                  <div id="saveCourseBtn" class="d-flex justify-content-end">
-                    <button type="submit" class="btn btn-success">
+                  <div class="d-flex justify-content-end">
+                    <button type="submit" id="saveCourseBtn" class="btn btn-success">
                       Save
                     </button>
                   </div>
@@ -1474,6 +1483,88 @@
           </div>
         </div>
 
+        <!-- Edit Module -->
+        <div id="editModuleModal" class="modal fade modal--default" role="dialog">
+          <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+              <div class="modal-header d-flex align-items-center">
+                <div class="flex-column">
+                  <h3 class="mb-0">Edit Module</h3>
+                  <small>Update any of the module's element</small>
+                </div>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                {{!-- action is getting from event.js --}}
+                <form action="" method="post">
+                  <input type="hidden" name="_method" value="PUT">
+
+                  <!-- ---- Module Name ---- -->
+                  <div class="form-group">
+                    <label for="editModuleName">Module Name</label>
+                    <div class="input-group input-group--white">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text" aria-label="Input a module name">
+                          <i class="fas fa-book"></i>
+                        </span>
+                      </div>
+                      <input type="text" name="name" id="editModuleName" class="form-control form-control-lg"
+                        maxlength="64" required />
+                    </div>
+                  </div>
+                  <!-- ---- Course Name & Color ---- -->
+                  <div class="form-row">
+                    <!-- Course Name -->
+                    <div class="form-group col-md-6">
+                      <label for="editModuleCourseName">Course Name</label>
+                      <div class="input-group input-group--white">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text" aria-label="Input a course name">
+                            <i class="fas fa-award"></i>
+                          </span>
+                        </div>
+                        <select name="courseName" id="editModuleCourseName" class="custom-select custom-select-lg" required>
+                          <option disabled selected="">Choose ...</option>
+                          {{#each selectCourseName}}
+                          <option value="{{name}}">{{name}}</option>
+                          {{/each}}
+                        </select>
+                      </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                      <label for="editModuleColor">Color</label>
+                      <div class="input-group input-group--white">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text" aria-label="Select a course color">
+                            <i class="fas fa-palette"></i>
+                          </span>
+                        </div>
+                        <input type="color" name="color" id="editModuleColor" class="form-control form-control-lg"
+                          value="#343a40" required>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- ---- Description ---- -->
+                  <div class="form-group">
+                    <label for="editModuleDescription">Description</label>
+                    {{!-- <small>Write a few words about youself</small> --}}
+                    <textarea id="editModuleDescription" name="description" class="form-control" required></textarea>
+                  </div>
+
+                  <!-- ---- Save Button ---- -->
+                  <div class="d-flex justify-content-end">
+                    <button type="submit" class="btn btn-success">
+                      Save Changes
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <!-- Create Module -->
         <div id="createModuleModal" class="modal fade modal--default" role="dialog">
           <div class="modal-dialog modal-lg" role="document">
@@ -1498,8 +1589,8 @@
                           <i class="fas fa-book"></i>
                         </span>
                       </div>
-                      <input type="text" name="moduleName" id="createModuleName" class="form-control form-control-lg"
-                        maxlength="64" />
+                      <input type="text" name="name" id="createModuleName" class="form-control form-control-lg"
+                        maxlength="64" required />
                     </div>
                   </div>
                   <!-- ---- Course Name & Color ---- -->
@@ -1513,7 +1604,8 @@
                             <i class="fas fa-award"></i>
                           </span>
                         </div>
-                        <select name="courseName" id="createModuleCourseName" class="custom-select custom-select-lg">
+                        <select name="courseName" id="createModuleCourseName" class="custom-select custom-select-lg"
+                          required>
                           <option disabled selected="">Choose ...</option>
                           {{#each selectCourseName}}
                           <option value="{{name}}">{{name}}</option>
@@ -1538,8 +1630,7 @@
                   <div class="form-group">
                     <label for="createModuleDescription">Description</label>
                     {{!-- <small>Write a few words about youself</small> --}}
-                    <textarea id="createModuleDescription" name="description" class="form-control"
-                      required></textarea>
+                    <textarea id="createModuleDescription" name="description" class="form-control" required></textarea>
                   </div>
 
                   <!-- ---- Create Button ---- -->
@@ -1549,6 +1640,34 @@
                     </button>
                   </div>
                 </form>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Delete Modules Modal  -->
+        <div id="deleteModulesModal" class="modal fade modal--default" tabindex="-1" role="dialog">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header d-flex align-items-center">
+                <div class="flex-column">
+                  <h3 class="mb-0">Delete Modules</h3>
+                  <small>Delete the modules that are checked</small>
+                </div>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <p>
+                  If you delete a module, related info with that module like
+                  "courseworks", "grades" e.t.c. will be deleted as well. Are you sure to proceed?
+                </p>
+              </div>
+              <div class="modal-footer">
+                <button id="cancelDeleteModulesModalBtn" type="button" class="btn btn-secondary"
+                  data-dismiss="modal">No</button>
+                <button id="deleteModulesModalBtn" type="button" class="btn btn-primary">Yes</button>
               </div>
             </div>
           </div>
