@@ -53,7 +53,11 @@ const UICtrl = (function() {
 
     // -------- Modules Form --------
     modulesForm: "#modulesForm",
+    modulesTable: "#modulesTable",
     modulesTableBody: "#modulesTable tbody",
+    modulesTableColumnTitle: "#modulesTable .sort-title",
+    modulesTableColumnCourse: "#modulesTable .sort-course",
+    modulesTableColumnLevel: "#modulesTable .sort-level",
     modulesCheckBoxAll: "#modulesCheckAll",
     modulesCheckboxes: "#modulesTable tbody .custom-control-input",
     triggerDeleteModulesModalBtn: "#triggerDeleteModulesModalBtn",
@@ -74,10 +78,9 @@ const UICtrl = (function() {
     getUISelectors: function() {
       return UISelectors;
     },
-    sortTableColumn: function(columnIndex) {
+    sortTableColumn: function(table, columnIndex) {
       // Initialize variables
-      let table,
-        rows,
+      let rows,
         switching,
         i,
         x,
@@ -86,8 +89,9 @@ const UICtrl = (function() {
         dir,
         switchcount = 0;
 
-      // Get the table to be sorted
-      table = document.querySelector(UISelectors.coursesTable);
+      // // Get the table to be sorted
+      // console.log(table);
+      // // table = document.querySelector(UISelectors.modulesTable);
 
       // Set sort to start
       switching = true;
@@ -231,18 +235,18 @@ const App = (function(UICtrl) {
     const UISelectors = UICtrl.getUISelectors();
 
     // ======== COURSES TABLE ========
-    // -------- Sorting Courses Table --------
-    // Sort title column
+    // -------- Sorting "Courses" Table --------
+    // Sort "Title" column
     document
       .querySelector(UISelectors.coursesTableColumnTitle)
       .addEventListener("click", sortTable);
 
-    // Sort level column
+    // Sort "Level" column
     document
       .querySelector(UISelectors.coursesTableColumnLevel)
       .addEventListener("click", sortTable);
 
-    // -------- Check/Unckeck Courses Table Rows --------
+    // -------- Check/Unckeck "Courses" Table Rows --------
     // Check/uncheck all from "courses" table
     document
       .querySelector(UISelectors.coursesCheckBoxAll)
@@ -274,7 +278,23 @@ const App = (function(UICtrl) {
       .addEventListener("click", confirmDeletion);
 
     // ======== MODULES TABLE ========
-    // -------- Check/Unckeck Courses Table Rows --------
+    // -------- Sorting "Modules" Table --------
+    // Sort "Title" column
+    document
+      .querySelector(UISelectors.modulesTableColumnTitle)
+      .addEventListener("click", sortTable);
+
+    // Sort "Course" column
+    document
+      .querySelector(UISelectors.modulesTableColumnCourse)
+      .addEventListener("click", sortTable);
+
+    // Sort "Level" column
+    document
+      .querySelector(UISelectors.modulesTableColumnLevel)
+      .addEventListener("click", sortTable);
+
+    // -------- Check/Unckeck "Modules" Table Rows --------
     // Check/uncheck all from "courses" table
     document
       .querySelector(UISelectors.modulesCheckBoxAll)
@@ -343,7 +363,7 @@ const App = (function(UICtrl) {
     document.querySelector(UISelectors.editCourseName).value = title;
 
     // Academic Degree
-    document.querySelector(UISelectors.editCourseLevel).value = level;
+    document.querySelector("#editCourseLevel").value = level;
 
     // Color
     document.querySelector(UISelectors.editCourseColor).value = color;
@@ -407,29 +427,32 @@ const App = (function(UICtrl) {
     // ======== Find Which Is The Selected Column To Sort ========
 
     // -------- Gather the variables needed --------
+    // Initialising variables 
     let columnNameElements;
     let selectedColumnClassName;
     let sortIconClassName;
     let sortIconElement;
 
-    // If the selected column contains sort icon gather the vars
     if (e.target.classList.contains("fas")) {
+      // If the target is the column's title sort icon (arrow "down" or "up")
       columnNameElements = e.target.parentElement.parentElement.children;
       selectedColumnClassName = e.target.parentElement.className;
       sortIconClassName = e.target.className;
       sortIconElement = e.target;
     } else {
+      // If the target is column title
       columnNameElements = e.target.parentElement.children;
       selectedColumnClassName = e.target.className;
       sortIconClassName = e.target.children[0].className;
       sortIconElement = e.target.children[0];
     }
-
-    // -------- Get the selected column index --------
+      
+    // -------- Find The Column Title To Sort --------
     let index = 0;
     let columnIndex;
     for (const key of columnNameElements) {
       if (key.className === selectedColumnClassName) {
+        // Get the selected column index 
         columnIndex = index - 1;
       }
       index++;
@@ -442,8 +465,11 @@ const App = (function(UICtrl) {
       sortIconElement.className = "fas fa-angle-down";
     }
 
-    // ---- Sort the table column ----
-    UICtrl.sortTableColumn(columnIndex);
+    // ---- Sort The Table Column ----
+    // Get the table which is gonna be sorted 
+    const table = e.target.parentElement.parentElement.parentElement.parentElement;
+    // Sort the table's column
+    UICtrl.sortTableColumn(table, columnIndex);
   };
 
   // ======== MODULES TABLE EVENTS ========
@@ -491,11 +517,13 @@ const App = (function(UICtrl) {
     // Module Name
     document.querySelector(UISelectors.editModuleName).value = title;
 
-    // Course Name
-    document.querySelector(UISelectors.editModuleCourseName).value = `${course}-${level}`;
-
-    // Level
-    document.querySelector(UISelectors.editCourseLevel).value = "Astronomy-Master";
+    // -------- Course Name --------
+    const selectList = document.querySelector(UISelectors.editModuleCourseName);
+    for (const key of selectList) {
+      if(key.innerText === `${course}-${level}`) {
+        document.querySelector(UISelectors.editModuleCourseName).value = `${key.value}`;
+      }
+    }
 
     // Color
     document.querySelector(UISelectors.editModuleColor).value = color;
