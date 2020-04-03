@@ -1,0 +1,33 @@
+
+{{!-- ======== ACCOUNT MANAGEMENT FORM ======== --}}
+{{!-- ---- When Click "Save Email" At "Account Info" Form ---- --}}
+{{!-- In case of email has already register --}}
+{{#equal error_msg 'Email has already registered. Please enter another email.' }}
+<div class="alert alert-danger mt-3 mb-0 mx-4">{{error_msg}}</div>
+{{/equal}}
+
+{{!-- In case of success --}}
+{{#equal success_msg 'Email has been updated.' }}
+<div class="alert alert-success mt-3 mb-0 mx-4">{{success_msg}}</div>
+{{/equal}}
+
+{{!-- ---- When Click "Change Password" At "Account Info" Form ---- --}}
+{{!-- In case of "Current password does not match --}}
+{{#equal error_msg 'Current password does not match.' }}
+<div class="alert alert-danger mt-3 mb-0 mx-4">{{error_msg}}</div>
+{{/equal}}
+
+{{!-- In case of "password is less than 6 characters --}}
+{{#equal error_msg 'Password must be at least 6 characters.' }}
+<div class="alert alert-danger mt-3 mb-0 mx-4">{{error_msg}}</div>
+{{/equal}}
+
+{{!-- In case of "new password & re-type password" doesn't much --}}
+{{#equal error_msg '"New password" and "Re-type new password" does not match.' }}
+<div class="alert alert-danger mt-3 mb-0 mx-4">{{error_msg}}</div>
+{{/equal}}
+
+{{!-- In case of success --}}
+{{#equal success_msg 'Password has been updated.' }}
+<div class="alert alert-success mt-3 mb-0 mx-4">{{success_msg}}</div>
+{{/equal}}
