@@ -1,0 +1,24 @@
+
+{{!==== Load the "Profile" tab when click "Save" profile ====}}
+{{!---- In case of form fields error ----}}
+{{#equal error_msg 'One or more of the fields "Full Name, Academic Rank, Phone, Office, Bio" are empty. Please fill in the fields where missing.' }}
+<div class="alert alert-danger mt-3 mb-0 mx-4">{{error_msg}}</div>
+<script>profileClick()</script>
+{{/equal}}
+
+{{!---- In case of error uploading photo ----}}
+{{#equal error_msg 'Error uploading photo: File too large'  }}
+<div class="alert alert-danger mt-3 mb-0 mx-4">{{error_msg}}</div>
+<script>profileClick()</script>
+{{/equal}}
+
+{{#equal error_msg 'Error: Only image files are allowed to upload'  }}
+<div class="alert alert-danger mt-3 mb-0 mx-4">{{error_msg}}</div>
+<script>profileClick()</script>
+{{/equal}}
+
+{{!---- In case of success ----}}
+{{#equal success_msg 'Profile has been updated.' }}
+<div class="alert alert-success mt-3 mb-0 mx-4">{{success_msg}}</div>
+<script>profileClick()</script>
+{{/equal}}

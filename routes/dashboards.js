@@ -153,7 +153,7 @@ router.put("/facultyMember/email/:id", (req, res) => {
     if (user) {
       req.flash(
         "error_msg",
-        "Email has already registered. Please enter a another email."
+        "Email has already registered. Please enter another email."
       );
       res.redirect("/dashboards/facultyMember");
     } else {
@@ -163,7 +163,7 @@ router.put("/facultyMember/email/:id", (req, res) => {
           // Update the email with the new one
           user.email = req.body.email;
           user.save().then(user => {
-            req.flash("success_msg", "Email has been updated");
+            req.flash("success_msg", "Email has been updated.");
             res.redirect("/dashboards/facultyMember");
           });
         }
@@ -185,13 +185,13 @@ router.put("/facultyMember/password/:id", (req, res) => {
         if (req.body.password1 != req.body.password2) {
           req.flash(
             "error_msg",
-            '"New password" and "Re-type new password" does not match'
+            '"New password" and "Re-type new password" does not match.'
           );
           res.redirect("/dashboards/facultyMember");
         } else {
           // If new password is less than 6 characters
           if (req.body.password1.length < 4) {
-            req.flash("error_msg", "Password must be at least 6 characters");
+            req.flash("error_msg", "Password must be at least 6 characters.");
             res.redirect("/dashboards/facultyMember");
           } else {
             // Change password with the new one
@@ -206,7 +206,7 @@ router.put("/facultyMember/password/:id", (req, res) => {
                   .save()
                   // Then redirect to the "faculty member" page
                   .then(user => {
-                    req.flash("success_msg", "Password has been updated");
+                    req.flash("success_msg", "Password has been updated.");
                     res.redirect("/dashboards/facultyMember");
                   });
               });
@@ -215,7 +215,7 @@ router.put("/facultyMember/password/:id", (req, res) => {
         }
       } else {
         // Trigger error message and reload the page
-        req.flash("error_msg", "Current password does not match");
+        req.flash("error_msg", "Current password does not match.");
         res.redirect("/dashboards/facultyMember");
       }
     });
@@ -257,7 +257,7 @@ router.put("/facultyMember/profile/:id", (req, res) => {
       User.findOne({ _id: req.params.id }).then(user => {
         // ---- Fill in photo in different cases ----
         let photo;
-        // In case of uploding a profile photo
+        // In case of uploading a profile photo
         if (req.file) {
           photo = req.file.filename;
         } else {
@@ -384,7 +384,7 @@ router.put("/facultyMember/courses/:id", (req, res) => {
           course.name === req.body.name &&
           course.degree === req.body.degree
         ) {
-          error = `Fail to update. There is another "Course" with the same "name" and "degree". Click the edit button again to retry.`;
+          error = `Fail to update. There is another "Course" with the same "Title" and "Level". Click the edit button again to retry.`;
         }
       });
 
@@ -550,7 +550,7 @@ router.put("/facultyMember/modules/:id", (req, res) => {
           moduleCourseID === req.body.courseID &&
           module.name === req.body.name
         ) {
-          error = `Fail to update. There is another "Module" with the same "name" and "Course". Click the edit button again to retry.`;
+          error = `Fail to update. There is another "Module" with the same "Title" and "Course". Click the edit button again to retry.`;
         }
       });
 

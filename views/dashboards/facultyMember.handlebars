@@ -1,116 +1,3 @@
-{{!==== Load the "Profile" tab when click "Save" profile ====}}
-{{!---- In case of form fields error ----}}
-{{#equal error_msg 'One or more of the fields "Full Name, Academic Rank, Phone, Office, Bio" are empty. Please fill in the fields where missing.' }}
-{{!-- Load Profile Form --}}
-<script>profileClick()</script>
-{{/equal}}
-
-{{!---- In case of error uploading photo ----}}
-{{#equal error_msg 'Error uploading photo: File too large'  }}
-{{!-- Load Profile Form --}}
-<script>profileClick()</script>
-{{/equal}}
-
-{{#equal error_msg 'Error: Only image files are allowed to upload'  }}
-{{!-- Load Profile Form --}}
-<script>profileClick()</script>
-{{/equal}}
-
-{{!---- In case of success ----}}
-{{#equal success_msg 'Profile has been updated.' }}
-{{!-- Load Profile Form --}}
-<script>profileClick()</script>
-{{/equal}}
-
-
-{{!-- ======== LOAD THE "COURSES" MANAGEMENT FORM ======== --}}
-{{!-- ---- When Click "Save Changes" At "Edit Course" Form ---- --}}
-{{!-- In case of course already exist --}}
-{{#equal error_msg 'Fail to update. There is another "Course" with the same "name" and "degree". Click the edit button again to retry.' }}
-<script>coursesClick()</script>
-{{/equal}}
-
-{{!-- In case of no changes made --}}
-{{#equal error_msg 'Fail to update. There are not any changes. To edit a "Course" click the edit button again to retry.' }}
-<script>coursesClick()</script>
-{{/equal}}
-
-{{!-- In case of success --}}
-{{#equal success_msg 'Course has been updated.' }}
-<script>coursesClick()</script>
-{{/equal}}
-
-{{!-- ---- When Click "Create Course" At "Courses" Form ---- --}}
-{{!-- In case of form fields error --}}
-{{#equal error_msg "One or more of the form's fields are empty. Please fill in the form fields where missing." }}
-<script>coursesClick()</script>
-{{/equal}}
-
-{{!-- In case of course already exist --}}
-{{#equal error_msg "Course already exist." }}
-{{!-- Load Profile Form --}}
-<script>coursesClick()</script>
-{{/equal}}
-
-{{!-- In case of course name is missing --}}
-{{#equal error_msg '"Course name" is missing. Please enter course name."' }}
-<script>coursesClick()</script>
-{{/equal}}
-
-{{!-- In case of success --}}
-{{#equal success_msg 'New course added.' }}
-{{!-- Load Profile Form --}}
-<script>coursesClick()</script>
-{{/equal}}
-
-{{!-- ---- When Click "Delete" At "Courses" Form ---- --}}
-{{!-- In case of success --}}
-{{#equal success_msg 'Courses deleted successfully.' }}
-<script>coursesClick()</script>
-{{/equal}}
-
-{{!-- ======== LOAD THE "MODULES" MANAGEMENT FORM ======== --}}
-{{!-- ---- When Click "Save Changes" At "Edit Module" Form ---- --}}
-{{!-- In case of module already exist --}}
-{{#equal error_msg 'Fail to update. There is another "Module" with the same "name" and "Course". Click the edit button again to retry.' }}
-<script>modulesClick()</script>
-{{/equal}}
-
-{{!-- In case of no changes made --}}
-{{#equal error_msg 'Fail to update. There are not any changes. To edit a "Module" click the edit button again to retry.' }}
-<script>modulesClick()</script>
-{{/equal}}
-
-{{!-- In case of success --}}
-{{#equal success_msg 'Module has been updated.' }}
-<script>modulesClick()</script>
-{{/equal}}
-
-{{!-- ---- When Click "Create Module" At "Modules" Form ---- --}}
-{{!---- In case of form fields error ----}}
-{{#equal error_msg '"Module Name" or "Course Name" are missing. Please fill in the form fields where missing.' }}
-{{!-- Load Profile Form --}}
-<script>modulesClick()</script>
-{{/equal}}
-
-{{!---- In case of module already exist ----}}
-{{#equal error_msg "Module already exist." }}
-{{!-- Load Profile Form --}}
-<script>modulesClick()</script>
-{{/equal}}
-
-{{!---- In case of success ----}}
-{{#equal success_msg 'New module added.' }}
-{{!-- Load Profile Form --}}
-<script>modulesClick()</script>
-{{/equal}}
-
-{{!-- ---- When Click "Delete" At "Modules" Form ---- --}}
-{{!-- In case of success --}}
-{{#equal success_msg 'Modules deleted successfully.' }}
-<script>modulesClick()</script>
-{{/equal}}
-
 
 <!-- ======== HEADER ======== -->
 <header id="main-header" class="profile-header py-4 bg-dark text-light">
@@ -220,7 +107,7 @@
           <a class="list-group-item list-group-item-action" id="module-list" data-toggle="list" href="#modules"
             role="tab" aria-controls="modules">Modules</a>
         </div>
-        {{> _msg}}
+        {{!-- {{> _msg}} --}}
       </div>
       <!-- ---- WORK AREA ---- -->
       <div class="col-12 col-lg-8 pl-lg-0 mb-3">
@@ -234,6 +121,7 @@
                   Edit your account settings and change your password here
                 </small>
               </div>
+              {{> _accountFormMsgs}}
               <div class="card-body">
                 <!-- ======== Change Email ======== -->
                 <form action="/dashboards/facultyMember/email/{{faculty.id}}?_method=PUT" method="post">
@@ -326,6 +214,7 @@
                 <h3 class="mb-0">Profile</h3>
                 <small class="">Add Information About Yourself</small>
               </div>
+              {{> _formMsgsProfile }}
               <div class="card-body">
                 <!-- ======== Change Profile ======== -->
                 <form action="/dashboards/facultyMember/profile/{{faculty.id}}?_method=PUT" method="post"
@@ -905,6 +794,7 @@
                   Manage any course from the list
                 </small>
               </div>
+              {{> _formMsgsCourses }}
               <div class="card-body">
                 <form action="/dashboards/facultyMember/courses/?_method=DELETE" method="post" id="coursesForm">
 
@@ -1008,6 +898,7 @@
                   Manage any module from the list
                 </small>
               </div>
+              {{> _formMsgsModules }}
               <div class="card-body">
                 <!-- ======== Create/Delete Modules ======== -->
                 <form action="/dashboards/facultyMember/modules/?_method=DELETE" method="post" id="modulesForm">
