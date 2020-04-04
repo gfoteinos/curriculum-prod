@@ -71,6 +71,8 @@
     // Get the current year for the copyright
     $("#year").text(new Date().getFullYear());
 
+    // ======== BOOTSTRAP COMPONENTS ========
+    // ---- Tooltips & Popovers ----
     // Init tooltips
     $('[data-toggle="tooltip"]').tooltip();
 
@@ -80,7 +82,13 @@
       trigger: 'focus'
     })
 
-    // ======== Scrollspy ========
+    // ---- Tabs Nav ----
+    $('#dashboardTabs a').on('click', function (e) {
+      e.preventDefault()
+      $(this).tab('show')
+    })
+
+    // ======== SCROLLSPY ========
     // Init Scrollspy
     $("body").scrollspy({ target: "#main-navigation" });
 
@@ -103,7 +111,7 @@
       }
     });
 
-    // ======== Alert timeout ========
+    // ======== ALERT TIMEOUT ========
     setTimeout(function () {
       document.querySelector('.alert').remove();
     }, 5000);
@@ -120,7 +128,7 @@
       evt.cancel();
     });
 
-    // -------- "Edit Course" Form - "Description" textarea --------
+    // -------- "Edit Course" Form - "Description" Textarea --------
     const editCourseDescription = CKEDITOR.replace('editCourseDescription', {
       plugins: 'wysiwygarea, toolbar, basicstyles, link',
       extraPlugins: 'notification'
@@ -130,7 +138,7 @@
       editCourseDescription.showNotification('This field is required.', 'warning');
       evt.cancel();
     });
-   
+
 
     // -------- "Create Course" Form - "Description" Textarea --------
     const courseDescription = CKEDITOR.replace('createCourseDescription', {

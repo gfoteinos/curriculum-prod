@@ -119,11 +119,12 @@ caption {
   margin: 0.5rem 0 0 -0.75rem;
 }
 
-/* Bootstrap cards */
-#card-header__dashboardTabs .nav-item {
+/* Navigation Tabs */
+.nav-tabs--text-left .nav-item {
   text-align: left;
 }
 
+/* Bootstrap Cards  */
 /* Home-Page */
 .card--home-page {
   background-color: transparent;
