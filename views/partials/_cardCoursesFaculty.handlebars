@@ -1,0 +1,88 @@
+<div class="card">
+  <div class="card-header bg-white">
+    <h3 class="mb-0">Courses</h3>
+    <small class="">
+      Manage any course from the list
+    </small>
+  </div>
+  {{> _formMsgsCourses }}
+  <div class="card-body">
+    <form action="/dashboards/facultyMember/courses/?_method=DELETE" method="post" id="coursesForm">
+
+      <input type="hidden" name="_method" value="DELETE">
+
+      <div class="table-responsive">
+        <table id="coursesTable" class="table">
+          <caption class="h5 py-0">Courses</caption>
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col" class="sort-title">
+                Title
+                <i class="fas fa-angle-down"></i>
+              </th>
+              <th scope="col" class="sort-level">
+                Level
+                <i class="fas fa-angle-down"></i>
+              </th>
+              <th scope="col">Edit</th>
+              <th scope="col">
+                <div class="custom-control custom-checkbox checkThemAll">
+                  <input type="checkbox" class="custom-control-input" id="coursesCheckAll">
+                  <label class="custom-control-label" for="coursesCheckAll"></label>
+                </div>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#each listCourses}}
+            <tr>
+              <th scope="row">{{aa}}</th>
+              <td class="title">
+                {{name}}
+              </td>
+              <td class="level">
+                {{degree}}
+              </td>
+              <td class="d-none">
+                {{color}}
+              </td>
+              <td class="d-none">
+                {{description}}
+              </td>
+              <td>
+                <button type="button" id="editCourseBtn1" class="btn btn-sm btn-primary p-0" data-id={{id}}
+                  data-toggle="modal" data-target="#editCourseModal">
+                  <i class="fas fa-pencil-alt courseEdit"></i>
+                </button>
+              </td>
+              <td>
+                <div class="custom-control custom-checkbox">
+                  <input type="checkbox" class="custom-control-input" id="{{id}}">
+                  <label class="custom-control-label" for="{{id}}"></label>
+                </div>
+              </td>
+            </tr>
+            {{/each}}
+          </tbody>
+        </table>
+      </div>
+      <div class="d-flex justify-content-end mt-3">
+        <!-- Add Course Button -->
+        <button type="button" id="createCourseBtn" class="btn btn-success mr-2" data-toggle="modal"
+          data-target="#createCourseModal">
+          Create Course
+        </button>
+        <!-- Trigger Delete Course Modal -->
+        <button type="button" id="triggerDeleteCoursesModalBtn" class="btn btn-danger" data-toggle="modal"
+          data-target="#deleteCoursesModal" disabled>
+          Delete
+        </button>
+        <!-- Delete Course Button -->
+        <button type="submit" id="deleteCourseBtn" class="btn btn-danger d-none">
+          Delete
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

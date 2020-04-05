@@ -1,0 +1,203 @@
+<div class="card">
+  <div class="card-header bg-white">
+    <h3 class="mb-0">Profile</h3>
+    <small class="">Add Information About Yourself</small>
+  </div>
+  {{> _formMsgsProfile }}
+  <div class="card-body">
+    <!-- ======== Change Profile ======== -->
+    <form action="/dashboards/facultyMember/profile/{{faculty.id}}?_method=PUT" method="post"
+      enctype="multipart/form-data">
+      <input type="hidden" name="_method" value="PUT">
+
+      <!-- ==== BASICS ==== -->
+      <h4>Basics</h4>
+      <!-- Full Name & Academic Rank-->
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="fullName">Full Name</label>
+          <div class="input-group input-group--white">
+            <div class="input-group-prepend">
+              <span class="input-group-text" aria-label="Input a full name">
+                <i class="fas fa-user"></i>
+              </span>
+            </div>
+            <input type="text" name="fullName" id="fullName" class="form-control form-control-lg" placeholder=""
+              maxlength="64" value="{{faculty.name}}" required />
+          </div>
+        </div>
+        <div class="form-group col-md-6">
+          <label for="academicRank">Academic Rank</label>
+          <div class="input-group input-group--white">
+            <div class="input-group-prepend">
+              <span class="input-group-text" aria-label="Input an academic rank">
+                <i class="fas fa-graduation-cap"></i>
+              </span>
+            </div>
+            <select name="academicRank" id="academicRank" class="custom-select custom-select-lg" required>
+              <option selected>{{faculty.academicRank}}</option>
+              <option value="Professor">Professor</option>
+              <option value="Principal Teaching Fellow">Principal Teaching Fellow</option>
+              <option value="Senior Lecturer">Senior Lecturer</option>
+              <option value="Lecturer">Lecturer</option>
+              <option value="Teaching associate">Teaching associate</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <!-- Phone & Office Number-->
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="phone">Phone</label>
+          <div class="input-group input-group--white mb-1">
+            <div class="input-group-prepend">
+              <span class="input-group-text" aria-label="Input a phone number">
+                <i class="fas fa-phone"></i>
+              </span>
+            </div>
+            <input type="tel" name="phone" id="phone" class="form-control form-control-lg"
+              pattern="[0]{1}-[0-9]{4}-[0-9]{6}" aria-describedby="phoneHelp" value="{{faculty.phone}}" required />
+          </div>
+          <small id="phoneHelp" class="form-text text-muted">
+            Format: 0-1234-567890
+          </small>
+        </div>
+        <div class="form-group col-md-6">
+          <label for="office">Office</label>
+          <div class="input-group input-group--white mb-1">
+            <div class="input-group-prepend">
+              <span class="input-group-text" aria-label="Input an office number">
+                <i class="fas fa-building"></i>
+              </span>
+            </div>
+            <input type="text" name="officeNumber" id="office" class="form-control form-control-lg"
+              pattern="[A-Z]{2}[0-9]{2}[A-Z]{1}" aria-describedby="officeNumHelp" value="{{faculty.officeNumber}}"
+              required />
+          </div>
+          <small id="officeNumHelp" class="form-text text-muted">
+            Format: AB12D
+          </small>
+        </div>
+      </div>
+
+      <!-- ==== PROFILE PHOTO ==== -->
+      {{#if faculty.photo}}
+      <!-- Delete Profile Photo-->
+      <hr class="hr--y-wide">
+      <div class="form-group">
+        <div class="d-flex flex-row justify-content-center">
+          <div>
+            <img src="/img/facultyMembers/{{faculty.photo}}"
+              class="img-fluid avatar--pico avatar--rounded avatar--border-blue-thin mr-3" alt="Faculty member photo">
+          </div>
+          <div class="align-self-center">
+            <div class="form-group mb-0">
+              <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" id="deletePhoto" name="deletePhoto">
+                <label class="custom-control-label" for="deletePhoto">Delete profile photo</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {{else}}
+      <!-- Upload Profile Photo -->
+      <div class="form-group">
+        <label for="photo">Photo</label>
+        <small><span class="text-danger">(Optional)</span></small>
+        <!-- Custom File Input -->
+        <div class="custom-file">
+          <input type="file" name="photo" id="photo" class="custom-file-input">
+          <label class="custom-file-label" for="photo">Choose your profile image</label>
+          <small class="form-text text-muted" id="fileHelp">Max 3mb size image file</small>
+        </div>
+      </div>
+      {{/if}}
+
+      <hr class="hr--y-wide">
+
+      <!-- ==== BIO ==== -->
+      <h4 id="bio-label">Bio</h4>
+      <div class="form-group">
+        <small>Write a few words about youself</small>
+        <textarea id="bio" name="bio" class="form-control" aria-labelledby="bio-label" required>
+                      {{faculty.bio}} 
+                    </textarea>
+      </div>
+
+      <hr class="hr--y-wide">
+
+      <!-- ==== SOCIAL MEDIA ==== -->
+      <h4>Social Media <small><span class="text-danger">(Optional)</span></small></h4>
+      <!-- Facebook -->
+      <div class="form-group">
+        <label for="facebook">Facebook Profile</label>
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text">
+              <span class="d-sm-none" aria-label="Input your Facebook username">
+                <i class="fab fa-facebook-f"></i>
+              </span>
+              <span class="d-none d-sm-block">
+                http://www.facebook.com/
+              </span>
+            </span>
+          </div>
+          <input type="text" name="facebook" id="facebook" class="form-control form-control-lg"
+            aria-describedby="facebookHelp" value="{{faculty.facebook}}" />
+        </div>
+        <small id="facebookHelp" class="form-text text-muted">
+          Input your Facebook username (e.g. johndoe).
+        </small>
+      </div>
+      <!-- Twitter -->
+      <div class="form-group">
+        <label for="twitter">Twitter Profile</label>
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text">
+              <span class="d-sm-none" aria-label="Input your Twitter username">
+                <i class="fab fa-twitter"></i>
+              </span>
+              <span class="d-none d-sm-block">
+                http://twitter.com/
+              </span>
+            </span>
+          </div>
+          <input type="text" name="twitter" id="twitter" class="form-control form-control-lg"
+            aria-describedby="twitterHelp" value="{{faculty.twitter}}" />
+        </div>
+        <small id="twitterHelp" class="form-text text-muted">
+          Add your Twitter username (e.g. johndoe).
+        </small>
+      </div>
+      <!-- Linkedin -->
+      <div class="form-group">
+        <label for="linkedin">Linkedin Profile</label>
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text">
+              <span class="d-sm-none" aria-label="Input your Linkedin username">
+                <i class="fab fa-linkedin-in"></i>
+              </span>
+              <span class="d-none d-sm-block">
+                http://www.linkedin.com/
+              </span>
+            </span>
+          </div>
+          <input type="text" name="linkedin" id="linkedin" class="form-control form-control-lg"
+            aria-describedby="linkedinHelp" value="{{faculty.linkedin}}" />
+        </div>
+        <small id="linkedinHelp" class="form-text text-muted mb-3">
+          Input your LinkedIn resource id (e.g. in/johndoe).
+        </small>
+      </div>
+      <!-- Save Button -->
+      <div class="d-flex justify-content-end">
+        <button type="submit" class="btn btn-success">
+          Save
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
