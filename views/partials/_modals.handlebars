@@ -1,3 +1,89 @@
+{{!-- ======== Dashboard ======== --}}
+
+<!-- Add Taught Module -->
+<div id="addTaughtModuleModal" class="modal fade modal--default" role="dialog">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header d-flex align-items-center">
+        <div class="flex-column">
+          <h3 class="mb-0">Add Modules</h3>
+          <small>Select any module from the list in order to be added into "Taught Modules" list"</small>
+        </div>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form action="" method="post">
+          <div class="table-responsive">
+            <table id="modulesTableModal" class="table">
+              <caption class="h5 py-0">Modules</caption>
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col" class="sort-title">
+                    Title
+                    <i class="fas fa-angle-down"></i>
+                  </th>
+                  <th scope="col" class="sort-course">
+                    Course
+                    <i class="fas fa-angle-down"></i>
+                  </th>
+                  <th scope="col" class="sort-level">
+                    Level
+                    <i class="fas fa-angle-down"></i>
+                  </th>
+                  <th scope="col">
+                    <div class="custom-control custom-checkbox checkThemAll">
+                      <input type="checkbox" class="custom-control-input" id="modulesCheckAll">
+                      <label class="custom-control-label" for="modulesCheckAll"></label>
+                    </div>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {{#each listModules}}
+                <tr>
+                  <th scope="row">{{aa}}</th>
+                  <td class="title">
+                    {{name}}
+                  </td>
+                  <td class="course">
+                    {{course}}
+                  </td>
+                  <td class="level">
+                    {{degree}}
+                  </td>
+                  <td class="d-none">
+                    {{color}}
+                  </td>
+                  <td class="d-none">
+                    {{description}}
+                  </td>
+                  <td>
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" class="custom-control-input" id="{{id}}">
+                      <label class="custom-control-label" for="{{id}}"></label>
+                    </div>
+                  </td>
+                </tr>
+                {{/each}}
+              </tbody>
+            </table>
+          </div>
+          <div class="d-flex justify-content-end mt-3">
+            <!-- Add Taught Module Button -->
+            <button type="submit" id="addTaughtModuleBtn" class="btn btn-success mr-2">
+              <i class="fas fa-plus"></i>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 
 {{!-- ======== Courses ======== --}}
 <!-- Edit Course -->
