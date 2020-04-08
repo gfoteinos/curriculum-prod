@@ -58,7 +58,7 @@ const UICtrl = (function() {
     modulesTableColumnTitle: "#modulesTable .sort-title",
     modulesTableColumnCourse: "#modulesTable .sort-course",
     modulesTableColumnLevel: "#modulesTable .sort-level",
-    modulesCheckBoxAll: "#modulesCheckAll",
+    modulesCheckBoxAll: "#mtCheckAll",
     modulesCheckboxes: "#modulesTable tbody .custom-control-input",
     triggerDeleteModulesModalBtn: "#triggerDeleteModulesModalBtn",
     deleteModuleBtn: "#deleteModuleBtn",
@@ -74,11 +74,11 @@ const UICtrl = (function() {
 
     // -------- Dashboard Form --------
     // ---- Add Modules Modal ----
-    addModulesTableBody: "#modulesTable tbody",
+    addModulesTableBody: "#modulesTableModal tbody",
     addModulesTableColumnTitle: "#modulesTableModal .sort-title",
     addModulesTableColumnCourse: "#modulesTableModal .sort-course",
     addModulesTableColumnLevel: "#modulesTableModal .sort-level",
-    addModulesCheckBoxAll: "#modulesCheckAll"
+    addModulesCheckBoxAll: "#mtmCheckAll"
   };
 
   // ======== Public Methods ========
@@ -86,6 +86,112 @@ const UICtrl = (function() {
     getUISelectors: function() {
       return UISelectors;
     },
+    // ================ Forms ================
+    fillInEditCourseModalForm: function(
+      action,
+      title,
+      level,
+      color,
+      description
+    ) {
+      document
+        .querySelector(UISelectors.editCourseForm)
+        .setAttribute("action", action);
+
+      // Course Name
+      document.querySelector(UISelectors.editCourseName).value = title;
+
+      // Academic Degree
+      document.querySelector(UISelectors.editCourseLevel).value = level;
+
+      // Color
+      document.querySelector(UISelectors.editCourseColor).value = color;
+
+      // -------- Description --------
+      // Refresh CKEditor in order to update it's content without refresh the page
+      CKEDITOR.instances.editCourseDescription.setData(description, {
+        callback: function() {
+          this.checkDirty(); // true
+        }
+      });
+    },
+    fillInEditModuleModalForm: function() {
+      document
+        .querySelector(UISelectors.editModuleForm)
+        .setAttribute("action", action);
+
+      // Module Name
+      document.querySelector(UISelectors.editModuleName).value = title;
+
+      // -------- Course Name --------
+      const selectList = document.querySelector(
+        UISelectors.editModuleCourseName
+      );
+      for (const key of selectList) {
+        if (key.innerText === `${course}-${level}`) {
+          document.querySelector(
+            UISelectors.editModuleCourseName
+          ).value = `${key.value}`;
+        }
+      }
+
+      // Color
+      document.querySelector(UISelectors.editModuleColor).value = color;
+
+      // -------- Description --------
+      // Refresh CKEditor in order to update it's content without refresh the page
+      CKEDITOR.instances.editModuleDescription.setData(description, {
+        callback: function() {
+          this.checkDirty(); // true
+        }
+      });
+    },
+    // Deletion Functionality
+    populateDeletionData: function(listData, formID) {
+      // ======== Create Html Inputs To Insert In The Courses Form ========
+      // ---- Built Input Elements For Data Input Ids ----
+      // Initialize elements vars
+      let inputs = "";
+
+      // Create inputs
+      let itemArray = [],
+        id = "";
+      listData.forEach(function(item) {
+        // Get the "id" from "checkbox id" element
+        itemArray = item.id.split("-");
+        id = itemArray[1];
+
+        // Building html code
+        inputs += `<input type="text" name="ids" id="${id}" class="d-none" value="${id}"></input>`;
+      });
+
+      // ---- Built Div Element To Wrap Inputs ----
+      // Create div element
+      const div = document.createElement("div");
+      // Add class to div
+      div.className = "dataIDForDelete";
+      // Add inputs to div
+      div.innerHTML = `${inputs}`;
+
+      // ======== Insert Html Elements ========
+      // -------- Gather The Form IDs --------
+      const coursesFormID = document.querySelector(UISelectors.coursesForm).id;
+      const modulesFormID = document.querySelector(UISelectors.modulesForm).id;
+
+      // -------- Insert inputs --------
+      if (formID === coursesFormID) {
+        // Insert inputs in "Courses" form
+        document
+          .querySelector(UISelectors.coursesForm)
+          .insertAdjacentElement("beforeend", div);
+      } else if (formID === modulesFormID) {
+        // Insert inputs in "Modules" form
+        document
+          .querySelector(UISelectors.modulesForm)
+          .insertAdjacentElement("beforeend", div);
+      }
+    },
+    // -------- Tables --------
     sortTableColumn: function(table, columnIndex) {
       // Initialize variables
       let rows,
@@ -172,63 +278,66 @@ const UICtrl = (function() {
         }
       }
     },
-    getCheckBoxes: function(flag) {
-      // Gather checkboxes
-      const coursesCheckBoxes = document.querySelectorAll(
-        UISelectors.coursesCheckBoxes
+    getCheckBoxes: function(table) {
+      // Gather all checkboxes according to the table
+      const checkboxes = document.querySelectorAll(
+        `#${table} tbody .custom-control-input`
       );
-      const modulesCheckboxes = document.querySelectorAll(
-        UISelectors.modulesCheckboxes
-      );
-      // const courseworksCheckboxes = document.querySelectorAll(UISelectors.courseworksCheckboxes);
-      // const AddCourseworksCheckboxes = document.querySelectorAll(UISelectors.addCourseworksCheckboxes);
 
-      if (flag === "modules") {
-        return modulesCheckboxes;
-      } else if (flag === "courses") {
-        return coursesCheckBoxes;
-      } else if (flag === "courseworks") {
-        return courseworksCheckboxes;
-      } else if (flag === "addCourseworks") {
-        return AddCourseworksCheckboxes;
+      return checkboxes;
+    },
+    checkUncheckCheckboxes: function(
+      checkAllCheckbox,
+      checkboxes,
+      triggerButton
+    ) {
+      if (checkAllCheckbox.checked) {
+        checkboxes.forEach(function(checkbox) {
+          // Check all if not disabled
+          if (checkbox.disabled === false) {
+            checkbox.checked = true;
+            triggerButton.disabled = false;
+          }
+        });
+      } else {
+        // Uncheck all if disabled
+        checkboxes.forEach(function(checkbox) {
+          checkbox.checked = false;
+          triggerButton.disabled = true;
+        });
       }
     },
-    populateDeletionData: function(listData, formID) {
-      // ======== Create Html Inputs To Insert In The Courses Form ========
-      // ---- Built Input Elements For Data Input Ids ----
-      // Initialize elements vars
-      let inputs = "";
+    getTriggerBtn: function(buttons) {
+      // Convert to array
+      const values = Object.values(buttons);
 
-      // Create inputs
-      listData.forEach(function(item) {
-        // Building html code
-        inputs += `<input type="text" name="ids" id="${item.id}" class="d-none" value="${item.id}"></input>`;
+      // Get the trigger button
+      let button;
+      let trigger;
+      values.forEach(item => {
+        trigger = item.getAttribute("data-trigger");
+        if (trigger) {
+          button = document.querySelector(`#${item.id}`);
+        }
       });
 
-      // ---- Built Div Element To Wrap Inputs ----
-      // Create div element
-      const div = document.createElement("div");
-      // Add class to div
-      div.className = "dataIDForDelete";
-      // Add inputs to div
-      div.innerHTML = `${inputs}`;
+      return button;
+    },
+    OnOffButton: function(checkboxes, triggerButton) {
+      // ======== Get all checkboxes that are checked ========
+      let listChecked = [];
+      checkboxes.forEach(checkbox => {
+        if (checkbox.checked === true) {
+          listChecked.push(checkbox);
+        }
+      });
 
-      // ======== Insert Html Elements ========
-      // -------- Gather The Form IDs --------
-      const coursesFormID = document.querySelector(UISelectors.coursesForm).id;
-      const modulesFormID = document.querySelector(UISelectors.modulesForm).id;
-
-      // -------- Insert inputs --------
-      if (formID === coursesFormID) {
-        // Insert inputs in "Courses" form
-        document
-          .querySelector(UISelectors.coursesForm)
-          .insertAdjacentElement("beforeend", div);
-      } else if (formID === modulesFormID) {
-        // Insert inputs in "Modules" form
-        document
-          .querySelector(UISelectors.modulesForm)
-          .insertAdjacentElement("beforeend", div);
+      // ======== Enable/Disable Button ========
+      // If a checkbox is checked, enable button else disable button
+      if (listChecked.length > 0) {
+        triggerButton.disabled = false;
+      } else {
+        triggerButton.disabled = true;
       }
     }
   };
@@ -242,6 +351,39 @@ const App = (function(UICtrl) {
     // Get UISelectors
     const UISelectors = UICtrl.getUISelectors();
 
+    // ================ TABLE EVENTS ================
+    // -------- Check/Unckeck All Table Rows --------
+    // Check/uncheck all from "courses" table at "Courses" form
+    document
+      .querySelector(UISelectors.coursesCheckBoxAll)
+      .addEventListener("click", checkUncheckAll);
+
+    // Check/uncheck all from "modules" table at "Modules" form
+    document
+      .querySelector(UISelectors.modulesCheckBoxAll)
+      .addEventListener("click", checkUncheckAll);
+
+    // Check/uncheck all from "Add Modules" table at "Add Modules" modal
+    document
+      .querySelector(UISelectors.addModulesCheckBoxAll)
+      .addEventListener("click", checkUncheckAll);
+
+    // -------- Check/Unckeck A Selected Table Row --------
+    // Check/uncheck a course from "courses" table at "Courses" form
+    document
+      .querySelector(UISelectors.coursesTableBody)
+      .addEventListener("click", checkUncheckRow);
+
+    // Check/uncheck a module from "modules" table at "Modules" form
+    document
+      .querySelector(UISelectors.modulesTableBody)
+      .addEventListener("click", checkUncheckRow);
+
+    // Check/uncheck a module from "modules" table at "Add Modules" modal
+    document
+      .querySelector(UISelectors.addModulesTableBody)
+      .addEventListener("click", checkUncheckRow);
+
     // ======== COURSES TABLE ========
     // -------- Sorting "Courses" Table --------
     // Sort "Title" column
@@ -254,21 +396,10 @@ const App = (function(UICtrl) {
       .querySelector(UISelectors.coursesTableColumnLevel)
       .addEventListener("click", sortTable);
 
-    // -------- Check/Unckeck "Courses" Table Rows --------
-    // Check/uncheck all from "courses" table
-    document
-      .querySelector(UISelectors.coursesCheckBoxAll)
-      .addEventListener("click", checkUncheckAllCourses);
-
-    // Check/uncheck a course from "courses" table
-    document
-      .querySelector(UISelectors.coursesTableBody)
-      .addEventListener("click", enableDeleteBtn);
-
     // Edit Course Button
     document
       .querySelector(UISelectors.coursesTableBody)
-      .addEventListener("click", fillInEditCourseForm);
+      .addEventListener("click", editCourse);
 
     // Save Course Button
     document
@@ -320,26 +451,10 @@ const App = (function(UICtrl) {
       .querySelector(UISelectors.addModulesTableColumnLevel)
       .addEventListener("click", sortTable);
 
-    // -------- Check/Unckeck "Modules" Table Rows --------
-    // Check/uncheck all from "modules" table
-    document
-      .querySelector(UISelectors.modulesCheckBoxAll)
-      .addEventListener("click", checkUncheckAllModules);
-
-    // Check/uncheck all from "modules" table
-    document
-      .querySelector(UISelectors.addModulesCheckBoxAll)
-      .addEventListener("click", checkUncheckAllModules);
-
-    // Check/uncheck a module from "modules" table
-    document
-      .querySelector(UISelectors.modulesTableBody)
-      .addEventListener("click", enableDeleteBtn);
-
     // Edit Module Button
     document
       .querySelector(UISelectors.modulesTableBody)
-      .addEventListener("click", fillInEditModuleForm);
+      .addEventListener("click", editModule);
 
     // "No" Button On Delete Module Modal
     document
@@ -354,58 +469,50 @@ const App = (function(UICtrl) {
 
   // ======== COURSES TABLE EVENTS ========
   // Edit Course
-  const fillInEditCourseForm = function(e) {
-    // Get UISelectors
-    const UISelectors = UICtrl.getUISelectors();
+  const editCourse = function(e) {
+    // Initilize variables needed
+    let title, level, color, description, courseID;
 
-    // ======== Gather The Info From "Courses" Table ========
-    // Title
-    const title =
-      e.target.parentElement.parentElement.parentElement.children[1].innerText;
+    if (e.target.classList.contains("courseEdit")) {
+      // -------- Gather The Info From "Courses" Table --------
+      // Title
+      title =
+        e.target.parentElement.parentElement.parentElement.children[1]
+          .innerText;
 
-    // Level
-    const level =
-      e.target.parentElement.parentElement.parentElement.children[2].innerText;
+      // Level
+      level =
+        e.target.parentElement.parentElement.parentElement.children[2]
+          .innerText;
 
-    // -------- Color --------
-    // Select the text of DOM element & get rid of spaces
-    let color = e.target.parentElement.parentElement.parentElement.children[3].innerText.match(
-      /([\w]+|\"[\w\s]+\")/g
-    );
-    // Convert the array to string
-    color = `#${color.toString()}`;
+      // -------- Color --------
+      // Select the text of DOM element & get rid of spaces
+      color = e.target.parentElement.parentElement.parentElement.children[3].innerText.match(
+        /([\w]+|\"[\w\s]+\")/g
+      );
+      // Convert the array to string
+      color = `#${color.toString()}`;
 
-    // Description
-    const description =
-      e.target.parentElement.parentElement.parentElement.children[4].innerText;
+      // Description
+      description =
+        e.target.parentElement.parentElement.parentElement.children[4]
+          .innerText;
 
-    // Course ID
-    const courseID = e.target.parentElement.getAttribute("data-id");
+      // Course ID
+      courseID = e.target.parentElement.getAttribute("data-id");
 
-    // ======== Fill In The "Edit Course" Form Modal ========
-    // -------- Set Form Action --------
-    const action = `/dashboards/facultyMember/courses/${courseID}?_method=PUT`;
+      // Set Form Action
+      const action = `/dashboards/facultyMember/courses/${courseID}?_method=PUT`;
 
-    document
-      .querySelector(UISelectors.editCourseForm)
-      .setAttribute("action", action);
-
-    // Course Name
-    document.querySelector(UISelectors.editCourseName).value = title;
-
-    // Academic Degree
-    document.querySelector("#editCourseLevel").value = level;
-
-    // Color
-    document.querySelector(UISelectors.editCourseColor).value = color;
-
-    // -------- Description --------
-    // Refresh CKEditor in order to update it's content without refresh the page
-    CKEDITOR.instances.editCourseDescription.setData(description, {
-      callback: function() {
-        this.checkDirty(); // true
-      }
-    });
+      // -------- Fill In The "Edit Course" Modal Form --------
+      UICtrl.fillInEditCourseModalForm(
+        action,
+        title,
+        level,
+        color,
+        description
+      );
+    }
   };
 
   // Save Course
@@ -418,136 +525,97 @@ const App = (function(UICtrl) {
     // e.preventDefault();
   };
 
-  // Check/Uncheck Checkbox For All Checkboxes On Courses Table
-  const checkUncheckAllCourses = function(e) {
-    // ======== Gather All Necessary Elements ========
-    // Get UISelectors
-    const UISelectors = UICtrl.getUISelectors();
-
-    // Gather all checkboxes from UI
-    const checkboxes = UICtrl.getCheckBoxes("courses");
-
-    // Get the delete courses button
-    const deleteBtn = document.querySelector(
-      UISelectors.triggerDeleteCoursesModalBtn
-    );
-
-    // ======== Check/Uncheck Checkboxes ========
-    if (e.target.checked) {
-      checkboxes.forEach(function(checkbox) {
-        // Check all if not disabled
-        if (checkbox.disabled === false) {
-          checkbox.checked = true;
-          deleteBtn.disabled = false;
-        }
-      });
-    } else {
-      // Uncheck all if disabled
-      checkboxes.forEach(function(checkbox) {
-        checkbox.checked = false;
-        deleteBtn.disabled = true;
-      });
-    }
-  };
-
   // ======== MODULES TABLE EVENTS ========
   // Edit Module
-  const fillInEditModuleForm = function(e) {
-    // Get UISelectors
-    const UISelectors = UICtrl.getUISelectors();
+  const editModule = function(e) {
+    // Initilize variables needed
+    let title, course, level, color, description, moduleID;
 
-    // ======== Gather The Info From "Modules" Table ========
-    // Title
-    const title =
-      e.target.parentElement.parentElement.parentElement.children[1].innerText;
+    if (e.target.classList.contains("moduleEdit")) {
+      // -------- Gather The Info From "Modules" Table --------
+      // Title
+      title =
+        e.target.parentElement.parentElement.parentElement.children[1]
+          .innerText;
 
-    // Course
-    const course =
-      e.target.parentElement.parentElement.parentElement.children[2].innerText;
+      // Course
+      course =
+        e.target.parentElement.parentElement.parentElement.children[2]
+          .innerText;
 
-    // Level
-    const level =
-      e.target.parentElement.parentElement.parentElement.children[3].innerText;
+      // Level
+      level =
+        e.target.parentElement.parentElement.parentElement.children[3]
+          .innerText;
 
-    // -------- Color --------
-    // Select the text of DOM element & get rid of spaces
-    let color = e.target.parentElement.parentElement.parentElement.children[4].innerText.match(
-      /([\w]+|\"[\w\s]+\")/g
-    );
-    // Convert the array to string
-    color = `#${color.toString()}`;
+      // -------- Color --------
+      // Select the text of DOM element & get rid of spaces
+      color = e.target.parentElement.parentElement.parentElement.children[4].innerText.match(
+        /([\w]+|\"[\w\s]+\")/g
+      );
+      // Convert the array to string
+      color = `#${color.toString()}`;
 
-    // Description
-    const description =
-      e.target.parentElement.parentElement.parentElement.children[5].innerText;
+      // Description
+      description =
+        e.target.parentElement.parentElement.parentElement.children[5]
+          .innerText;
 
-    // Module ID
-    const moduleID = e.target.parentElement.getAttribute("data-id");
+      // Module ID
+      moduleID = e.target.parentElement.getAttribute("data-id");
 
-    // ======== Fill In The "Edit Module" Form Modal ========
-    // -------- Set Form Action --------
-    const action = `/dashboards/facultyMember/modules/${moduleID}?_method=PUT`;
+      // Set Form Action
+      const action = `/dashboards/facultyMember/modules/${moduleID}?_method=PUT`;
 
-    document
-      .querySelector(UISelectors.editModuleForm)
-      .setAttribute("action", action);
-
-    // Module Name
-    document.querySelector(UISelectors.editModuleName).value = title;
-
-    // -------- Course Name --------
-    const selectList = document.querySelector(UISelectors.editModuleCourseName);
-    for (const key of selectList) {
-      if (key.innerText === `${course}-${level}`) {
-        document.querySelector(
-          UISelectors.editModuleCourseName
-        ).value = `${key.value}`;
-      }
-    }
-
-    // Color
-    document.querySelector(UISelectors.editModuleColor).value = color;
-
-    // -------- Description --------
-    // Refresh CKEditor in order to update it's content without refresh the page
-    CKEDITOR.instances.editModuleDescription.setData(description, {
-      callback: function() {
-        this.checkDirty(); // true
-      }
-    });
-  };
-
-  // Check/Uncheck Checkbox For All Checkboxes On Courses Table
-  const checkUncheckAllModules = function(e) {
-    // ======== Gather All Necessary Elements ========
-    // Get UISelectors
-    const UISelectors = UICtrl.getUISelectors();
-
-    // Gather all checkboxes from UI
-    const checkboxes = UICtrl.getCheckBoxes("modules");
-
-    // Get the delete courses button
-    const deleteBtn = document.querySelector(
-      UISelectors.triggerDeleteModulesModalBtn
-    );
-
-    // ======== Check/Uncheck Checkboxes ========
-    if (e.target.checked) {
-      checkboxes.forEach(function(checkbox) {
-        // Check all if not disabled
-        if (checkbox.disabled === false) {
-          checkbox.checked = true;
-          deleteBtn.disabled = false;
-        }
-      });
-    } else {
-      // Uncheck all if disabled
-      checkboxes.forEach(function(checkbox) {
-        checkbox.checked = false;
-        deleteBtn.disabled = true;
-      });
+      // -------- Fill In The "Edit Module" Modal Form --------
+      UICtrl.fillInEditModuleModalForm(
+        action,
+        title,
+        course,
+        level,
+        color,
+        description,
+        moduleID
+      );
     }
   };
+
+  // // Check/Uncheck Checkbox For All Checkboxes On Modules Table
+  // const checkUncheckAllModules = function(e) {
+  //   // ======== Gather All Necessary Elements ========
+  //   // Get UISelectors
+  //   const UISelectors = UICtrl.getUISelectors();
+
+  //   // Get the table id according to the target element
+  //   const table =
+  //     e.target.parentElement.parentElement.parentElement.parentElement
+  //       .parentElement.id;
+
+  //   // Gather all checkboxes from UI table
+  //   const checkboxes = UICtrl.getCheckBoxes(table);
+
+  //   // Get the delete modules button
+  //   const deleteBtn = document.querySelector(
+  //     UISelectors.triggerDeleteModulesModalBtn
+  //   );
+
+  //   // ======== Check/Uncheck Checkboxes ========
+  //   if (e.target.checked) {
+  //     checkboxes.forEach(function(checkbox) {
+  //       // Check all if not disabled
+  //       if (checkbox.disabled === false) {
+  //         checkbox.checked = true;
+  //         deleteBtn.disabled = false;
+  //       }
+  //     });
+  //   } else {
+  //     // Uncheck all if disabled
+  //     checkboxes.forEach(function(checkbox) {
+  //       checkbox.checked = false;
+  //       deleteBtn.disabled = true;
+  //     });
+  //   }
+  // };
 
   // ======== COURSES & MODULES TABLES EVENTS ========
   //Sort Table
@@ -603,56 +671,57 @@ const App = (function(UICtrl) {
     UICtrl.sortTableColumn(table, columnIndex);
   };
 
-  // -------- Deletion Functionality --------
-  // Enable Delete Button For (Courses & Modules Deletion)
-  const enableDeleteBtn = function(e) {
-    // Get UISelectors
-    const UISelectors = UICtrl.getUISelectors();
+  // Check/Uncheck Checkbox For All Checkboxes On Courses Table
+  const checkUncheckAll = function(e) {
+    // -------- Gather All Necessary Elements --------
+    // Get the target element
+    checkAllCheckbox = e.target;
 
-    // ======== Gather the tables ========
-    const coursesTable = document.querySelector(UISelectors.coursesTableBody);
-    const modulesTable = document.querySelector(UISelectors.modulesTableBody);
-    const targetTable =
-      e.target.parentElement.parentElement.parentElement.parentElement;
+    // Get the table id according to the target element
+    const table =
+      checkAllCheckbox.parentElement.parentElement.parentElement.parentElement
+        .parentElement.id;
 
-    // ======== Gather All Necessary Elements ========
+    // Gather all checkboxes from UI table
+    const checkboxes = UICtrl.getCheckBoxes(table);
+
+    // Gather all buttons which are on the form's bottom
+    const buttons =
+      e.target.parentElement.parentElement.parentElement.parentElement
+        .parentElement.parentElement.nextElementSibling.children;
+
+    // -------- Get the trigger(enable/disable) button --------
+    const triggerButton = UICtrl.getTriggerBtn(buttons);
+
+    // -------- Check/Uncheck Checkboxes --------
+    UICtrl.checkUncheckCheckboxes(checkAllCheckbox, checkboxes, triggerButton);
+  };
+
+  // Check/Uncheck A Checkbox Row In A Table
+  const checkUncheckRow = function(e) {
     if (e.target.classList.contains("custom-control-input")) {
-      if (modulesTable === targetTable) {
-        // -------- Get the "Modules" table elements --------
-        // Gather all checkboxes from UI
-        checkboxes = UICtrl.getCheckBoxes("modules");
-        // Get the delete modules button
-        deleteBtn = document.querySelector(
-          UISelectors.triggerDeleteModulesModalBtn
-        );
-      } else if (coursesTable === targetTable) {
-        // -------- Get the "Courses" table elements --------
-        // Gather all checkboxes from UI
-        checkboxes = UICtrl.getCheckBoxes("courses");
-        // Get the delete modules button
-        deleteBtn = document.querySelector(
-          UISelectors.triggerDeleteCoursesModalBtn
-        );
-      }
+      // -------- Gather All Necessary Elements --------
+      // Get the table id according to the target element
+      const table =
+        e.target.parentElement.parentElement.parentElement.parentElement
+          .parentElement.id;
 
-      // ======== Get all checkboxes that are checked ========
-      let listChecked = [];
-      checkboxes.forEach(checkbox => {
-        if (checkbox.checked === true) {
-          listChecked.push(checkbox);
-        }
-      });
+      // Gather all checkboxes from UI table
+      const checkboxes = UICtrl.getCheckBoxes(table);
 
-      // ======== Enable/Disable Button ========
-      // If a checkbox is checked, enable button else disable button
-      if (listChecked.length > 0) {
-        deleteBtn.disabled = false;
-      } else {
-        deleteBtn.disabled = true;
-      }
+      // Gather all buttons which are on the form's bottom
+      const buttons =
+        e.target.parentElement.parentElement.parentElement.parentElement
+          .parentElement.parentElement.nextElementSibling.children;
+
+      // -------- Get the trigger(enable/disable) button --------
+      const triggerButton = UICtrl.getTriggerBtn(buttons);
+
+      UICtrl.OnOffButton(checkboxes, triggerButton);
     }
   };
 
+  // -------- Deletion Functionality --------
   // Cancel Deletion
   const cancelDeletion = function(e) {
     // Get UISelectors
@@ -738,8 +807,7 @@ const App = (function(UICtrl) {
       // Populate the checked courses in "Courses" table
       UICtrl.populateDeletionData(listChecked, coursesFormID);
       // Click delete course button
-      document.querySelector(UISelectors.deleteCourseBtn).click();
-      console.log(currentModalID);
+      // document.querySelector(UISelectors.deleteCourseBtn).click();
     } else if (currentModalID === modulesModalID) {
       // -------- Get the "Modules" table elements --------
       // Gather all checkboxes from UI
@@ -754,8 +822,7 @@ const App = (function(UICtrl) {
       // Populate the checked modules in "Modules" table
       UICtrl.populateDeletionData(listChecked, modulesFormID);
       // Click delete course button
-      document.querySelector(UISelectors.deleteModuleBtn).click();
-      console.log(currentModalID);
+      // document.querySelector(UISelectors.deleteModuleBtn).click();
     }
   };
 

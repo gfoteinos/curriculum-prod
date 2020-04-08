@@ -35,8 +35,8 @@
                   </th>
                   <th scope="col">
                     <div class="custom-control custom-checkbox checkThemAll">
-                      <input type="checkbox" class="custom-control-input" id="modulesCheckAll">
-                      <label class="custom-control-label" for="modulesCheckAll"></label>
+                      <input type="checkbox" class="custom-control-input" id="mtmCheckAll">
+                      <label class="custom-control-label" for="mtmCheckAll"></label>
                     </div>
                   </th>
                 </tr>
@@ -62,8 +62,8 @@
                   </td>
                   <td>
                     <div class="custom-control custom-checkbox">
-                      <input type="checkbox" class="custom-control-input" id="{{id}}">
-                      <label class="custom-control-label" for="{{id}}"></label>
+                      <input type="checkbox" class="custom-control-input" id="mtm-{{id}}">
+                      <label class="custom-control-label" for="mtm-{{id}}"></label>
                     </div>
                   </td>
                 </tr>
@@ -73,7 +73,7 @@
           </div>
           <div class="d-flex justify-content-end mt-3">
             <!-- Add Taught Module Button -->
-            <button type="submit" id="addTaughtModuleBtn" class="btn btn-success mr-2">
+            <button type="submit" id="addTaughtModuleBtn" class="btn btn-success mr-2" data-trigger="true" disabled>
               <i class="fas fa-plus"></i>
             </button>
           </div>
