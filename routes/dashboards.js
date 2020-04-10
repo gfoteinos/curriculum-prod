@@ -102,6 +102,7 @@ router.get("/facultyMember", (req, res) => {
 
       // -------- Get All Modules --------
       Module.find({})
+        .populate("courseID")
         .sort({ name: "asc" })
         .then(modules => {
           let listModules = []; // For "Modules" table in "Modules" form
@@ -113,8 +114,8 @@ router.get("/facultyMember", (req, res) => {
                 aa: counter,
                 id: module._id,
                 name: module.name,
-                course: module.course,
-                degree: module.degree,
+                course: module.courseID.name,
+                degree: module.courseID.degree,
                 color: module.color,
                 description: module.description
               });
@@ -502,28 +503,21 @@ router.post("/facultyMember/modules/", (req, res) => {
         res.redirect("/dashboards/facultyMember");
       } else {
         // ======== ADD DATA TO THE DATABASE ========
-        // Find course name & degree using course id
-        Course.find({ _id: req.body.courseID }, { name: 1, degree: 1 }).then(
-          course => {
-            // ---- Prepare data for saving ----
-            const newModule = {
-              name: bodyModuleName,
-              courseID: req.body.courseID,
-              course: course[0].name,
-              degree: course[0].degree,
-              color: req.body.color,
-              description: req.body.description
-            };
-            // ---- Save data to the database ----
-            new Module(newModule)
-              // Save & Redirect with success message
-              .save()
-              .then(module => {
-                req.flash("success_msg", "New module added.");
-                res.redirect("/dashboards/facultyMember");
-              });
-          }
-        );
+        // ---- Prepare data for saving ----
+        const newModule = {
+          name: bodyModuleName,
+          courseID: req.body.courseID,
+          color: req.body.color,
+          description: req.body.description
+        };
+        // ---- Save data to the database ----
+        new Module(newModule)
+          // Save & Redirect with success message
+          .save()
+          .then(module => {
+            req.flash("success_msg", "New module added.");
+            res.redirect("/dashboards/facultyMember");
+          });
       }
     });
   }
@@ -577,31 +571,25 @@ router.put("/facultyMember/modules/:id", (req, res) => {
         res.redirect("/dashboards/facultyMember");
       } else {
         // ======== UPDATE THE "MODULE" INFO ========
-        Course.find({ _id: req.body.courseID }, { name: 1, degree: 1 }).then(
-          course => {
-            Module.findOne({ _id: req.params.id })
-              .then(module => {
-                module.name = req.body.name;
-                module.courseID = req.body.courseID;
-                module.course = course[0].name;
-                module.degree = course[0].degree;
-                module.color = req.body.color;
-                module.description = req.body.description;
-                // Save changes
-                module.save().then(module => {
-                  // Flash success message & redirect back to the page
-                  req.flash("success_msg", "Module has been updated.");
-                  res.redirect("/dashboards/facultyMember");
-                });
-              })
-              // Catch any errors
-              .catch(err => {
-                req.flash("error_msg", err.message);
-                res.redirect("/dashboards/facultyMember");
-                return;
-              });
-          }
-        );
+        Module.findOne({ _id: req.params.id })
+          .then(module => {
+            module.name = req.body.name;
+            module.courseID = req.body.courseID;
+            module.color = req.body.color;
+            module.description = req.body.description;
+            // Save changes
+            module.save().then(module => {
+              // Flash success message & redirect back to the page
+              req.flash("success_msg", "Module has been updated.");
+              res.redirect("/dashboards/facultyMember");
+            });
+          })
+          // Catch any errors
+          .catch(err => {
+            req.flash("error_msg", err.message);
+            res.redirect("/dashboards/facultyMember");
+            return;
+          });
       }
     }) // Catch any errors
     .catch(err => {

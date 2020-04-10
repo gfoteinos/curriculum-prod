@@ -11,17 +11,17 @@ const ModuleSchema = new Schema({
     required: true
   },
   courseID: {
-    // Relation with the 'users' collection
+    // Relation with the 'courses' collection
     type: Schema.Types.ObjectId,
     ref: 'courses'
   },
   course: {
     type: String,
-    required: true
+    required: false
   },
   degree: {
     type: String,
-    required: true
+    required: false
   },
   color: {
     type: String,

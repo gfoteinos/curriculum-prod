@@ -66,8 +66,8 @@
               </td>
               <td>
                 <div class="custom-control custom-checkbox">
-                  <input type="checkbox" class="custom-control-input" id="mt-{{id}}">
-                  <label class="custom-control-label" for="mt-{{id}}"></label>
+                  <input type="checkbox" class="custom-control-input" id="mtf-{{id}}" data-id="{{id}}">
+                  <label class="custom-control-label" for="mtf-{{id}}"></label>
                 </div>
               </td>
             </tr>
@@ -76,14 +76,22 @@
         </table>
       </div>
       <div class="d-flex justify-content-end mt-3">
+        {{#if listCourses}}
         <!-- Add Module Button -->
         <button type="button" id="createModuleBtn" class="btn btn-success mr-2" data-toggle="modal"
           data-target="#createModuleModal">
           Create Module
         </button>
+        {{else}}
+        <button id="UnableCreateModuleBtn" type="button" class="btn btn-success mr-2" data-toggle="popover"
+          data-trigger="focus" title="Attention" data-placement="bottom"
+          data-content="There are no Courses. Please create a Course first.">
+          Create Module
+        </button>
+        {{/if}}
         <!-- Trigger Delete Module Modal -->
-        <button type="button" id="triggerDeleteModulesModalBtn" class="btn btn-danger" data-trigger="true" data-toggle="modal"
-          data-target="#deleteModulesModal" disabled>
+        <button type="button" id="triggerDeleteModulesModalBtn" class="btn btn-danger" data-trigger="true"
+          data-toggle="modal" data-target="#deleteModulesModal" disabled>
           Delete
         </button>
         <!-- Delete Module Button -->
