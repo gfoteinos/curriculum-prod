@@ -51,7 +51,26 @@
               </tr>
             </thead>
             <tbody>
-
+              {{#each taughtModulesList}}
+              <tr>
+                <th scope="row">{{aa}}</th>
+                <td class="title">
+                  {{name}}
+                </td>
+                <td class="course">
+                  {{courseName}}
+                </td>
+                <td class="level">
+                  {{courseDegree}}
+                </td>
+                <td>
+                  <div class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="mtf-{{id}}" data-id="{{id}}">
+                    <label class="custom-control-label" for="mtf-{{id}}"></label>
+                  </div>
+                </td>
+              </tr>
+              {{/each}}
             </tbody>
           </table>
         </div>

@@ -115,12 +115,14 @@ const UICtrl = (function() {
         }
       });
     },
-    fillInEditModuleModalForm: function(action,
+    fillInEditModuleModalForm: function(
+      action,
       title,
       course,
       level,
       color,
-      description) {
+      description
+    ) {
       document
         .querySelector(UISelectors.editModuleForm)
         .setAttribute("action", action);
@@ -318,9 +320,7 @@ const UICtrl = (function() {
           UISelectors.triggerDeleteCoursesModalBtn
         );
         // Get the "Delete" courses button
-        deleteBtn = document.querySelector(
-          UISelectors.deleteCourseBtn
-        );
+        deleteBtn = document.querySelector(UISelectors.deleteCourseBtn);
       } else if (modalID === modulesModalID) {
         // -------- Get the "Modules" table elements --------
         // Get the form id
@@ -343,9 +343,7 @@ const UICtrl = (function() {
           UISelectors.triggerDeleteModulesModalBtn
         );
         // Get the "Delete" courses button
-        deleteBtn = document.querySelector(
-          UISelectors.deleteModuleBtn
-        );
+        deleteBtn = document.querySelector(UISelectors.deleteModuleBtn);
       }
 
       return {
@@ -438,48 +436,51 @@ const UICtrl = (function() {
 
 // ======== Application Controler ========
 const App = (function(UICtrl) {
-  // ======== Private var & methods ========
-  // ---- Load event listeners ----
+  /* ========================
+   * PRIVATE VAR & METHODS
+   * ======================== */
+
+  // ======== LOAD EVENT LISTENERS ========
   const loadEventListeners = function() {
     // Get UISelectors
     const UISelectors = UICtrl.getUISelectors();
 
-    // ================ TABLE EVENTS ================
+    // ---------------- TABLE EVENT LISTENERS ----------------
     // -------- Check/Unckeck All Table Rows --------
-    // Check/uncheck all from "courses" table at "Courses" form
+    // "Courses" form -> ("Courses" table)
     document
       .querySelector(UISelectors.coursesCheckBoxAll)
       .addEventListener("click", checkUncheckAll);
 
-    // Check/uncheck all from "modules" table at "Modules" form
+    // "Modules" form -> ("Modules" table)
     document
       .querySelector(UISelectors.modulesCheckBoxAll)
       .addEventListener("click", checkUncheckAll);
 
-    // Check/uncheck all from "Add Modules" table at "Add Modules" modal
+    // "Dashboard" -> "Add Modules" form -> ("Courses" table)
     document
       .querySelector(UISelectors.addModulesCheckBoxAll)
       .addEventListener("click", checkUncheckAll);
 
     // -------- Check/Unckeck A Selected Table Row --------
-    // Check/uncheck a course from "courses" table at "Courses" form
+    // "Courses" form -> ("Courses" table)
     document
       .querySelector(UISelectors.coursesTableBody)
       .addEventListener("click", checkUncheckRow);
 
-    // Check/uncheck a module from "modules" table at "Modules" form
+    // "Modules" form -> ("Modules" table)
     document
       .querySelector(UISelectors.modulesTableBody)
       .addEventListener("click", checkUncheckRow);
 
-    // Check/uncheck a module from "modules" table at "Add Modules" modal
+    // "Dashboard" -> "Add Modules" form -> ("Courses" table)
     document
       .querySelector(UISelectors.addModulesTableBody)
       .addEventListener("click", checkUncheckRow);
 
-    // ======== COURSES TABLE ========
-    // -------- Sorting "Courses" Table --------
-    // Sort "Title" column
+    // -------------------- Sort Table --------------------
+    // ---- Sort "Courses" form -> ("Courses" table) ----
+    // Sort Title column
     document
       .querySelector(UISelectors.coursesTableColumnTitle)
       .addEventListener("click", sortTable);
@@ -489,85 +490,186 @@ const App = (function(UICtrl) {
       .querySelector(UISelectors.coursesTableColumnLevel)
       .addEventListener("click", sortTable);
 
-    // Edit Course Button
-    document
-      .querySelector(UISelectors.coursesTableBody)
-      .addEventListener("click", editCourse);
-
-    // Save Course Button
-    document
-      .querySelector(UISelectors.saveCourseBtn)
-      .addEventListener("click", saveCourse);
-
-    // "No" Button On Delete Course Modal
-    document
-      .querySelector(UISelectors.cancelDeleteCoursesModalBtn)
-      .addEventListener("click", cancelDeletion);
-
-    // "Yes" Button On Delete Course Modal
-    document
-      .querySelector(UISelectors.deleteCoursesModalBtn)
-      .addEventListener("click", confirmDeletion);
-
-    // ======== MODULES TABLE ========
-    // -------- Sorting "Modules" Table --------
-    // ---- Sort "Title" column ----
-    // Modules Form
+    // ---- Sort "Modules" form -> ("Modules" table) ----
+    // Sort Title column
     document
       .querySelector(UISelectors.modulesTableColumnTitle)
       .addEventListener("click", sortTable);
 
-    //Dashboard form - "Add Modules" modal
-    document
-      .querySelector(UISelectors.addModulesTableColumnTitle)
-      .addEventListener("click", sortTable);
-
-    // ---- Sort "Course" column ----
-    // Modules Form
+    // Sort "Course" column
     document
       .querySelector(UISelectors.modulesTableColumnCourse)
       .addEventListener("click", sortTable);
 
-    //Dashboard form - "Add Modules" modal
-    document
-      .querySelector(UISelectors.addModulesTableColumnCourse)
-      .addEventListener("click", sortTable);
-
-    // ---- Sort "Level" column ----
-    // Modules Form
+    // Sort "Level" column
     document
       .querySelector(UISelectors.modulesTableColumnLevel)
       .addEventListener("click", sortTable);
 
-    //Dashboard form - "Add Modules" modal
+    // ---- Sort "Dashboard" -> "Add Modules" form -> ("Courses" table) ----
+    // Sort Title column
+    document
+      .querySelector(UISelectors.addModulesTableColumnTitle)
+      .addEventListener("click", sortTable);
+
+    // Sort "Course" column
+    document
+      .querySelector(UISelectors.addModulesTableColumnCourse)
+      .addEventListener("click", sortTable);
+
+    // Sort "Level" column
     document
       .querySelector(UISelectors.addModulesTableColumnLevel)
       .addEventListener("click", sortTable);
 
-    // Edit Module Button
+    // -------------------- Edit Table Row --------------------
+    // "Courses" form -> "Courses" table -> ("Edit" Button)
+    document
+      .querySelector(UISelectors.coursesTableBody)
+      .addEventListener("click", editCourse);
+
+    // "Modules" form -> "Modules" table -> ("Edit" Button)
     document
       .querySelector(UISelectors.modulesTableBody)
       .addEventListener("click", editModule);
 
-    // "No" Button On Delete Module Modal
+    // ---------------- Delete Table Row/Rows ----------------
+    // -------- "Delete Courses" modal --------
+    // "No" Button
+    document
+      .querySelector(UISelectors.cancelDeleteCoursesModalBtn)
+      .addEventListener("click", cancelDeletion);
+
+    // "Yes" Button
+    document
+      .querySelector(UISelectors.deleteCoursesModalBtn)
+      .addEventListener("click", confirmDeletion);
+
+    // -------- "Delete Modules" modal --------
+    // "No" Button
     document
       .querySelector(UISelectors.cancelDeleteModulesModalBtn)
       .addEventListener("click", cancelDeletion);
 
-    // "Yes" Button On Delete Course Modal
+    // "Yes" Button
     document
       .querySelector(UISelectors.deleteModulesModalBtn)
       .addEventListener("click", confirmDeletion);
   };
 
-  // ======== COURSES TABLE EVENTS ========
-  // Edit Course
+  // ======================== EVENTS ========================
+  // ---------------- TABLE EVENT LISTENERS ----------------
+  // Check/Unckeck All Table Rows 
+  const checkUncheckAll = function(e) {
+    // -------- Gather All Necessary Elements --------
+    // Get the target element
+    checkAllCheckbox = e.target;
+
+    // Get the table id according to the target element
+    const tableID =
+      checkAllCheckbox.parentElement.parentElement.parentElement.parentElement
+        .parentElement.id;
+
+    // Gather all checkboxes from UI table
+    const checkboxes = UICtrl.getCheckBoxes(`#${tableID}`);
+
+    // Gather all buttons which are on the form's bottom
+    const buttons =
+      e.target.parentElement.parentElement.parentElement.parentElement
+        .parentElement.parentElement.nextElementSibling.children;
+
+    // Get the trigger(enable/disable) button
+    const triggerButton = UICtrl.getTriggerBtn(buttons);
+
+    // -------- Check/Uncheck Checkboxes --------
+    UICtrl.checkUncheckCheckboxes(checkAllCheckbox, checkboxes, triggerButton);
+  };
+
+  // Check/Unckeck A Selected Table Row
+  const checkUncheckRow = function(e) {
+    if (e.target.classList.contains("custom-control-input")) {
+      // -------- Gather All Necessary Elements --------
+      // Get the table id according to the target element
+      const tableID =
+        e.target.parentElement.parentElement.parentElement.parentElement
+          .parentElement.id;
+
+      // Gather all checkboxes from UI table
+      const checkboxes = UICtrl.getCheckBoxes(`#${tableID}`);
+
+      // Gather all buttons which are on the form's bottom
+      const buttons =
+        e.target.parentElement.parentElement.parentElement.parentElement
+          .parentElement.parentElement.nextElementSibling.children;
+
+      // Get the trigger(enable/disable) button
+      const triggerButton = UICtrl.getTriggerBtn(buttons);
+
+      // -------- Disable/Enable trigger button --------
+      UICtrl.OnOffButton(checkboxes, triggerButton);
+    }
+  };
+
+  // Sort Table
+  const sortTable = function(e) {
+    // Get UISelectors
+    const UISelectors = UICtrl.getUISelectors();
+
+    // ------------ FIND WHICH IS THE SELECTED COLUMN TO SORT ------------
+    // -------- Gather the variables needed --------
+    // Initialising variables
+    let columnNameElements;
+    let selectedColumnClassName;
+    let sortIconClassName;
+    let sortIconElement;
+    let table;                    //The table which is gonna be sorted
+
+    if (e.target.classList.contains("fas")) {
+      // If the target is the column's title sort icon (arrow "down" or "up")
+      columnNameElements = e.target.parentElement.parentElement.children;
+      selectedColumnClassName = e.target.parentElement.className;
+      sortIconClassName = e.target.className;
+      sortIconElement = e.target;
+      table = e.target.parentElement.parentElement.parentElement.parentElement;
+    } else {
+      // If the target is column title
+      columnNameElements = e.target.parentElement.children;
+      selectedColumnClassName = e.target.className;
+      sortIconClassName = e.target.children[0].className;
+      sortIconElement = e.target.children[0];
+      table = e.target.parentElement.parentElement.parentElement;
+    }
+
+    // -------- Find The Column Title To Sort --------
+    let index = 0;
+    let columnIndex;
+    for (const key of columnNameElements) {
+      if (key.className === selectedColumnClassName) {
+        // Get the selected column index
+        columnIndex = index - 1;
+      }
+      index++;
+    }
+
+    // -------- CHANGE THE SORT ICON SYMBOL OF SELECTED COLUMN --------
+    if (sortIconClassName === "fas fa-angle-down") {
+      sortIconElement.className = "fas fa-angle-up";
+    } else {
+      sortIconElement.className = "fas fa-angle-down";
+    }
+
+    // -------- SORT THE TABLE'S COLUMN --------
+    UICtrl.sortTableColumn(table, columnIndex);
+  };
+
+  // ---------------- Edit Table Row ----------------
+  // "Courses" form -> "Courses" table -> ("Edit" Button) 
   const editCourse = function(e) {
     // Initilize variables needed
     let title, level, color, description, courseID;
 
     if (e.target.classList.contains("courseEdit")) {
-      // -------- Gather The Info From "Courses" Table --------
+      // -------- GATHER THE INFO FROM "COURSES" TABLE --------
       // Title
       title =
         e.target.parentElement.parentElement.parentElement.children[1]
@@ -597,7 +699,7 @@ const App = (function(UICtrl) {
       // Set Form Action
       const action = `/dashboards/facultyMember/courses/${courseID}?_method=PUT`;
 
-      // -------- Fill In The "Edit Course" Modal Form --------
+      // -------- FILL IN THE "EDIT COURSE" MODAL FORM --------
       UICtrl.fillInEditCourseModalForm(
         action,
         title,
@@ -608,24 +710,13 @@ const App = (function(UICtrl) {
     }
   };
 
-  // Save Course
-  const saveCourse = function(e) {
-    // const courseName = document.querySelector('#createCourseName').value;
-    // const academicDegree = document.querySelector('#createCourseLevel').value;
-    // const color = document.querySelector('#createCourseColor').value;
-    // const description = document.querySelector('#createCourseDescription').innerText;
-    // console.log(`courseName: ${courseName}, academicDegree: ${academicDegree}, color: ${color}, description: ${description} `);
-    // e.preventDefault();
-  };
-
-  // ======== MODULES TABLE EVENTS ========
-  // Edit Module
+  // "Modules" form -> "Modules" table -> ("Edit" Button)
   const editModule = function(e) {
     // Initilize variables needed
     let title, course, level, color, description, moduleID;
 
     if (e.target.classList.contains("moduleEdit")) {
-      // -------- Gather The Info From "Modules" Table --------
+      // -------- GATHER THE INFO FROM "MODULES" TABLE --------
       // Title
       title =
         e.target.parentElement.parentElement.parentElement.children[1]
@@ -660,7 +751,7 @@ const App = (function(UICtrl) {
       // Set Form Action
       const action = `/dashboards/facultyMember/modules/${moduleID}?_method=PUT`;
 
-      // -------- Fill In The "Edit Module" Modal Form --------
+      // -------- FILL IN THE "EDIT MODULE" MODAL FORM --------
       UICtrl.fillInEditModuleModalForm(
         action,
         title,
@@ -672,151 +763,10 @@ const App = (function(UICtrl) {
     }
   };
 
-  // // Check/Uncheck Checkbox For All Checkboxes On Modules Table
-  // const checkUncheckAllModules = function(e) {
-  //   // ======== Gather All Necessary Elements ========
-  //   // Get UISelectors
-  //   const UISelectors = UICtrl.getUISelectors();
-
-  //   // Get the table id according to the target element
-  //   const table =
-  //     e.target.parentElement.parentElement.parentElement.parentElement
-  //       .parentElement.id;
-
-  //   // Gather all checkboxes from UI table
-  //   const checkboxes = UICtrl.getCheckBoxes(table);
-
-  //   // Get the delete modules button
-  //   const deleteBtn = document.querySelector(
-  //     UISelectors.triggerDeleteModulesModalBtn
-  //   );
-
-  //   // ======== Check/Uncheck Checkboxes ========
-  //   if (e.target.checked) {
-  //     checkboxes.forEach(function(checkbox) {
-  //       // Check all if not disabled
-  //       if (checkbox.disabled === false) {
-  //         checkbox.checked = true;
-  //         deleteBtn.disabled = false;
-  //       }
-  //     });
-  //   } else {
-  //     // Uncheck all if disabled
-  //     checkboxes.forEach(function(checkbox) {
-  //       checkbox.checked = false;
-  //       deleteBtn.disabled = true;
-  //     });
-  //   }
-  // };
-
-  // ======== COURSES & MODULES TABLES EVENTS ========
-  //Sort Table
-  const sortTable = function(e) {
-    // Get UISelectors
-    const UISelectors = UICtrl.getUISelectors();
-
-    // ======== Find Which Is The Selected Column To Sort ========
-
-    // -------- Gather the variables needed --------
-    // Initialising variables
-    let columnNameElements;
-    let selectedColumnClassName;
-    let sortIconClassName;
-    let sortIconElement;
-    let table; //The table which is gonna be sorted
-
-    if (e.target.classList.contains("fas")) {
-      // If the target is the column's title sort icon (arrow "down" or "up")
-      columnNameElements = e.target.parentElement.parentElement.children;
-      selectedColumnClassName = e.target.parentElement.className;
-      sortIconClassName = e.target.className;
-      sortIconElement = e.target;
-      table = e.target.parentElement.parentElement.parentElement.parentElement;
-    } else {
-      // If the target is column title
-      columnNameElements = e.target.parentElement.children;
-      selectedColumnClassName = e.target.className;
-      sortIconClassName = e.target.children[0].className;
-      sortIconElement = e.target.children[0];
-      table = e.target.parentElement.parentElement.parentElement;
-    }
-
-    // -------- Find The Column Title To Sort --------
-    let index = 0;
-    let columnIndex;
-    for (const key of columnNameElements) {
-      if (key.className === selectedColumnClassName) {
-        // Get the selected column index
-        columnIndex = index - 1;
-      }
-      index++;
-    }
-
-    // ---- Change the sort icon symbol of selected column ----
-    if (sortIconClassName === "fas fa-angle-down") {
-      sortIconElement.className = "fas fa-angle-up";
-    } else {
-      sortIconElement.className = "fas fa-angle-down";
-    }
-
-    // Sort the table's column
-    UICtrl.sortTableColumn(table, columnIndex);
-  };
-
-  // Check/Uncheck Checkbox For All Checkboxes On Courses Table
-  const checkUncheckAll = function(e) {
-    // -------- Gather All Necessary Elements --------
-    // Get the target element
-    checkAllCheckbox = e.target;
-
-    // Get the table id according to the target element
-    const tableID =
-      checkAllCheckbox.parentElement.parentElement.parentElement.parentElement
-        .parentElement.id;
-
-    // Gather all checkboxes from UI table
-    const checkboxes = UICtrl.getCheckBoxes(`#${tableID}`);
-
-    // Gather all buttons which are on the form's bottom
-    const buttons =
-      e.target.parentElement.parentElement.parentElement.parentElement
-        .parentElement.parentElement.nextElementSibling.children;
-
-    // Get the trigger(enable/disable) button
-    const triggerButton = UICtrl.getTriggerBtn(buttons);
-
-    // -------- Check/Uncheck Checkboxes --------
-    UICtrl.checkUncheckCheckboxes(checkAllCheckbox, checkboxes, triggerButton);
-  };
-
-  // Check/Uncheck A Checkbox Row In A Table
-  const checkUncheckRow = function(e) {
-    if (e.target.classList.contains("custom-control-input")) {
-      // -------- Gather All Necessary Elements --------
-      // Get the table id according to the target element
-      const tableID =
-        e.target.parentElement.parentElement.parentElement.parentElement
-          .parentElement.id;
-
-      // Gather all checkboxes from UI table
-      const checkboxes = UICtrl.getCheckBoxes(`#${tableID}`);
-
-      // Gather all buttons which are on the form's bottom
-      const buttons =
-        e.target.parentElement.parentElement.parentElement.parentElement
-          .parentElement.parentElement.nextElementSibling.children;
-
-      // Get the trigger(enable/disable) button
-      const triggerButton = UICtrl.getTriggerBtn(buttons);
-
-      // -------- Disable/Enable trigger button --------
-      UICtrl.OnOffButton(checkboxes, triggerButton);
-    }
-  };
-
-  // -------- Deletion Functionality --------
+  // ------------ Delete Table Row/Rows ------------
   // Cancel Deletion
   const cancelDeletion = function(e) {
+    // -------- GATHER THE CHECKBOXES & "DELETE" BUTTON --------
     // Get current modal id
     const targetModalID =
       e.target.parentElement.parentElement.parentElement.parentElement.id;
@@ -824,12 +774,13 @@ const App = (function(UICtrl) {
     // Get checkboxes & "Delete" button
     const deleteElements = UICtrl.getTableDeleteElements(targetModalID);
 
-    // Uncheck all checkboxes & enable "Delete" button
+    // ---- UNCHECK ALL CHECKBOXES & ENABLE "DELETE" BUTTON ----
     UICtrl.resetDeletion(deleteElements);
   };
 
   // Confirm Deletion
   const confirmDeletion = function(e) {
+    // -------- GATHER THE CHECKBOXES & "DELETE" BUTTON --------
     // Get current modal id
     const targetModalID =
       e.target.parentElement.parentElement.parentElement.parentElement.id;
@@ -837,18 +788,24 @@ const App = (function(UICtrl) {
     // Get checkboxes & "Delete" button
     const deleteElements = UICtrl.getTableDeleteElements(targetModalID);
 
-    // Populate the checked for deletion items from table to the form
+    /* ----------------------------------------------------------------
+     * Populate the checked for deletion items from table to the form
+     * ----------------------------------------------------------------
+     */
     UICtrl.populateDeletionData(
       deleteElements.listChecked,
       deleteElements.formID
     );
 
-    // Click delete button
+    // -------- CLICK DELETE BUTTON --------
     const deleteBtnID = deleteElements.deleteBtn.id;
     document.querySelector(`#${deleteBtnID}`).click();
   };
+  
 
-  // ======== Public Methods ========
+  /* ========================
+   * PUBLIC METHODS
+   * ======================== */
   return {
     init: function() {
       console.log("Run...");

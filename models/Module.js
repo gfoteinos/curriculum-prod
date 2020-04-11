@@ -15,14 +15,6 @@ const ModuleSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'courses'
   },
-  course: {
-    type: String,
-    required: false
-  },
-  degree: {
-    type: String,
-    required: false
-  },
   color: {
     type: String,
     required: true

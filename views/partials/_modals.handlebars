@@ -14,7 +14,7 @@
         </button>
       </div>
       <div class="modal-body">
-        <form action="" method="post">
+        <form action="/dashboards/facultyMember/taughtModules/{{faculty.id}}" method="post">
           <div class="table-responsive">
             <table id="modulesTableModal" class="table">
               <caption class="h5 py-0">Modules</caption>
@@ -62,7 +62,7 @@
                   </td>
                   <td>
                     <div class="custom-control custom-checkbox">
-                      <input type="checkbox" class="custom-control-input" id="mtm-{{id}}" data-id="{{id}}">
+                      <input type="checkbox" class="custom-control-input" id="mtm-{{id}}" name="modulesID" value="{{id}}">
                       <label class="custom-control-label" for="mtm-{{id}}"></label>
                     </div>
                   </td>

@@ -55,16 +55,18 @@ const upload = multer({
 
 // ======== LOAD MODELS ========
 require("../models/User");
+require("../models/FacultyMember");
 require("../models/Course");
 require("../models/Module");
 const User = mongoose.model("users");
+const FacultyMember = mongoose.model("facultyMembers");
 const Course = mongoose.model("courses");
 const Module = mongoose.model("modules");
 
 // ======== ROUTES ========
-// Load Faculty Member Dashboard
+// Load "Faculty Member" Dashboard
 router.get("/facultyMember", (req, res) => {
-  // -------- Create A Faculty Member Object --------
+  // -------- Create A "Faculty Member" Object --------
   const faculty = {
     id: req.user.id,
     name: req.user.name,
@@ -79,7 +81,7 @@ router.get("/facultyMember", (req, res) => {
     linkedin: req.user.linkedin
   };
 
-  // -------- Get All Courses --------
+  // -------- Get All "Courses" --------
   Course.find({})
     .sort({ name: "asc" })
     .then(courses => {
@@ -100,7 +102,7 @@ router.get("/facultyMember", (req, res) => {
         });
       }
 
-      // -------- Get All Modules --------
+      // -------- Get All "Modules" --------
       Module.find({})
         .populate("courseID")
         .sort({ name: "asc" })
@@ -123,17 +125,56 @@ router.get("/facultyMember", (req, res) => {
             });
           }
 
-          // -------- Pass Data Sets To The View --------
-          res.render("dashboards/facultyMember", {
-            faculty,
-            listCourses,
-            listModules
-          });
+          // -------- Get All "Taught Modules" --------
+          FacultyMember.findOne({ userID: req.user.id })
+            .populate("taughtModules")
+            .then(facultyMember => {
+              let taughtModulesList = []; // For "Taught Modules" table in "Dashboard - 'Modules List'" tab
+              if (facultyMember) {
+                // Fill in "Taught Modules" table to pass it later in the view
+                let counter = 1;
+                modules = facultyMember.taughtModules;
+                modules.forEach(module => {
+                  // Convert to String 
+                  moduleCourseID = module.courseID;
+                  moduleCourseID = moduleCourseID.toString();
+
+                  listCourses.forEach(course => {
+                    // Convert to String 
+                    courseID = course.id;
+                    courseID = courseID.toString();
+
+                    // Connect module with course 
+                    if (courseID === moduleCourseID) {
+                      /*
+                       * If "courseID" in "modules" collection is muching with 
+                       * the "_id" of "Courses" collection then build a "taught 
+                       * module" row
+                       */  
+                      taughtModulesList.push({
+                        aa: counter,
+                        name: module.name,
+                        courseName: course.name,
+                        courseDegree: course.degree
+                      });
+                      counter++;
+                    }
+                  });
+                });
+              }
+              // -------- Pass Data Sets To The View --------
+              res.render("dashboards/facultyMember", {
+                faculty,
+                listCourses,
+                listModules,
+                taughtModulesList
+              });
+            });
         });
     });
 });
 
-// Load Student Dashboard
+// Load "Student" Dashboard
 router.get("/student", (req, res) => {
   // Create a student object
   const student = {
@@ -146,6 +187,7 @@ router.get("/student", (req, res) => {
   });
 });
 
+// ======== ACCOUNT INFO FORM ========
 // Update Email
 router.put("/facultyMember/email/:id", (req, res) => {
   // Check if the input email has already registered to another account
@@ -223,6 +265,7 @@ router.put("/facultyMember/password/:id", (req, res) => {
   });
 });
 
+// ======== PROFILE FORM ========
 // Update Profile
 router.put("/facultyMember/profile/:id", (req, res) => {
   upload(req, res, function(err) {
@@ -302,6 +345,7 @@ router.put("/facultyMember/profile/:id", (req, res) => {
   });
 });
 
+// ======== COURSES FORM ========
 // Create Course
 router.post("/facultyMember/courses/", (req, res) => {
   // Get Rid Of Spaces Before & After The End Of "Course Title"
@@ -473,6 +517,7 @@ router.delete("/facultyMember/courses/", (req, res) => {
   res.redirect("/dashboards/facultyMember");
 });
 
+// ======== MODULES FORM ========
 // Create Module
 router.post("/facultyMember/modules/", (req, res) => {
   // ---- Get Rid Of Spaces Before & After The End Of "Module Name" ----
@@ -601,6 +646,7 @@ router.put("/facultyMember/modules/:id", (req, res) => {
 
 // Delete Module
 router.delete("/facultyMember/modules/", (req, res) => {
+  console.log(req.body);
   // ======== Delete Modules ========
   // Get the selected module ids
   let ids = req.body.ids;
@@ -630,6 +676,32 @@ router.delete("/facultyMember/modules/", (req, res) => {
   // ======== Flash Success Message & Redirect Back To The Page ========
   req.flash("success_msg", "Modules deleted successfully.");
   res.redirect("/dashboards/facultyMember");
+});
+
+// ======== DASHBOARD FORM ========
+// Add Taught Module
+router.post("/facultyMember/taughtModules/:id", (req, res) => {
+  // res.send("Add taught modules");
+  // console.log(req.body);
+  // console.log(req.params.id);
+  // ======== Add data to the database ========
+  // ---- Prepare data for saving ----
+  const newFaculty = {
+    userID: req.params.id,
+    taughtModules: req.body.modulesID
+  };
+
+  // console.log(req.body.modulesID);
+  // console.log(newFaculty);
+
+  // ---- Save data to the database ----
+  new FacultyMember(newFaculty)
+    // Save & Redirect with success message
+    .save()
+    .then(facultyMember => {
+      req.flash("success_msg", "Taught Modules have been added successfully.");
+      res.redirect("/dashboards/facultyMember");
+    });
 });
 
 // console.log(`db.id: ${typeof(courseID)} - req.param.id: ${typeof(req.params.id)}, db.name: ${typeof(course.name)} - req.body.name: ${typeof(req.body.name)}, db.degree: ${typeof(course.name)} - req.body.degree: ${typeof(req.body.degree)}`);
