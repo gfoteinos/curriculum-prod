@@ -26,12 +26,10 @@ const UserSchema = new Schema({
     type: String
   },
   phone: {
-    type: String,
-    required: false
+    type: String
   },
   officeNumber: {
-    type: String,
-    required: false
+    type: String
   },
   photo: {
     type: String
