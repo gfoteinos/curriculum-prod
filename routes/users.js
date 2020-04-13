@@ -43,25 +43,71 @@ router.post(
   function(req, res) {
     // Find user via email
     User.findOne({ email: req.body.email })
-      // Redirect to the right view according to user type (faculty member or not)
+      // Redirect to the right view according to user type (faculty member or Student)
       .then(user => {
         if (user.userType === "facultyMember") {
-          // Relate the user with the faculty member 
-          FacultyMember.find({}).then(members => {
-            if(members) {
-              members.forEach(member => {
-                if(member.userID === "" || member.userID === undefined) {
-                  /* If there is faculty member with no 'userID' then fill in
-                   * the one with the id of the login user  
-                   */
-                  member.userID = user._id;
-                  // Save changes
-                  member.save();
+          mongoose.connection.db
+            .listCollections()
+            .toArray(function(err, collInfos) {
+              let isExist = false;
+              // Check the existance of the "facultymembers" collection
+              collInfos.forEach(collection => {
+                if (collection.name === "facultymembers") {
+                  isExist = true;
                 }
               });
-            }
-          });
 
+              if (isExist) {
+                // ---- Deside Wether To Create Faculty Member Or Not ----
+                FacultyMember.find({})
+                  .then(members => {
+                    if (members) {
+                      /**
+                       * Check if the login user is just signed up in order to
+                       * create faculty member for that user or not
+                       */
+                       
+                      // Check if "FacultyMember.userID" is matched with "User._id"  
+                      let found = false;
+                      UserID = user._id.toString();
+
+                      for (let member of members) {
+                        memberUserID = member.userID.toString();
+                        if (memberUserID === UserID) {
+                          found = true;
+                          break;
+                        }
+                      }
+
+                      if (!found) {
+                        // ---- Create Faculty Member ----
+                        // Prepare data for saving
+                        const newMember = {
+                          userID: user._id
+                        };
+                        // Save data to the database
+                        new FacultyMember(newMember).save();
+                      }
+                    }
+                  })
+                  .catch(err => {
+                    console.log(err.message);
+                    return;
+                  });
+              } else {
+                /*
+                 * The "facultymember" collection is not exist. There is the
+                 * first time that a user is loged in in the app 
+                 */ 
+                // ---- Create Faculty Member ----
+                // Prepare data for saving
+                const newMember = {
+                  userID: user._id
+                };
+                // Save data to the database
+                new FacultyMember(newMember).save();
+              }
+            });
           res.redirect("/dashboards/facultyMember");
         } else {
           res.redirect("/dashboards/student");
@@ -119,11 +165,10 @@ router.post("/signup", (req, res, next) => {
             newUser.password = hash;
 
             // Save the newUser to the database
-            newUser.save()
-              .then(user => {
-                req.flash("success_msg", "You are now register");
-                res.redirect("/users/login");
-              });
+            newUser.save().then(user => {
+              req.flash("success_msg", "You are now register");
+              res.redirect("/users/login");
+            });
           });
         });
       }
