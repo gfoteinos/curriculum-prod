@@ -22,13 +22,7 @@ const UserSchema = new Schema({
     type: String,
     required: true
   },
-  academicRank: {
-    type: String
-  },
   phone: {
-    type: String
-  },
-  officeNumber: {
     type: String
   },
   photo: {

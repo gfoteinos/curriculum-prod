@@ -1,5 +1,6 @@
-// ======== Import Required Modules ========
-
+/* ========================
+ * IMPORT REQUIRED MODULES
+ * ======================== */
 const express = require("express");
 const path = require("path");
 const mongoose = require("mongoose");
@@ -12,7 +13,9 @@ const multer = require("multer"); // Used for uploading files
  * On that version the "multer" works perfect for uploading images to heroku
  */
 
-// ======== UPLOAD IMAGES ========
+/* ========================
+ * UPLOAD IMAGES
+ * ======================== */
 // ---- Set Storage Engine ----
 const storage = multer.diskStorage({
   destination: function(req, file, cb) {
@@ -53,7 +56,9 @@ const upload = multer({
   }
 }).single("photo");
 
-// ======== LOAD MODELS ========
+/* ========================
+ * LOAD MODELS
+ * ======================== */
 require("../models/User");
 require("../models/FacultyMember");
 require("../models/Course");
@@ -63,28 +68,157 @@ const FacultyMember = mongoose.model("facultyMembers");
 const Course = mongoose.model("courses");
 const Module = mongoose.model("modules");
 
-// ======== ROUTES ========
+/* ========================
+ * ROUTES
+ * ======================== */
 // Load "Faculty Member" Dashboard
-router.get("/facultyMember", (req, res) => {
-  // -------- Create A "Faculty Member" Object --------
-  const faculty = {
-    id: req.user.id,
-    name: req.user.name,
-    academicRank: req.user.academicRank,
-    email: req.user.email,
-    phone: req.user.phone,
-    officeNumber: req.user.officeNumber,
-    photo: req.user.photo,
-    bio: req.user.bio,
-    facebook: req.user.facebook,
-    twitter: req.user.twitter,
-    linkedin: req.user.linkedin
-  };
 
+// router.get("/facultyMember", (req, res, next) => {
+//   // -------- Create A "Faculty Member" Object --------
+//   const faculty = {
+//     id: req.user.id,
+//     name: req.user.name,
+//     academicRank: req.user.academicRank,
+//     email: req.user.email,
+//     phone: req.user.phone,
+//     officeNumber: req.user.officeNumber,
+//     photo: req.user.photo,
+//     bio: req.user.bio,
+//     facebook: req.user.facebook,
+//     twitter: req.user.twitter,
+//     linkedin: req.user.linkedin
+//   };
+
+//   // -------- Get All "Courses" --------
+//   Course.find({})
+//     .sort({ name: "asc" })
+//     .then(courses => {
+//       let listCourses = []; // For "Courses" table in "Courses" form
+//       if (courses) {
+//         // Fill in "Courses" table to pass it later in the view
+//         let counter = 1;
+//         courses.forEach(course => {
+//           listCourses.push({
+//             aa: counter,
+//             id: course._id,
+//             name: course.name,
+//             degree: course.degree,
+//             color: course.color,
+//             description: course.description
+//           });
+//           counter++;
+//         });
+//       }
+
+//       // -------- Get All "Modules" --------
+//       Module.find({})
+//         .populate("courseID")
+//         .sort({ name: "asc" })
+//         .then(modules => {
+//           let listModules = []; // For "Modules" table in "Modules" form
+//           if (modules) {
+//             // Fill in "Modules" table to pass it later in the view
+//             let counter = 1;
+//             modules.forEach(module => {
+//               listModules.push({
+//                 aa: counter,
+//                 id: module._id,
+//                 name: module.name,
+//                 course: module.courseID.name,
+//                 degree: module.courseID.degree,
+//                 color: module.color,
+//                 description: module.description
+//               });
+//               counter++;
+//             });
+//           }
+
+//           // -------- Get All "Taught Modules" --------
+//           FacultyMember.findOne({ userID: req.user.id })
+//             .populate("taughtModules")
+//             .then(facultyMember => {
+//               let taughtModulesList = []; // For "Taught Modules" table in "Dashboard - 'Modules List'" tab
+//               if (facultyMember) {
+//                 // Fill in "Taught Modules" table to pass it later in the view
+//                 let counter = 1;
+//                 modules = facultyMember.taughtModules;
+//                 modules.forEach(module => {
+//                   // Convert to String
+//                   moduleCourseID = module.courseID;
+//                   moduleCourseID = moduleCourseID.toString();
+
+//                   listCourses.forEach(course => {
+//                     // Convert to String
+//                     courseID = course.id;
+//                     courseID = courseID.toString();
+
+//                     // Connect module with course
+//                     if (courseID === moduleCourseID) {
+//                       /*
+//                        * If "courseID" in "modules" collection is muching with
+//                        * the "_id" of "Courses" collection then build a "taught
+//                        * module" row
+//                        */
+//                       taughtModulesList.push({
+//                         aa: counter,
+//                         name: module.name,
+//                         courseName: course.name,
+//                         courseDegree: course.degree
+//                       });
+//                       counter++;
+//                     }
+//                   });
+//                 });
+//               }
+//               // -------- Pass Data Sets To The View --------
+//               res.render("dashboards/facultyMember", {
+//                 faculty,
+//                 listCourses,
+//                 listModules,
+//                 taughtModulesList
+//               });
+//             });
+//         });
+//     });
+// });
+
+// ======== LOAD "FACULTY MEMBER" DASHBOARD ========
+// Create A "Faculty Member" Object
+router.get("/facultyMember", (req, res, next) => {
+  FacultyMember.findOne({ userID: req.user.id })
+    .then(member => {
+      if (member) {
+        // -------- Create A "Faculty Member" Object --------
+        const faculty = {
+          id: req.user.id,
+          name: req.user.name,
+          academicRank: member.academicRank,
+          email: req.user.email,
+          phone: req.user.phone,
+          officeNumber: member.officeNumber,
+          photo: req.user.photo,
+          bio: req.user.bio,
+          facebook: req.user.facebook,
+          twitter: req.user.twitter,
+          linkedin: req.user.linkedin
+        };
+        req.faculty = faculty;
+        next();
+      }
+    })
+    .catch(err => {
+      console.log(err.message);
+      return;
+    });
+});
+
+// Create A List Of All "Courses"
+router.get("/facultyMember", (req, res, next) => {
   // -------- Get All "Courses" --------
   Course.find({})
     .sort({ name: "asc" })
     .then(courses => {
+      // -------- Create A "Courses" List --------
       let listCourses = []; // For "Courses" table in "Courses" form
       if (courses) {
         // Fill in "Courses" table to pass it later in the view
@@ -101,80 +235,112 @@ router.get("/facultyMember", (req, res) => {
           counter++;
         });
       }
-
-      // -------- Get All "Modules" --------
-      Module.find({})
-        .populate("courseID")
-        .sort({ name: "asc" })
-        .then(modules => {
-          let listModules = []; // For "Modules" table in "Modules" form
-          if (modules) {
-            // Fill in "Modules" table to pass it later in the view
-            let counter = 1;
-            modules.forEach(module => {
-              listModules.push({
-                aa: counter,
-                id: module._id,
-                name: module.name,
-                course: module.courseID.name,
-                degree: module.courseID.degree,
-                color: module.color,
-                description: module.description
-              });
-              counter++;
-            });
-          }
-
-          // -------- Get All "Taught Modules" --------
-          FacultyMember.findOne({ userID: req.user.id })
-            .populate("taughtModules")
-            .then(facultyMember => {
-              let taughtModulesList = []; // For "Taught Modules" table in "Dashboard - 'Modules List'" tab
-              if (facultyMember) {
-                // Fill in "Taught Modules" table to pass it later in the view
-                let counter = 1;
-                modules = facultyMember.taughtModules;
-                modules.forEach(module => {
-                  // Convert to String 
-                  moduleCourseID = module.courseID;
-                  moduleCourseID = moduleCourseID.toString();
-
-                  listCourses.forEach(course => {
-                    // Convert to String 
-                    courseID = course.id;
-                    courseID = courseID.toString();
-
-                    // Connect module with course 
-                    if (courseID === moduleCourseID) {
-                      /*
-                       * If "courseID" in "modules" collection is muching with 
-                       * the "_id" of "Courses" collection then build a "taught 
-                       * module" row
-                       */  
-                      taughtModulesList.push({
-                        aa: counter,
-                        name: module.name,
-                        courseName: course.name,
-                        courseDegree: course.degree
-                      });
-                      counter++;
-                    }
-                  });
-                });
-              }
-              // -------- Pass Data Sets To The View --------
-              res.render("dashboards/facultyMember", {
-                faculty,
-                listCourses,
-                listModules,
-                taughtModulesList
-              });
-            });
-        });
+      req.listCourses = listCourses;
+      next();
+    })
+    .catch(err => {
+      console.log(err.message);
+      return;
     });
 });
 
-// Load "Student" Dashboard
+// Create A List Of All "Modules"
+router.get("/facultyMember", (req, res, next) => {
+  // -------- Get All "Modules" --------
+  Module.find({})
+    .populate("courseID")
+    .sort({ name: "asc" })
+    .then(modules => {
+      // -------- Create A "Modules" List --------
+      let listModules = []; // For "Modules" table in "Modules" form
+      if (modules) {
+        // Fill in "Modules" table to pass it later in the view
+        let counter = 1;
+        modules.forEach(module => {
+          listModules.push({
+            aa: counter,
+            id: module._id,
+            name: module.name,
+            course: module.courseID.name,
+            degree: module.courseID.degree,
+            color: module.color,
+            description: module.description
+          });
+          counter++;
+        });
+      }
+      req.listModules = listModules;
+      next();
+    })
+    .catch(err => {
+      console.log(err.message);
+      return;
+    });
+});
+
+// Create A List Of "Taught Modules"
+router.get("/facultyMember", (req, res, next) => {
+  // -------- Get All "Taught Modules" --------
+  FacultyMember.findOne({ userID: req.user.id })
+    .populate("taughtModules")
+    .then(facultyMember => {
+      // -------- Create A "Taught Modules" List --------
+      let taughtModulesList = []; // For "Taught Modules" table in "Dashboard - 'Modules List'" tab
+      if (facultyMember) {
+        // Fill in "Taught Modules" table to pass it later in the view
+        let counter = 1;
+        modules = facultyMember.taughtModules;
+        modules.forEach(module => {
+          // Convert to String
+          moduleCourseID = module.courseID;
+          moduleCourseID = moduleCourseID.toString();
+
+          req.listCourses.forEach(course => {
+            // Convert to String
+            courseID = course.id;
+            courseID = courseID.toString();
+
+            // Connect module with course
+            if (courseID === moduleCourseID) {
+              /*
+               * If "courseID" in "modules" collection is maching with
+               * the "_id" of "Courses" collection then build a "taught
+               * module" row
+               */
+              taughtModulesList.push({
+                aa: counter,
+                name: module.name,
+                courseName: course.name,
+                courseDegree: course.degree
+              });
+              counter++;
+            }
+          });
+        });
+      }
+      req.taughtModulesList = taughtModulesList;
+      next();
+    });
+});
+
+// Pass Data Sets To The View
+router.get("/facultyMember", (req, res, next) => {
+  // Prepare the data to be send 
+  const faculty = req.faculty;
+  const listCourses = req.listCourses;
+  const listModules = req.listModules;
+  const taughtModulesList = req.taughtModulesList;
+
+  // Pass the data to the view
+  res.render("dashboards/facultyMember", {
+    faculty,
+    listCourses,
+    listModules,
+    taughtModulesList
+  });
+});
+
+// ======== LOAD "STUDENT" DASHBOARD ========
 router.get("/student", (req, res) => {
   // Create a student object
   const student = {
@@ -271,7 +437,7 @@ router.put("/facultyMember/profile/:id", (req, res) => {
   upload(req, res, function(err) {
     let error = "";
 
-    // ---- Handle uploading photo errors ----
+    // ---- Handle Uploading Photo Errors ----
     if (err instanceof multer.MulterError) {
       error = `Error uploading photo: ${err.message}`;
     } else if (err) {
@@ -279,7 +445,7 @@ router.put("/facultyMember/profile/:id", (req, res) => {
       //see: "---- Init Upload ----" at "==== Upload Images ====" section
     }
 
-    // ---- Handle form fields errors ----
+    // ---- Handle Form Fields Errors ----
     // Check if the there are any required form fields empty
     if (
       req.body.fullName === "" ||
@@ -292,12 +458,13 @@ router.put("/facultyMember/profile/:id", (req, res) => {
         'One or more of the fields "Full Name, Academic Rank, Phone, Office, Bio" are empty. Please fill in the fields where missing.';
     }
 
-    // If error flash error message & redirect back to the page
     if (error != "") {
+      // ---- If error flash error message & redirect back to the page ----
       req.flash("error_msg", error);
       res.redirect("/dashboards/facultyMember");
     } else {
-      // Find the user via id
+      // ---- Update The Database Collections ----
+      // Update the "users" collection
       User.findOne({ _id: req.params.id }).then(user => {
         // ---- Fill in photo in different cases ----
         let photo;
@@ -316,9 +483,7 @@ router.put("/facultyMember/profile/:id", (req, res) => {
         // ---- Update the user's profile info ----
         // Basics
         user.name = req.body.fullName;
-        user.academicRank = req.body.academicRank;
         user.phone = req.body.phone;
-        user.officeNumber = req.body.officeNumber;
         user.photo = photo;
         // Bio
         user.bio = req.body.bio;
@@ -328,19 +493,33 @@ router.put("/facultyMember/profile/:id", (req, res) => {
         user.linkedin = req.body.linkedin;
 
         // Save to the database
-        user
-          .save()
-          .then(user => {
-            req.flash("success_msg", "Profile has been updated.");
-            res.redirect("/dashboards/facultyMember");
-          })
+        user.save().catch(err => {
           // Catch any errors
-          .catch(err => {
-            req.flash("error_msg", err.message);
-            res.redirect("/dashboards/facultyMember");
-            return;
-          });
+          console.log(err.message);
+          // req.flash("error_msg", err.message);
+          // res.redirect("/dashboards/facultyMember");
+          return;
+        });
       });
+
+      // Update the "facultymembers" collection
+      FacultyMember.findOne({ userID: req.params.id }).then(member => {
+        // ---- Update the faculty member's profile info ----
+        member.academicRank = req.body.academicRank;
+        member.officeNumber = req.body.officeNumber;
+        // Save to the database
+        member.save().catch(err => {
+          // Catch any errors
+          console.log(err.message);
+          // req.flash("error_msg", err.message);
+          // res.redirect("/dashboards/facultyMember");
+          return;
+        });
+      });
+
+      // ---- Flash Success Message & Redirect Back To The Page ----
+      req.flash("success_msg", "Profile has been updated.");
+      res.redirect("/dashboards/facultyMember");
     }
   });
 });
@@ -681,27 +860,24 @@ router.delete("/facultyMember/modules/", (req, res) => {
 // ======== DASHBOARD FORM ========
 // Add Taught Module
 router.post("/facultyMember/taughtModules/:id", (req, res) => {
-  // res.send("Add taught modules");
-  // console.log(req.body);
-  // console.log(req.params.id);
-  // ======== Add data to the database ========
-  // ---- Prepare data for saving ----
-  const newFaculty = {
-    userID: req.params.id,
-    taughtModules: req.body.modulesID
-  };
+  FacultyMember.findOne({ userID: req.user.id }).then(member => {
+    if (member) {
+      // Update the faculty member's "taught modules" list
+      member.taughtModules = req.body.modulesID;
+    }
 
-  // console.log(req.body.modulesID);
-  // console.log(newFaculty);
-
-  // ---- Save data to the database ----
-  new FacultyMember(newFaculty)
-    // Save & Redirect with success message
-    .save()
-    .then(facultyMember => {
+    // Save to the database
+    member.save().then(member => {
       req.flash("success_msg", "Taught Modules have been added successfully.");
       res.redirect("/dashboards/facultyMember");
+    }).catch(err => {
+      // Catch any errors
+      console.log(err.message);
+      // req.flash("error_msg", err.message);
+      // res.redirect("/dashboards/facultyMember");
+      return;
     });
+  });
 });
 
 // console.log(`db.id: ${typeof(courseID)} - req.param.id: ${typeof(req.params.id)}, db.name: ${typeof(course.name)} - req.body.name: ${typeof(req.body.name)}, db.degree: ${typeof(course.name)} - req.body.degree: ${typeof(req.body.degree)}`);

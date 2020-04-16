@@ -7,7 +7,8 @@ const FacultyMemberSchema = new Schema({
   userID: {
     // Relation with the 'users' collection
     type: Schema.Types.ObjectId,
-    ref: "users"
+    ref: "users",
+    required: true
   },
   academicRank: {
     type: String
