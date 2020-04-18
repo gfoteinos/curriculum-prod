@@ -1,0 +1,10 @@
+
+{{!-- ======== TAUGHT MODULES MANAGEMENT TAB ======== --}}
+{{!-- ---- When Click "Add Module" At "Modules List" Tab ---- --}}
+{{!-- In case of "taught module" already exist --}}
+
+{{!-- In case of success --}}
+{{#equal success_msg 'Taught Modules have been added successfully.' }}
+<div class="alert alert-success mt-3 mb-0 mx-4">{{success_msg}}</div>
+<script>dashboardClick()</script>
+{{/equal}}

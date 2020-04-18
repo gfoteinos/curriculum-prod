@@ -291,6 +291,7 @@ router.get("/facultyMember", (req, res, next) => {
         let counter = 1;
         modules = facultyMember.taughtModules;
         modules.forEach(module => {
+
           // Convert to String
           moduleCourseID = module.courseID;
           moduleCourseID = moduleCourseID.toString();
@@ -309,6 +310,7 @@ router.get("/facultyMember", (req, res, next) => {
                */
               taughtModulesList.push({
                 aa: counter,
+                id: module.id,
                 name: module.name,
                 courseName: course.name,
                 courseDegree: course.degree
@@ -882,6 +884,7 @@ router.post("/facultyMember/taughtModules/:id", (req, res) => {
 
 // console.log(`db.id: ${typeof(courseID)} - req.param.id: ${typeof(req.params.id)}, db.name: ${typeof(course.name)} - req.body.name: ${typeof(req.body.name)}, db.degree: ${typeof(course.name)} - req.body.degree: ${typeof(req.body.degree)}`);
 
-// ======== EXPORT MODULE ========
-
+/* ========================
+ * EXPORT MODULE
+ * ======================== */
 module.exports = router;

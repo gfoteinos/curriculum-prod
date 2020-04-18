@@ -1,18 +1,25 @@
-// Click "Profile" link on dashboard faculty/student menu
+// Click "Profile" link on "dashboard/faculty-or-student" url
 const profileClick = function() {
   window.onload = function() {
     document.getElementById("profile-list").click();
   };
 };
 
-// Click "Courses" link on dashboard faculty menu
+// Click "Dashboard" link on on "dashboard/faculty-or-student" url
+const dashboardClick = function() {
+  window.onload = function() {
+    document.getElementById("dashboard-list").click();
+  };
+};
+
+// Click "Courses" link on on "dashboard/faculty-or-student" url
 const coursesClick = function() {
   window.onload = function() {
     document.getElementById("course-list").click();
   };
 };
 
-// Click "Modules" link on dashboard faculty menu
+// Click "Modules" link on on "dashboard/faculty-or-student" url
 const modulesClick = function() {
   window.onload = function() {
     document.getElementById("module-list").click();
@@ -24,9 +31,12 @@ const disableElement = function(className) {
   element.classList.add("icon--disabled");
 };
 
-// ======== UI Controler ========
+// ======== UI CONTROLER ========
 const UICtrl = (function() {
-  // ======== Private var & methods ========
+  /* ========================
+   * PRIVATE VAR & METHODS
+   * ======================== */
+  // ======== GATHER UI SELECTORS ========
   const UISelectors = {
     // -------- Courses Form --------
     coursesForm: "#coursesForm",
@@ -34,7 +44,7 @@ const UICtrl = (function() {
     coursesTableBody: "#coursesTable tbody",
     coursesTableColumnTitle: "#coursesTable .sort-title",
     coursesTableColumnLevel: "#coursesTable .sort-level",
-    coursesCheckBoxAll: "#coursesCheckAll",
+    coursesCheckBoxAll: "#coursesTable thead input[type='checkbox']",
     coursesCheckBoxes: "#coursesTable tbody .custom-control-input",
     triggerDeleteCoursesModalBtn: "#triggerDeleteCoursesModalBtn",
     deleteCourseBtn: "#deleteCourseBtn",
@@ -58,7 +68,7 @@ const UICtrl = (function() {
     modulesTableColumnTitle: "#modulesTable .sort-title",
     modulesTableColumnCourse: "#modulesTable .sort-course",
     modulesTableColumnLevel: "#modulesTable .sort-level",
-    modulesCheckBoxAll: "#mtCheckAll",
+    modulesCheckBoxAll: "#modulesTable thead input[type='checkbox']",
     modulesCheckboxes: "#modulesTable tbody .custom-control-input",
     triggerDeleteModulesModalBtn: "#triggerDeleteModulesModalBtn",
     deleteModuleBtn: "#deleteModuleBtn",
@@ -73,16 +83,26 @@ const UICtrl = (function() {
     deleteModulesModalBtn: "#deleteModulesModalBtn",
 
     // -------- Dashboard Form --------
+    // -------- Modules List Tab -> Taught Modules Table --------
+    taughtModulesTable: "#taughtModulesTable",
+    taughtModulesTableBody: "#taughtModulesTable tbody",
+    taughtModulesCheckboxAll:
+      "#taughtModulesTable thead input[type='checkbox']",
+    triggerAddTaughtModuleBtn: "#triggerAddTaughtModuleBtn",
     // ---- Add Modules Modal ----
-    addModulesTableBody: "#modulesTableModal tbody",
-    addModulesTableColumnTitle: "#modulesTableModal .sort-title",
-    addModulesTableColumnCourse: "#modulesTableModal .sort-course",
-    addModulesTableColumnLevel: "#modulesTableModal .sort-level",
-    addModulesCheckBoxAll: "#mtmCheckAll"
+    modulesTableModal: "#modulesTableModal",
+    modulesTableBodyModal: "#modulesTableModal tbody",
+    modulesTableModalColumnTitle: "#modulesTableModal .sort-title",
+    modulesTableModalColumnCourse: "#modulesTableModal .sort-course",
+    modulesTableModalColumnLevel: "#modulesTableModal .sort-level",
+    modulesModalCheckboxAll: "#modulesTableModal thead input[type='checkbox']"
   };
 
-  // ======== Public Methods ========
+  /* ========================
+   * PUBLIC METHODS
+   * ======================== */
   return {
+    // ======== GET UI SELECTORS ========
     getUISelectors: function() {
       return UISelectors;
     },
@@ -198,7 +218,7 @@ const UICtrl = (function() {
           .insertAdjacentElement("beforeend", div);
       }
     },
-    // -------- Tables --------
+    // ---------------- Tables ----------------
     sortTableColumn: function(table, columnIndex) {
       // Initialize variables
       let rows,
@@ -285,6 +305,26 @@ const UICtrl = (function() {
         }
       }
     },
+    getAllTablesElementID: function(tableID) {
+      // Gather UI Selector IDs
+      const taughtModulesTableID = document.querySelector(UISelectors.taughtModulesTable).id;
+      const modulesTableModalID = document.querySelector(UISelectors.modulesTableModal).id;
+
+      // Get the table which will be compared  
+      if (tableID === taughtModulesTableID) {
+        tableAllElementsID = modulesTableModalID;
+      }
+
+      return tableAllElementsID;
+    },
+    getCheckBoxes: function(tableID) {
+      // Gather all checkboxes according to the table
+      const checkboxes = document.querySelectorAll(
+        `${tableID} tbody .custom-control-input`
+      );
+
+      return checkboxes;
+    },
     getTableDeleteElements: function(modalID) {
       // -------- Gather The Modals IDs --------
       const coursesModalID = document.querySelector(
@@ -355,14 +395,6 @@ const UICtrl = (function() {
         deleteBtn
       };
     },
-    getCheckBoxes: function(tableID) {
-      // Gather all checkboxes according to the table
-      const checkboxes = document.querySelectorAll(
-        `${tableID} tbody .custom-control-input`
-      );
-
-      return checkboxes;
-    },
     checkUncheckCheckboxes: function(
       checkAllCheckbox,
       checkboxes,
@@ -431,10 +463,8 @@ const UICtrl = (function() {
     }
   };
 })();
-// delete courses;
-// delete modules;
 
-// ======== Application Controler ========
+// ======== APPLICATION CONTROLER ========
 const App = (function(UICtrl) {
   /* ========================
    * PRIVATE VAR & METHODS
@@ -457,9 +487,14 @@ const App = (function(UICtrl) {
       .querySelector(UISelectors.modulesCheckBoxAll)
       .addEventListener("click", checkUncheckAll);
 
-    // "Dashboard" -> "Add Modules" form -> ("Courses" table)
+    // "Dashboard" -> "Modules List" tab -> ("Taught Modules" table)
     document
-      .querySelector(UISelectors.addModulesCheckBoxAll)
+      .querySelector(UISelectors.taughtModulesCheckboxAll)
+      .addEventListener("click", checkUncheckAll);
+
+    // "Dashboard" -> "Add Modules" modal form -> ("Modules" table)
+    document
+      .querySelector(UISelectors.modulesModalCheckboxAll)
       .addEventListener("click", checkUncheckAll);
 
     // -------- Check/Unckeck A Selected Table Row --------
@@ -473,9 +508,14 @@ const App = (function(UICtrl) {
       .querySelector(UISelectors.modulesTableBody)
       .addEventListener("click", checkUncheckRow);
 
-    // "Dashboard" -> "Add Modules" form -> ("Courses" table)
+    // "Dashboard" -> "Modules List" tab -> ("Taught Modules" table)
     document
-      .querySelector(UISelectors.addModulesTableBody)
+      .querySelector(UISelectors.taughtModulesTableBody)
+      .addEventListener("click", checkUncheckRow);
+
+    // "Dashboard" -> "Add Modules" modal form -> ("Modules" table)
+    document
+      .querySelector(UISelectors.modulesTableBodyModal)
       .addEventListener("click", checkUncheckRow);
 
     // -------------------- Sort Table --------------------
@@ -506,21 +546,27 @@ const App = (function(UICtrl) {
       .querySelector(UISelectors.modulesTableColumnLevel)
       .addEventListener("click", sortTable);
 
-    // ---- Sort "Dashboard" -> "Add Modules" form -> ("Courses" table) ----
+    // --- Sort "Dashboard" -> "Add Modules" modal form -> ("Modules" table) ---
     // Sort Title column
     document
-      .querySelector(UISelectors.addModulesTableColumnTitle)
+      .querySelector(UISelectors.modulesTableModalColumnTitle)
       .addEventListener("click", sortTable);
 
     // Sort "Course" column
     document
-      .querySelector(UISelectors.addModulesTableColumnCourse)
+      .querySelector(UISelectors.modulesTableModalColumnCourse)
       .addEventListener("click", sortTable);
 
     // Sort "Level" column
     document
-      .querySelector(UISelectors.addModulesTableColumnLevel)
+      .querySelector(UISelectors.modulesTableModalColumnLevel)
       .addEventListener("click", sortTable);
+
+    // ---------------- Disable Table Row/Rows ----------------
+    // "Dashboard" -> "Add Modules" modal form -> ("Modules" table)
+    document
+      .querySelector(UISelectors.triggerAddTaughtModuleBtn)
+      .addEventListener("click", disableRows);
 
     // -------------------- Edit Table Row --------------------
     // "Courses" form -> "Courses" table -> ("Edit" Button)
@@ -559,7 +605,7 @@ const App = (function(UICtrl) {
 
   // ======================== EVENTS ========================
   // ---------------- TABLE EVENT LISTENERS ----------------
-  // Check/Unckeck All Table Rows 
+  // Check/Unckeck All Table Rows
   const checkUncheckAll = function(e) {
     // -------- Gather All Necessary Elements --------
     // Get the target element
@@ -622,7 +668,7 @@ const App = (function(UICtrl) {
     let selectedColumnClassName;
     let sortIconClassName;
     let sortIconElement;
-    let table;                    //The table which is gonna be sorted
+    let table; //The table which is gonna be sorted
 
     if (e.target.classList.contains("fas")) {
       // If the target is the column's title sort icon (arrow "down" or "up")
@@ -662,8 +708,39 @@ const App = (function(UICtrl) {
     UICtrl.sortTableColumn(table, columnIndex);
   };
 
+  // ---------------- Disable Table Row/Rows ----------------
+  const disableRows = function(e) {
+    // ---- Get The Table Which Will Be Compared ----
+    const tableLessElementsID =
+      e.target.parentElement.previousElementSibling.children[0].id;
+
+    const tableAllElementsID = UICtrl.getAllTablesElementID(tableLessElementsID);
+
+    // ---- Get Checkboxes From Tables ----
+    const lessElementsCheckboxes = UICtrl.getCheckBoxes(
+      `#${tableLessElementsID}`
+    );
+    const allElementsCheckboxes = UICtrl.getCheckBoxes(
+      `#${tableAllElementsID}`
+    );
+
+    // ---- Disable Checkboxes From Table With Has All Elements ----
+    let id;
+    lessElementsCheckboxes.forEach(checkbox => {
+      id = checkbox.getAttribute("data-id");
+      allElementsCheckboxes.forEach(checkBox => {
+        if (id === checkBox.value) {
+          // ---- Disable row ----
+          checkBox.setAttribute("disabled", "");
+          let tr = checkBox.parentElement.parentElement.parentElement;
+          tr.classList.add("text-muted");
+        }
+      });
+    });
+  };
+
   // ---------------- Edit Table Row ----------------
-  // "Courses" form -> "Courses" table -> ("Edit" Button) 
+  // "Courses" form -> "Courses" table -> ("Edit" Button)
   const editCourse = function(e) {
     // Initilize variables needed
     let title, level, color, description, courseID;
@@ -801,12 +878,12 @@ const App = (function(UICtrl) {
     const deleteBtnID = deleteElements.deleteBtn.id;
     document.querySelector(`#${deleteBtnID}`).click();
   };
-  
 
   /* ========================
    * PUBLIC METHODS
    * ======================== */
   return {
+    // Initialize Events
     init: function() {
       console.log("Run...");
       // Load event listeners
@@ -815,8 +892,5 @@ const App = (function(UICtrl) {
   };
 })(UICtrl);
 
-// ======== Initialize app ========
+// ======== INITIALIZE APP ========
 App.init();
-
-// // ======== Export module ========
-// module.exports = methods;

@@ -29,12 +29,13 @@
       </li>
     </ul>
   </div>
+  {{> _formMsgsDashboard }}
   <div class="card-body">
     <div class="tab-content mt-3">
       <!-- Modules List -->
       <div class="tab-pane active" id="taughtModules" role="tabpanel">
         <div class="table-responsive">
-          <table class="table">
+          <table id="taughtModulesTable" class="table">
             <caption class="h5 py-0">Taught Modules</caption>
             <thead>
               <tr>
@@ -44,8 +45,8 @@
                 <th scope="col">Level</th>
                 <th scope="col">
                   <div class="custom-control custom-checkbox checkThemAll">
-                    <input type="checkbox" class="custom-control-input" id="tmCheckAll">
-                    <label class="custom-control-label" for="tmCheckAll"></label>
+                    <input type="checkbox" class="custom-control-input" id="tmtfCheckAll">
+                    <label class="custom-control-label" for="tmtfCheckAll"></label>
                   </div>
                 </th>
               </tr>
@@ -65,8 +66,8 @@
                 </td>
                 <td>
                   <div class="custom-control custom-checkbox">
-                    <input type="checkbox" class="custom-control-input" id="mtf-{{id}}" data-id="{{id}}">
-                    <label class="custom-control-label" for="mtf-{{id}}"></label>
+                    <input type="checkbox" class="custom-control-input" id="tmtf-{{id}}" data-id="{{id}}">
+                    <label class="custom-control-label" for="tmtf-{{id}}"></label>
                   </div>
                 </td>
               </tr>
@@ -95,7 +96,7 @@
             Add Module
           </button>
           <!-- Delete Module Button -->
-          <button id="deleteModules" type="button" class="btn btn-danger">
+          <button type="button" id="deleteModules" class="btn btn-danger" data-trigger="true" disabled>
             Delete
           </button>
         </div>
