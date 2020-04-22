@@ -14,7 +14,9 @@
         </button>
       </div>
       <div class="modal-body">
-        <form action="/dashboards/facultyMember/taughtModules/{{faculty.id}}" method="post">
+        <form action="/dashboards/facultyMember/taughtModules/add/{{faculty.id}}?_method=PUT`" method="post">
+          <input type="hidden" name="_method" value="PUT">
+          
           <div class="table-responsive">
             <table id="modulesTableModal" class="table">
               <caption class="h5 py-0">Modules</caption>
@@ -62,7 +64,8 @@
                   </td>
                   <td>
                     <div class="custom-control custom-checkbox">
-                      <input type="checkbox" class="custom-control-input" id="mtm-{{id}}" name="modulesID" value="{{id}}">
+                      <input type="checkbox" id="mtm-{{id}}" class="custom-control-input" name="modulesID"
+                        value="{{id}}">
                       <label class="custom-control-label" for="mtm-{{id}}"></label>
                     </div>
                   </td>

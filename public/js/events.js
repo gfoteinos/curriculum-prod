@@ -88,7 +88,7 @@ const UICtrl = (function() {
     taughtModulesTableBody: "#taughtModulesTable tbody",
     taughtModulesCheckboxAll:
       "#taughtModulesTable thead input[type='checkbox']",
-    triggerAddTaughtModuleBtn: "#triggerAddTaughtModuleBtn",
+    triggerModalAddTaughtModuleBtn: "#triggerModalAddTaughtModuleBtn",
     // ---- Add Modules Modal ----
     modulesTableModal: "#modulesTableModal",
     modulesTableBodyModal: "#modulesTableModal tbody",
@@ -565,7 +565,7 @@ const App = (function(UICtrl) {
     // ---------------- Disable Table Row/Rows ----------------
     // "Dashboard" -> "Add Modules" modal form -> ("Modules" table)
     document
-      .querySelector(UISelectors.triggerAddTaughtModuleBtn)
+      .querySelector(UISelectors.triggerModalAddTaughtModuleBtn)
       .addEventListener("click", disableRows);
 
     // -------------------- Edit Table Row --------------------
@@ -727,7 +727,7 @@ const App = (function(UICtrl) {
     // ---- Disable Checkboxes From Table With Has All Elements ----
     let id;
     lessElementsCheckboxes.forEach(checkbox => {
-      id = checkbox.getAttribute("data-id");
+      id = checkbox.value;
       allElementsCheckboxes.forEach(checkBox => {
         if (id === checkBox.value) {
           // ---- Disable row ----

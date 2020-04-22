@@ -34,72 +34,62 @@
     <div class="tab-content mt-3">
       <!-- Modules List -->
       <div class="tab-pane active" id="taughtModules" role="tabpanel">
-        <div class="table-responsive">
-          <table id="taughtModulesTable" class="table">
-            <caption class="h5 py-0">Taught Modules</caption>
-            <thead>
-              <tr>
-                <th scope="col">#</th>
-                <th scope="col">Modules</th>
-                <th scope="col">Courses</th>
-                <th scope="col">Level</th>
-                <th scope="col">
-                  <div class="custom-control custom-checkbox checkThemAll">
-                    <input type="checkbox" class="custom-control-input" id="tmtfCheckAll">
-                    <label class="custom-control-label" for="tmtfCheckAll"></label>
-                  </div>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {{#each taughtModulesList}}
-              <tr>
-                <th scope="row">{{aa}}</th>
-                <td class="title">
-                  {{name}}
-                </td>
-                <td class="course">
-                  {{courseName}}
-                </td>
-                <td class="level">
-                  {{courseDegree}}
-                </td>
-                <td>
-                  <div class="custom-control custom-checkbox">
-                    <input type="checkbox" class="custom-control-input" id="tmtf-{{id}}" data-id="{{id}}">
-                    <label class="custom-control-label" for="tmtf-{{id}}"></label>
-                  </div>
-                </td>
-              </tr>
-              {{/each}}
-            </tbody>
-          </table>
-        </div>
-        <div class="d-flex justify-content-end mt-3">
-          {{!-- {{#if courses}}
-                      <!-- Create Module Button -->
-                      <button id="createModulesBtn" type="button" class="btn btn-success mr-2" data-toggle="modal"
-                        data-target="#createModulesModal">
-                        Create Module
-                      </button> --}}
-          {{!-- {{else}} --}}
-          {{!-- <!-- Create Module Popover Button -->
-                      <button id="createModulesBtn" type="button" class="btn btn-success mr-2" data-toggle="popover"
-                        data-trigger="focus" title="Attention" data-placement="bottom"
-                        data-content="There are no Courses. Please create a Course first.">
-                        Create Module
-                      </button>
-                      {{/if}} --}}
-          <!-- Add Module Button -->
-          <button type="button" id="triggerAddTaughtModuleBtn" class="btn btn-success mr-2" data-toggle="modal"
-            data-target="#addTaughtModuleModal">
-            Add Module
-          </button>
-          <!-- Delete Module Button -->
-          <button type="button" id="deleteModules" class="btn btn-danger" data-trigger="true" disabled>
-            Delete
-          </button>
-        </div>
+        <form action="/dashboards/facultyMember/taughtModules/delete/{{faculty.id}}?_method=PUT`" method="post">
+          <input type="hidden" name="_method" value="PUT">
+
+          <div class="table-responsive">
+            <table id="taughtModulesTable" class="table">
+              <caption class="h5 py-0">Taught Modules</caption>
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Modules</th>
+                  <th scope="col">Courses</th>
+                  <th scope="col">Level</th>
+                  <th scope="col">
+                    <div class="custom-control custom-checkbox checkThemAll">
+                      <input type="checkbox" class="custom-control-input" id="tmtfCheckAll">
+                      <label class="custom-control-label" for="tmtfCheckAll"></label>
+                    </div>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {{#each taughtModulesList}}
+                <tr>
+                  <th scope="row">{{aa}}</th>
+                  <td class="title">
+                    {{name}}
+                  </td>
+                  <td class="course">
+                    {{courseName}}
+                  </td>
+                  <td class="level">
+                    {{courseDegree}}
+                  </td>
+                  <td>
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" id="tmtf-{{id}}" class="custom-control-input" name="modulesID" value="{{id}}">
+                      <label class="custom-control-label" for="tmtf-{{id}}"></label>
+                    </div>
+                  </td>
+                </tr>
+                {{/each}}
+              </tbody>
+            </table>
+          </div>
+          <div class="d-flex justify-content-end mt-3">
+            <!-- Add Module Button -->
+            <button type="button" id="triggerModalAddTaughtModuleBtn" class="btn btn-success mr-2" data-toggle="modal"
+              data-target="#addTaughtModuleModal">
+              Add Module
+            </button>
+            <!-- Delete Module Button -->
+            <button type="submit" id="deleteTaughtModules" class="btn btn-danger" data-trigger="true" disabled>
+              Delete
+            </button>
+          </div>
+        </form>
       </div>
       <!-- Courseworks Calendar -->
       <div class="tab-pane" id="courseworksCalendar" role="tabpanel">

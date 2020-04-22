@@ -291,7 +291,6 @@ router.get("/facultyMember", (req, res, next) => {
         let counter = 1;
         modules = facultyMember.taughtModules;
         modules.forEach(module => {
-
           // Convert to String
           moduleCourseID = module.courseID;
           moduleCourseID = moduleCourseID.toString();
@@ -327,7 +326,7 @@ router.get("/facultyMember", (req, res, next) => {
 
 // Pass Data Sets To The View
 router.get("/facultyMember", (req, res, next) => {
-  // Prepare the data to be send 
+  // Prepare the data to be send
   const faculty = req.faculty;
   const listCourses = req.listCourses;
   const listModules = req.listModules;
@@ -860,26 +859,87 @@ router.delete("/facultyMember/modules/", (req, res) => {
 });
 
 // ======== DASHBOARD FORM ========
-// Add Taught Module
-router.post("/facultyMember/taughtModules/:id", (req, res) => {
-  FacultyMember.findOne({ userID: req.user.id }).then(member => {
-    if (member) {
-      // Update the faculty member's "taught modules" list
-      member.taughtModules = req.body.modulesID;
-    }
+// Update "facultymember" collection - Add Taught Modules
+router.post("/facultyMember/taughtModules/add/:id", (req, res) => {
+  FacultyMember.findOne({ userID: req.params.id })
+    .populate("taughtModules")
+    .then(member => {
+      if (member) {
+        const moduleIDsToAdd = req.body.modulesID;
+        // If the faculty member exist add taught modules
+        if(typeof(moduleIDsToAdd) === "string") {
+          member.taughtModules.push(moduleIDsToAdd);
+        } else {
+          moduleIDsToAdd.forEach(id => {
+            member.taughtModules.push(id);
+          });
+        }
+      }
 
-    // Save to the database
-    member.save().then(member => {
-      req.flash("success_msg", "Taught Modules have been added successfully.");
-      res.redirect("/dashboards/facultyMember");
-    }).catch(err => {
-      // Catch any errors
-      console.log(err.message);
-      // req.flash("error_msg", err.message);
-      // res.redirect("/dashboards/facultyMember");
-      return;
+      // Save to the database
+      member
+        .save()
+        .then(member => {
+          req.flash(
+            "success_msg",
+            "Taught Modules have been added successfully."
+          );
+          res.redirect("/dashboards/facultyMember");
+        })
+        .catch(err => {
+          // Catch any errors
+          console.log(err.message);
+          // req.flash("error_msg", err.message);
+          // res.redirect("/dashboards/facultyMember");
+          return;
+        });
     });
-  });
+});
+
+// Update "facultymember" collection - Delete Taught Modules
+router.post("/facultyMember/taughtModules/delete/:id", (req, res) => {
+  FacultyMember.findOne({ userID: req.params.id })
+    .populate("taughtModules")
+    .then(member => {
+      if (member) {
+        const moduleIDsToDelete = req.body.modulesID;
+        // If the faculty member exist delete taught modules
+        if(typeof(moduleIDsToDelete) === "string") {
+          member.taughtModules.forEach((module, index) => {
+            if(module.id === moduleIDsToDelete) {
+              member.taughtModules.splice(index, 1);
+            }
+          });
+        } else {
+          // const moduleIDsToDelete = req.body.modulesID;
+          moduleIDsToDelete.forEach(id => {
+            member.taughtModules.forEach((module, index) => {
+              if(module.id === id) {
+                member.taughtModules.splice(index, 1);
+              }
+            });
+          });
+        }
+      }
+
+      // Save to the database
+      member
+        .save()
+        .then(member => {
+          req.flash(
+            "success_msg",
+            "Taught Modules have been deleted successfully."
+          );
+          res.redirect("/dashboards/facultyMember");
+        })
+        .catch(err => {
+          // Catch any errors
+          console.log(err.message);
+          // req.flash("error_msg", err.message);
+          // res.redirect("/dashboards/facultyMember");
+          return;
+        });
+    });
 });
 
 // console.log(`db.id: ${typeof(courseID)} - req.param.id: ${typeof(req.params.id)}, db.name: ${typeof(course.name)} - req.body.name: ${typeof(req.body.name)}, db.degree: ${typeof(course.name)} - req.body.degree: ${typeof(req.body.degree)}`);
