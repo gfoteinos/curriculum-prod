@@ -86,6 +86,9 @@ const UICtrl = (function() {
     // -------- Modules List Tab -> Taught Modules Table --------
     taughtModulesTable: "#taughtModulesTable",
     taughtModulesTableBody: "#taughtModulesTable tbody",
+    taughtModulesTableColumnTitle: "#taughtModulesTable .sort-title",
+    taughtModulesTableColumnCourse: "#taughtModulesTable .sort-course",
+    taughtModulesTableColumnLevel: "#taughtModulesTable .sort-level",
     taughtModulesCheckboxAll:
       "#taughtModulesTable thead input[type='checkbox']",
     triggerModalAddTaughtModuleBtn: "#triggerModalAddTaughtModuleBtn",
@@ -95,7 +98,11 @@ const UICtrl = (function() {
     modulesTableModalColumnTitle: "#modulesTableModal .sort-title",
     modulesTableModalColumnCourse: "#modulesTableModal .sort-course",
     modulesTableModalColumnLevel: "#modulesTableModal .sort-level",
-    modulesModalCheckboxAll: "#modulesTableModal thead input[type='checkbox']"
+    modulesModalCheckboxAll: "#modulesTableModal thead input[type='checkbox']",
+    // ---- Delete Taught Modules Form Modal ----
+    deleteTaughtModules: "#deleteTaughtModules",
+    cancelDeleteTaughtModulesModalBtn: "#cancelDeleteTaughtModulesModalBtn",
+    deleteTaughtModulesModalBtn: "#deleteTaughtModulesModalBtn",
   };
 
   /* ========================
@@ -307,10 +314,14 @@ const UICtrl = (function() {
     },
     getAllTablesElementID: function(tableID) {
       // Gather UI Selector IDs
-      const taughtModulesTableID = document.querySelector(UISelectors.taughtModulesTable).id;
-      const modulesTableModalID = document.querySelector(UISelectors.modulesTableModal).id;
+      const taughtModulesTableID = document.querySelector(
+        UISelectors.taughtModulesTable
+      ).id;
+      const modulesTableModalID = document.querySelector(
+        UISelectors.modulesTableModal
+      ).id;
 
-      // Get the table which will be compared  
+      // Get the table which will be compared
       if (tableID === taughtModulesTableID) {
         tableAllElementsID = modulesTableModalID;
       }
@@ -562,6 +573,22 @@ const App = (function(UICtrl) {
       .querySelector(UISelectors.modulesTableModalColumnLevel)
       .addEventListener("click", sortTable);
 
+    // --- Sort "Dashboard" -> "Modules List" tab -> ("Taught Modules" table) ---
+    // Sort Title column
+    document
+      .querySelector(UISelectors.taughtModulesTableColumnTitle)
+      .addEventListener("click", sortTable);
+
+    // Sort "Course" column
+    document
+      .querySelector(UISelectors.taughtModulesTableColumnCourse)
+      .addEventListener("click", sortTable);
+
+    // Sort "Level" column
+    document
+      .querySelector(UISelectors.taughtModulesTableColumnLevel)
+      .addEventListener("click", sortTable);
+
     // ---------------- Disable Table Row/Rows ----------------
     // "Dashboard" -> "Add Modules" modal form -> ("Modules" table)
     document
@@ -600,6 +627,17 @@ const App = (function(UICtrl) {
     // "Yes" Button
     document
       .querySelector(UISelectors.deleteModulesModalBtn)
+      .addEventListener("click", confirmDeletion);
+
+    // -------- "Delete Taught Modules" modal --------
+    // "No" Button
+    document
+      .querySelector(UISelectors.cancelDeleteTaughtModulesModalBtn)
+      .addEventListener("click", cancelDeletion);
+
+    // "Yes" Button
+    document
+      .querySelector(UISelectors.deleteTaughtModulesModalBtn)
       .addEventListener("click", confirmDeletion);
   };
 
@@ -714,7 +752,9 @@ const App = (function(UICtrl) {
     const tableLessElementsID =
       e.target.parentElement.previousElementSibling.children[0].id;
 
-    const tableAllElementsID = UICtrl.getAllTablesElementID(tableLessElementsID);
+    const tableAllElementsID = UICtrl.getAllTablesElementID(
+      tableLessElementsID
+    );
 
     // ---- Get Checkboxes From Tables ----
     const lessElementsCheckboxes = UICtrl.getCheckBoxes(

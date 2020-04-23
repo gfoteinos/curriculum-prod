@@ -43,9 +43,18 @@
               <thead>
                 <tr>
                   <th scope="col">#</th>
-                  <th scope="col">Modules</th>
-                  <th scope="col">Courses</th>
-                  <th scope="col">Level</th>
+                  <th scope="col" class="sort-title">
+                    Title
+                    <i class="fas fa-angle-down"></i>
+                  </th>
+                  <th scope="col" class="sort-course">
+                    Course
+                    <i class="fas fa-angle-down"></i>
+                  </th>
+                  <th scope="col" class="sort-level">
+                    Level
+                    <i class="fas fa-angle-down"></i>
+                  </th>
                   <th scope="col">
                     <div class="custom-control custom-checkbox checkThemAll">
                       <input type="checkbox" class="custom-control-input" id="tmtfCheckAll">
@@ -69,7 +78,8 @@
                   </td>
                   <td>
                     <div class="custom-control custom-checkbox">
-                      <input type="checkbox" id="tmtf-{{id}}" class="custom-control-input" name="modulesID" value="{{id}}">
+                      <input type="checkbox" id="tmtf-{{id}}" class="custom-control-input" name="modulesID"
+                        value="{{id}}">
                       <label class="custom-control-label" for="tmtf-{{id}}"></label>
                     </div>
                   </td>
@@ -84,8 +94,13 @@
               data-target="#addTaughtModuleModal">
               Add Module
             </button>
+            <!-- Trigger Delete Module Modal -->
+            <button type="button" id="triggerModalDeleteTaughtModulesBtn" class="btn btn-danger" data-trigger="true"
+              data-toggle="modal" data-target="#deleteTaughtModulesModal" disabled>
+              Delete
+            </button>
             <!-- Delete Module Button -->
-            <button type="submit" id="deleteTaughtModules" class="btn btn-danger" data-trigger="true" disabled>
+            <button type="submit" id="deleteTaughtModules" class="btn btn-danger d-none">
               Delete
             </button>
           </div>
