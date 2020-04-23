@@ -84,6 +84,7 @@ const UICtrl = (function() {
 
     // -------- Dashboard Form --------
     // -------- Modules List Tab -> Taught Modules Table --------
+    taughtModulesForm: "#taughtModulesForm",
     taughtModulesTable: "#taughtModulesTable",
     taughtModulesTableBody: "#taughtModulesTable tbody",
     taughtModulesTableColumnTitle: "#taughtModulesTable .sort-title",
@@ -91,6 +92,8 @@ const UICtrl = (function() {
     taughtModulesTableColumnLevel: "#taughtModulesTable .sort-level",
     taughtModulesCheckboxAll:
       "#taughtModulesTable thead input[type='checkbox']",
+    triggerModalDeleteTaughtModulesBtn: "#triggerModalDeleteTaughtModulesBtn",
+    deleteTaughtModulesBtn: "#deleteTaughtModulesBtn",
     triggerModalAddTaughtModuleBtn: "#triggerModalAddTaughtModuleBtn",
     // ---- Add Modules Modal ----
     modulesTableModal: "#modulesTableModal",
@@ -100,9 +103,9 @@ const UICtrl = (function() {
     modulesTableModalColumnLevel: "#modulesTableModal .sort-level",
     modulesModalCheckboxAll: "#modulesTableModal thead input[type='checkbox']",
     // ---- Delete Taught Modules Form Modal ----
-    deleteTaughtModules: "#deleteTaughtModules",
+    deleteTaughtModulesModal: "#deleteTaughtModulesModal",
     cancelDeleteTaughtModulesModalBtn: "#cancelDeleteTaughtModulesModalBtn",
-    deleteTaughtModulesModalBtn: "#deleteTaughtModulesModalBtn",
+    deleteTaughtModulesModalBtn: "#deleteTaughtModulesModalBtn"
   };
 
   /* ========================
@@ -189,11 +192,8 @@ const UICtrl = (function() {
 
       // Create inputs
       let itemArray = [],
-        id = "";
+      id = "";
       listData.forEach(function(item) {
-        // Get the "id" from "checkbox id" element
-        // itemArray = item.id.split("-");
-        // id = itemArray[1];
         id = item.getAttribute("data-id");
         // Building html code
         inputs += `<input type="text" name="ids" id="${id}" class="d-none" value="${id}"></input>`;
@@ -344,15 +344,14 @@ const UICtrl = (function() {
       const modulesModalID = document.querySelector(
         UISelectors.deleteModulesModal
       ).id;
+      const taughtModulesModalID = document.querySelector(
+        UISelectors.deleteTaughtModulesModal
+      ).id;
 
       // ======== Gather All Necessary Elements ========
       let tableID;
-      let formID;
-      let listChecked = [];
       if (modalID === coursesModalID) {
         // -------- Get the "Courses" table elements --------
-        // Get the form id
-        formID = document.querySelector(UISelectors.coursesForm).id;
         // Get the checkbox "check all" element
         checkboxCheckAll = document.querySelector(
           UISelectors.coursesCheckBoxAll
@@ -360,12 +359,6 @@ const UICtrl = (function() {
         // ---- Gather all checkboxes ----
         tableID = document.querySelector(UISelectors.coursesTable).id;
         checkboxes = UICtrl.getCheckBoxes(`#${tableID}`);
-        // ---- Get all checkboxes that are checked ----
-        checkboxes.forEach(checkbox => {
-          if (checkbox.checked === true) {
-            listChecked.push(checkbox);
-          }
-        });
         // Get the trigger "Delete" courses button
         triggerDeleteBtn = document.querySelector(
           UISelectors.triggerDeleteCoursesModalBtn
@@ -374,8 +367,6 @@ const UICtrl = (function() {
         deleteBtn = document.querySelector(UISelectors.deleteCourseBtn);
       } else if (modalID === modulesModalID) {
         // -------- Get the "Modules" table elements --------
-        // Get the form id
-        formID = document.querySelector(UISelectors.modulesForm).id;
         // Get the checkbox "check all" element
         checkboxCheckAll = document.querySelector(
           UISelectors.modulesCheckBoxAll
@@ -383,24 +374,31 @@ const UICtrl = (function() {
         // ---- Gather all checkboxes ----
         tableID = document.querySelector(UISelectors.modulesTable).id;
         checkboxes = UICtrl.getCheckBoxes(`#${tableID}`);
-        // ---- Get all checkboxes that are checked ----
-        checkboxes.forEach(checkbox => {
-          if (checkbox.checked === true) {
-            listChecked.push(checkbox);
-          }
-        });
         // Get the trigger "Delete" modules button
         triggerDeleteBtn = document.querySelector(
           UISelectors.triggerDeleteModulesModalBtn
         );
         // Get the "Delete" courses button
         deleteBtn = document.querySelector(UISelectors.deleteModuleBtn);
+      } else if (modalID === taughtModulesModalID) {
+        // -------- Get the "Taught Modules" table elements --------
+        // Get the checkbox "check all" element
+        checkboxCheckAll = document.querySelector(
+          UISelectors.taughtModulesCheckboxAll
+        );
+        // ---- Gather all checkboxes ----
+        tableID = document.querySelector(UISelectors.taughtModulesTable).id;
+        checkboxes = UICtrl.getCheckBoxes(`#${tableID}`);
+        // Get the trigger "Delete" modules button
+        triggerDeleteBtn = document.querySelector(
+          UISelectors.triggerModalDeleteTaughtModulesBtn
+        );
+        // Get the "Delete" courses button
+        deleteBtn = document.querySelector(UISelectors.deleteTaughtModulesBtn);
       }
 
       return {
-        formID,
         checkboxCheckAll,
-        listChecked,
         checkboxes,
         triggerDeleteBtn,
         deleteBtn
@@ -904,15 +902,6 @@ const App = (function(UICtrl) {
 
     // Get checkboxes & "Delete" button
     const deleteElements = UICtrl.getTableDeleteElements(targetModalID);
-
-    /* ----------------------------------------------------------------
-     * Populate the checked for deletion items from table to the form
-     * ----------------------------------------------------------------
-     */
-    UICtrl.populateDeletionData(
-      deleteElements.listChecked,
-      deleteElements.formID
-    );
 
     // -------- CLICK DELETE BUTTON --------
     const deleteBtnID = deleteElements.deleteBtn.id;

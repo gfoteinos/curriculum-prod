@@ -668,7 +668,7 @@ router.put("/facultyMember/courses/:id", (req, res) => {
 router.delete("/facultyMember/courses/", (req, res) => {
   // ======== Delete Courses ========
   // Get the selected course ids
-  let ids = req.body.ids;
+  let ids = req.body.coursesID;
 
   /* In case of only one "course" is selected to delete the "id" is a string.
    *  In order to delete the "course" it needs to be converted to an array of
@@ -826,10 +826,9 @@ router.put("/facultyMember/modules/:id", (req, res) => {
 
 // Delete Module
 router.delete("/facultyMember/modules/", (req, res) => {
-  console.log(req.body);
   // ======== Delete Modules ========
   // Get the selected module ids
-  let ids = req.body.ids;
+  let ids = req.body.modulesID;
 
   /* In case of only one "module" is selected to delete, the "id" is a string.
    *  In order to delete the "module" it needs to be converted to an array of
