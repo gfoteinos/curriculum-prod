@@ -282,17 +282,17 @@ router.get("/facultyMember", (req, res, next) => {
 router.get("/facultyMember", (req, res, next) => {
   // -------- Get All "Taught Modules" --------
   FacultyMember.findOne({ userID: req.user.id })
-    .populate("taughtModules")
+    .populate("taughtModules.moduleID")
     .then(facultyMember => {
       // -------- Create A "Taught Modules" List --------
-      let taughtModulesList = []; // For "Taught Modules" table in "Dashboard - 'Modules List'" tab
+      let listTaughtModules = []; // For "Taught Modules" table in "Dashboard - 'Modules List'" tab
       if (facultyMember) {
         // Fill in "Taught Modules" table to pass it later in the view
         let counter = 1;
-        modules = facultyMember.taughtModules;
-        modules.forEach(module => {
+        taughtModules = facultyMember.taughtModules;
+        taughtModules.forEach(taughtModule => {
           // Convert to String
-          moduleCourseID = module.courseID;
+          moduleCourseID = taughtModule.moduleID.courseID;
           moduleCourseID = moduleCourseID.toString();
 
           req.listCourses.forEach(course => {
@@ -307,10 +307,10 @@ router.get("/facultyMember", (req, res, next) => {
                * the "_id" of "Courses" collection then build a "taught
                * module" row
                */
-              taughtModulesList.push({
+              listTaughtModules.push({
                 aa: counter,
-                id: module.id,
-                name: module.name,
+                id: taughtModule.moduleID.id,
+                name: taughtModule.moduleID.name,
                 courseName: course.name,
                 courseDegree: course.degree
               });
@@ -319,7 +319,7 @@ router.get("/facultyMember", (req, res, next) => {
           });
         });
       }
-      req.taughtModulesList = taughtModulesList;
+      req.listTaughtModules = listTaughtModules;
       next();
     });
 });
@@ -330,14 +330,14 @@ router.get("/facultyMember", (req, res, next) => {
   const faculty = req.faculty;
   const listCourses = req.listCourses;
   const listModules = req.listModules;
-  const taughtModulesList = req.taughtModulesList;
+  const listTaughtModules = req.listTaughtModules;
 
   // Pass the data to the view
   res.render("dashboards/facultyMember", {
     faculty,
     listCourses,
     listModules,
-    taughtModulesList
+    listTaughtModules
   });
 });
 
@@ -861,16 +861,22 @@ router.delete("/facultyMember/modules/", (req, res) => {
 // Update "facultymember" collection - Add Taught Modules
 router.post("/facultyMember/taughtModules/add/:id", (req, res) => {
   FacultyMember.findOne({ userID: req.params.id })
-    .populate("taughtModules")
+    .populate("taughtModules.moduleID")
     .then(member => {
       if (member) {
         const moduleIDsToAdd = req.body.modulesID;
         // If the faculty member exist add taught modules
-        if(typeof(moduleIDsToAdd) === "string") {
-          member.taughtModules.push(moduleIDsToAdd);
+        if (typeof moduleIDsToAdd === "string") {
+          const taughtModule = {
+            moduleID: moduleIDsToAdd
+          };
+          member.taughtModules.push(taughtModule);
         } else {
           moduleIDsToAdd.forEach(id => {
-            member.taughtModules.push(id);
+            const taughtModule = {
+              moduleID: id
+            };
+            member.taughtModules.push(taughtModule);
           });
         }
       }
@@ -898,23 +904,27 @@ router.post("/facultyMember/taughtModules/add/:id", (req, res) => {
 // Update "facultymember" collection - Delete Taught Modules
 router.post("/facultyMember/taughtModules/delete/:id", (req, res) => {
   FacultyMember.findOne({ userID: req.params.id })
-    .populate("taughtModules")
+    .populate("taughtModules.moduleID")
     .then(member => {
       if (member) {
         const moduleIDsToDelete = req.body.modulesID;
         // If the faculty member exist delete taught modules
-        if(typeof(moduleIDsToDelete) === "string") {
-          member.taughtModules.forEach((module, index) => {
-            if(module.id === moduleIDsToDelete) {
-              member.taughtModules.splice(index, 1);
+        if (typeof moduleIDsToDelete === "string") {
+          member.taughtModules.forEach((taughtModule, index) => {
+            if (taughtModule.moduleID.id === moduleIDsToDelete) {
+              // member.taughtModules.splice(index, 1);
+              const id = taughtModule._id.toString();
+              taughtModule.remove({ _id: id });
             }
           });
         } else {
           // const moduleIDsToDelete = req.body.modulesID;
           moduleIDsToDelete.forEach(id => {
-            member.taughtModules.forEach((module, index) => {
-              if(module.id === id) {
-                member.taughtModules.splice(index, 1);
+            member.taughtModules.forEach(taughtModule => {
+              if (taughtModule.moduleID.id === id) {
+                // member.taughtModules.splice(index, 1);
+                const id = taughtModule._id.toString();
+                taughtModule.remove({ _id: id });
               }
             });
           });

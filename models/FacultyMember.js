@@ -17,9 +17,11 @@ const FacultyMemberSchema = new Schema({
     type: String
   },
   taughtModules: [{
-    // Relation with the 'modules' collection
+    moduleID: {
+      // Relation with the 'modules' collection
     type: Schema.Types.ObjectId,
     ref: "modules"
+    }
   }]
 });
 

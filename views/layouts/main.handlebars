@@ -72,12 +72,20 @@
     $("#year").text(new Date().getFullYear());
 
     // ======== BOOTSTRAP COMPONENTS ========
-    // ---- Tooltips & Popovers ----
+    // -------- TOOLTIPS & POPOVERS --------
     // Init tooltips
     $('[data-toggle="tooltip"]').tooltip();
 
-    // Init popovers
+    // ---- Init popovers ----
     $('#UnableCreateModuleBtn').popover({
+      container: 'body',
+      trigger: 'focus'
+    })
+    $('#UnableAddTaughtModuleBtn').popover({
+      container: 'body',
+      trigger: 'focus'
+    })
+    $('#UnableAddCourseworksBtn').popover({
       container: 'body',
       trigger: 'focus'
     })

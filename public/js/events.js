@@ -105,7 +105,13 @@ const UICtrl = (function() {
     // ---- Delete Taught Modules Form Modal ----
     deleteTaughtModulesModal: "#deleteTaughtModulesModal",
     cancelDeleteTaughtModulesModalBtn: "#cancelDeleteTaughtModulesModalBtn",
-    deleteTaughtModulesModalBtn: "#deleteTaughtModulesModalBtn"
+    deleteTaughtModulesModalBtn: "#deleteTaughtModulesModalBtn",
+    // -------- Courseworks calendar Tab -> Add courseworks modal --------
+    courseworksTableModal: "#courseworksTableModal",
+    courseworksTableBodyModal: "#courseworksTableModal tbody",
+    taughtModulesModalCheckboxAll:
+      "#courseworksTableModal thead input[type='checkbox']",
+    addCourseworksBtn: "#addCourseworksBtn"
   };
 
   /* ========================
@@ -192,7 +198,7 @@ const UICtrl = (function() {
 
       // Create inputs
       let itemArray = [],
-      id = "";
+        id = "";
       listData.forEach(function(item) {
         id = item.getAttribute("data-id");
         // Building html code
@@ -506,6 +512,11 @@ const App = (function(UICtrl) {
       .querySelector(UISelectors.modulesModalCheckboxAll)
       .addEventListener("click", checkUncheckAll);
 
+    // "Dashboard" -> "Add Courseworks" modal form -> ("Taught Modules" table)
+    document
+      .querySelector(UISelectors.taughtModulesModalCheckboxAll)
+      .addEventListener("click", checkUncheckAll);
+
     // -------- Check/Unckeck A Selected Table Row --------
     // "Courses" form -> ("Courses" table)
     document
@@ -525,6 +536,11 @@ const App = (function(UICtrl) {
     // "Dashboard" -> "Add Modules" modal form -> ("Modules" table)
     document
       .querySelector(UISelectors.modulesTableBodyModal)
+      .addEventListener("click", checkUncheckRow);
+
+    // "Dashboard" -> "Add Courseworks" modal form -> ("Taught Modules" table)
+    document
+      .querySelector(UISelectors.courseworksTableBodyModal)
       .addEventListener("click", checkUncheckRow);
 
     // -------------------- Sort Table --------------------
@@ -637,6 +653,12 @@ const App = (function(UICtrl) {
     document
       .querySelector(UISelectors.deleteTaughtModulesModalBtn)
       .addEventListener("click", confirmDeletion);
+
+    // ---- Enable/Disable "Plus" button when date element has value  ----
+    // "Dashboard" -> "Courseworks" tab -> ("Add Courseworks" modal)
+    document
+      .querySelector(UISelectors.courseworksTableModal)
+      .addEventListener("change", enableDisableBtn);
   };
 
   // ======================== EVENTS ========================
@@ -906,6 +928,40 @@ const App = (function(UICtrl) {
     // -------- CLICK DELETE BUTTON --------
     const deleteBtnID = deleteElements.deleteBtn.id;
     document.querySelector(`#${deleteBtnID}`).click();
+  };
+
+  // ------------ Enable/Disable "Plus" button ------------
+  const enableDisableBtn = function(e) {
+    // -------- Gather All Necessary Elements --------
+    // Gather all buttons which are on the form's bottom
+    const buttons =
+      e.target.parentElement.parentElement.parentElement.parentElement
+        .parentElement.nextElementSibling.children;
+
+    // -------- Enable/Disable Button --------
+    if (e.target.type === "date") {
+      // Get all "dates" elements
+      const tbody =
+        e.target.parentElement.parentElement.parentElement.localName;
+      const dates = document.querySelectorAll(`${tbody} input[type='date']`);
+
+      // Check if there is any date that has value
+      let enable = false;
+      dates.forEach(date => {
+        if (date.value !== "") {
+          enable = true;
+        }
+      });
+
+      if (enable) {
+        // If there is a date with value eneble button
+        // Get the trigger(enable/disable) button
+        const triggerButton = UICtrl.getTriggerBtn(buttons);
+        triggerButton.disabled = false;
+      } else {
+        triggerButton.disabled = true;
+      }
+    }
   };
 
   /* ========================
