@@ -654,11 +654,11 @@ const App = (function(UICtrl) {
       .querySelector(UISelectors.deleteTaughtModulesModalBtn)
       .addEventListener("click", confirmDeletion);
 
-    // ---- Enable/Disable "Plus" button when date element has value  ----
-    // "Dashboard" -> "Courseworks" tab -> ("Add Courseworks" modal)
-    document
-      .querySelector(UISelectors.courseworksTableModal)
-      .addEventListener("change", enableDisableBtn);
+    // // ---- Enable/Disable "Plus" button when date element has value  ----
+    // // "Dashboard" -> "Courseworks" tab -> ("Add Courseworks" modal)
+    // document
+    //   .querySelector(UISelectors.courseworksTableModal)
+    //   .addEventListener("change", enableDisableBtn);
   };
 
   // ======================== EVENTS ========================
@@ -931,38 +931,38 @@ const App = (function(UICtrl) {
   };
 
   // ------------ Enable/Disable "Plus" button ------------
-  const enableDisableBtn = function(e) {
-    // -------- Gather All Necessary Elements --------
-    // Gather all buttons which are on the form's bottom
-    const buttons =
-      e.target.parentElement.parentElement.parentElement.parentElement
-        .parentElement.nextElementSibling.children;
+  // const enableDisableBtn = function(e) {
+  //   // -------- Gather All Necessary Elements --------
+  //   // Gather all buttons which are on the form's bottom
+  //   const buttons =
+  //     e.target.parentElement.parentElement.parentElement.parentElement
+  //       .parentElement.nextElementSibling.children;
 
-    // -------- Enable/Disable Button --------
-    if (e.target.type === "date") {
-      // Get all "dates" elements
-      const tbody =
-        e.target.parentElement.parentElement.parentElement.localName;
-      const dates = document.querySelectorAll(`${tbody} input[type='date']`);
+  //   // -------- Enable/Disable Button --------
+  //   if (e.target.type === "date") {
+  //     // Get all "dates" elements
+  //     const tbody =
+  //       e.target.parentElement.parentElement.parentElement.localName;
+  //     const dates = document.querySelectorAll(`${tbody} input[type='date']`);
 
-      // Check if there is any date that has value
-      let enable = false;
-      dates.forEach(date => {
-        if (date.value !== "") {
-          enable = true;
-        }
-      });
+  //     // Check if there is any date that has value
+  //     let enable = false;
+  //     dates.forEach(date => {
+  //       if (date.value !== "") {
+  //         enable = true;
+  //       }
+  //     });
 
-      if (enable) {
-        // If there is a date with value eneble button
-        // Get the trigger(enable/disable) button
-        const triggerButton = UICtrl.getTriggerBtn(buttons);
-        triggerButton.disabled = false;
-      } else {
-        triggerButton.disabled = true;
-      }
-    }
-  };
+  //     if (enable) {
+  //       // If there is a date with value eneble button
+  //       // Get the trigger(enable/disable) button
+  //       const triggerButton = UICtrl.getTriggerBtn(buttons);
+  //       triggerButton.disabled = false;
+  //     } else {
+  //       triggerButton.disabled = true;
+  //     }
+  //   }
+  // };
 
   /* ========================
    * PUBLIC METHODS

@@ -14,9 +14,7 @@
         </button>
       </div>
       <div class="modal-body">
-        <form action="/dashboards/facultyMember/taughtModules/add/{{faculty.id}}?_method=PUT`" method="post">
-          <input type="hidden" name="_method" value="PUT">
-
+        <form action="/dashboards/facultyMember/taughtModules/{{faculty.id}}" method="post">
           <div class="table-responsive">
             <table id="modulesTableModal" class="table">
               <caption class="h5 py-0">Modules</caption>
@@ -129,9 +127,7 @@
         </button>
       </div>
       <div class="modal-body">
-        <form action="/dashboards/facultyMember/courseworks/add/{{faculty.id}}?_method=PUT`" method="post">
-          <input type="hidden" name="_method" value="PUT">
-
+        <form action="/dashboards/facultyMember/courseworks/{{faculty.id}}" method="post">
           <div class="table-responsive">
             <table id="courseworksTableModal" class="table">
               <caption class="h5 py-0">Taught Modules</caption>
@@ -158,17 +154,17 @@
                 <tr>
                   <th scope="row">{{aa}}</th>
                   <td class="title">
-                    {{name}}
+                    {{moduleName}}
                   </td>
                   <td>
-                    <input type="date" id="cwDate-{{aa}}" class="form-control">
-                    <label for="cwDate-{{aa}}" class="sr-only">Coursework Date</label>
+                    <input type="date" id="cwDate-{{moduleID}}" class="form-control" name="date">
+                    <label for="cwDate-{{moduleID}}" class="sr-only">Coursework Date</label>
                   </td>
                   <td>
                     <div class="custom-control custom-checkbox">
-                      <input type="checkbox" id="tmacm-{{id}}" class="custom-control-input" name="modulesID"
-                        value="{{id}}">
-                      <label class="custom-control-label" for="tmacm-{{id}}"></label>
+                      <input type="checkbox" id="tmacm-{{moduleID}}" class="custom-control-input" name="modulesID"
+                        value="{{moduleID}}">
+                      <label class="custom-control-label" for="tmacm-{{moduleID}}"></label>
                     </div>
                   </td>
                 </tr>

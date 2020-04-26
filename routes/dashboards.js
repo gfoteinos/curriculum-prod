@@ -307,10 +307,29 @@ router.get("/facultyMember", (req, res, next) => {
                * the "_id" of "Courses" collection then build a "taught
                * module" row
                */
+
+              if (taughtModule.coursework.date) {
+                // Convert date value to English UK short format
+                const options = {
+                  day: "numeric",
+                  month: "numeric",
+                  year: "numeric"
+                };
+                tempDate = new Date(
+                  taughtModule.coursework.date
+                ).toLocaleString("en-GB", options);
+                tempDate = tempDate.split("/");
+                dateUKFormat = `${tempDate[1]}/${tempDate[0]}/${tempDate[2]}`;
+              } else {
+                dateUKFormat = "";
+              }
+
               listTaughtModules.push({
                 aa: counter,
-                id: taughtModule.moduleID.id,
-                name: taughtModule.moduleID.name,
+                taughtModuleID: taughtModule._id.toString(),
+                moduleID: taughtModule.moduleID.id,
+                moduleName: taughtModule.moduleID.name,
+                courseworkDate: dateUKFormat,
                 courseName: course.name,
                 courseDegree: course.degree
               });
@@ -859,13 +878,13 @@ router.delete("/facultyMember/modules/", (req, res) => {
 
 // ======== DASHBOARD FORM ========
 // Update "facultymember" collection - Add Taught Modules
-router.post("/facultyMember/taughtModules/add/:id", (req, res) => {
+router.post("/facultyMember/taughtModules/:id", (req, res) => {
   FacultyMember.findOne({ userID: req.params.id })
     .populate("taughtModules.moduleID")
     .then(member => {
       if (member) {
         const moduleIDsToAdd = req.body.modulesID;
-        // If the faculty member exist add taught modules
+        // If the faculty member exist add "taught modules"
         if (typeof moduleIDsToAdd === "string") {
           const taughtModule = {
             moduleID: moduleIDsToAdd
@@ -894,15 +913,13 @@ router.post("/facultyMember/taughtModules/add/:id", (req, res) => {
         .catch(err => {
           // Catch any errors
           console.log(err.message);
-          // req.flash("error_msg", err.message);
-          // res.redirect("/dashboards/facultyMember");
           return;
         });
     });
 });
 
 // Update "facultymember" collection - Delete Taught Modules
-router.post("/facultyMember/taughtModules/delete/:id", (req, res) => {
+router.delete("/facultyMember/taughtModules/:id", (req, res) => {
   FacultyMember.findOne({ userID: req.params.id })
     .populate("taughtModules.moduleID")
     .then(member => {
@@ -944,8 +961,60 @@ router.post("/facultyMember/taughtModules/delete/:id", (req, res) => {
         .catch(err => {
           // Catch any errors
           console.log(err.message);
-          // req.flash("error_msg", err.message);
-          // res.redirect("/dashboards/facultyMember");
+          return;
+        });
+    });
+});
+
+// Update "facultymember collection" - Add Courseworks
+router.post("/facultyMember/courseworks/:id", (req, res) => {
+  FacultyMember.findOne({ userID: req.params.id })
+    .populate("taughtModules.moduleID")
+    .then(member => {
+      if (member) {
+        // If the faculty member exist add "coursework" in a taught module
+        const taughtModulesToAddCourseworksIDs = req.body.modulesID;
+        let dateText;
+        req.body.date.forEach(item => {
+          if (item !== "") {
+            dateText = item;
+          }
+        });
+        if (typeof taughtModulesToAddCourseworksIDs === "string") {
+          // In case of adding one coursework
+          member.taughtModules.forEach(taughtModule => {
+            if (taughtModule.moduleID.id === taughtModulesToAddCourseworksIDs) {
+              const newCoursework = {
+                date: dateText
+              };
+              taughtModule.coursework = newCoursework;
+            }
+          });
+        } else {
+          // In case of adding many courseworks
+          taughtModulesToAddCourseworksIDs.forEach((id, index) => {
+            member.taughtModules.forEach(taughtModule => {
+              if (taughtModule.moduleID.id === id) {
+                const newCoursework = {
+                  date: req.body.date[index]
+                };
+                taughtModule.coursework = newCoursework;
+              }
+            });
+          });
+        }
+      }
+
+      // Save to the database
+      member
+        .save()
+        .then(member => {
+          req.flash("success_msg", "Courseworks have been added successfully.");
+          res.redirect("/dashboards/facultyMember");
+        })
+        .catch(err => {
+          // Catch any errors
+          console.log(err.message);
           return;
         });
     });

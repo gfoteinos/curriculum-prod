@@ -21,6 +21,11 @@ const FacultyMemberSchema = new Schema({
       // Relation with the 'modules' collection
     type: Schema.Types.ObjectId,
     ref: "modules"
+    },
+    coursework: {
+      date: {
+        type: Date
+      }
     }
   }]
 });

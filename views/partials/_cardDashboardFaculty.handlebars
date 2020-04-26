@@ -34,9 +34,9 @@
     <div class="tab-content mt-3">
       <!-- Modules List -->
       <div class="tab-pane active" id="taughtModules" role="tabpanel">
-        <form action="/dashboards/facultyMember/taughtModules/delete/{{faculty.id}}?_method=PUT`" method="post"
+        <form action="/dashboards/facultyMember/taughtModules/{{faculty.id}}?_method=DELETE" method="post"
           id="taughtModulesForm">
-          <input type="hidden" name="_method" value="PUT">
+          <input type="hidden" name="_method" value="DELETE">
 
           <div class="table-responsive">
             <table id="taughtModulesTable" class="table">
@@ -69,7 +69,7 @@
                 <tr>
                   <th scope="row">{{aa}}</th>
                   <td class="title">
-                    {{name}}
+                    {{moduleName}}
                   </td>
                   <td class="course">
                     {{courseName}}
@@ -128,13 +128,39 @@
                 <th scope="col">Edit</th>
                 <th scope="col">
                   <div class="custom-control custom-checkbox checkThemAll">
-                    <input type="checkbox" class="custom-control-input" id="cwCheckAll">
-                    <label class="custom-control-label" for="cwCheckAll"></label>
+                    <input type="checkbox" class="custom-control-input" id="cwtfCheckAll">
+                    <label class="custom-control-label" for="cwtfCheckAll"></label>
                   </div>
                 </th>
               </tr>
             </thead>
-            <tbody></tbody>
+            <tbody>
+              {{#each listTaughtModules}}
+              {{#if courseworkDate}}
+              <tr>
+                <th scope="row">{{aa}}</th>
+                <td class="module">
+                  {{moduleName}}
+                </td>
+                <td class="dueDate">
+                  {{courseworkDate}}
+                </td>
+                <td>
+                  <button type="button" class="btn btn-sm btn-primary p-0" data-id={{id}}>
+                    <i class="fas fa-pencil-alt moduleEdit"></i>
+                  </button>
+                </td>
+                <td>
+                  <div class="custom-control custom-checkbox">
+                    <input type="checkbox" id="cwtf-{{id}}" class="custom-control-input" name="modulesID"
+                      value="{{id}}">
+                    <label class="custom-control-label" for="cwtf-{{id}}"></label>
+                  </div>
+                </td>
+              </tr>
+              {{/if}}
+              {{/each}}
+            </tbody>
           </table>
         </div>
         <div class="d-flex justify-content-end mt-3">
