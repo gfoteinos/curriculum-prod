@@ -6,7 +6,7 @@
     <div class="modal-content">
       <div class="modal-header d-flex align-items-center">
         <div class="flex-column">
-          <h3 class="mb-0">Add Modules</h3>
+          <h3 class="mb-0">Add Taught Modules</h3>
           <small>Select any module from the list in order to be added into "Taught Modules" list"</small>
         </div>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -129,7 +129,7 @@
       <div class="modal-body">
         <form action="/dashboards/facultyMember/courseworks/{{faculty.id}}" method="post">
           <div class="table-responsive">
-            <table id="courseworksTableModal" class="table">
+            <table id="d_cct_ac_m_taughtModulesTable" class="table">
               <caption class="h5 py-0">Taught Modules</caption>
               <thead>
                 <tr>
@@ -143,8 +143,8 @@
                   </th>
                   <th scope="col">
                     <div class="custom-control custom-checkbox checkThemAll">
-                      <input type="checkbox" class="custom-control-input" id="tmacmCheckAll">
-                      <label class="custom-control-label" for="tmacmCheckAll"></label>
+                      <input type="checkbox" class="custom-control-input" id="dcctacmtm-CheckAll">
+                      <label class="custom-control-label" for="dcctacmtm-CheckAll"></label>
                     </div>
                   </th>
                 </tr>
@@ -157,14 +157,14 @@
                     {{moduleName}}
                   </td>
                   <td>
-                    <input type="date" id="cwDate-{{moduleID}}" class="form-control" name="date">
-                    <label for="cwDate-{{moduleID}}" class="sr-only">Coursework Date</label>
+                    <input type="date" id="dcctacmtmDate-{{moduleID}}" class="form-control" name="date">
+                    <label for="dcctacmtmDate-{{moduleID}}" class="sr-only">Coursework Date</label>
                   </td>
                   <td>
                     <div class="custom-control custom-checkbox">
-                      <input type="checkbox" id="tmacm-{{moduleID}}" class="custom-control-input" name="modulesID"
+                      <input type="checkbox" id="dcctacmtm-{{moduleID}}" class="custom-control-input" name="modulesID"
                         value="{{moduleID}}">
-                      <label class="custom-control-label" for="tmacm-{{moduleID}}"></label>
+                      <label class="custom-control-label" for="dcctacmtm-{{moduleID}}"></label>
                     </div>
                   </td>
                 </tr>

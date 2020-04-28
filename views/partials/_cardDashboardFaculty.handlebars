@@ -58,8 +58,8 @@
                   </th>
                   <th scope="col">
                     <div class="custom-control custom-checkbox checkThemAll">
-                      <input type="checkbox" class="custom-control-input" id="tmtfCheckAll">
-                      <label class="custom-control-label" for="tmtfCheckAll"></label>
+                      <input type="checkbox" class="custom-control-input" id="tmt-mlt-CheckAll">
+                      <label class="custom-control-label" for="tmt-mlt-CheckAll"></label>
                     </div>
                   </th>
                 </tr>
@@ -79,9 +79,9 @@
                   </td>
                   <td>
                     <div class="custom-control custom-checkbox">
-                      <input type="checkbox" id="tmtf-{{id}}" class="custom-control-input" name="modulesID"
-                        value="{{id}}">
-                      <label class="custom-control-label" for="tmtf-{{id}}"></label>
+                      <input type="checkbox" id="tmt-mlt-{{moduleID}}" class="custom-control-input" name="modulesID"
+                        value="{{moduleID}}">
+                      <label class="custom-control-label" for="tmt-mlt-{{moduleID}}"></label>
                     </div>
                   </td>
                 </tr>
@@ -94,12 +94,12 @@
             <!-- Add Taught Module Button -->
             <button type="button" id="triggerModalAddTaughtModuleBtn" class="btn btn-success mr-2" data-toggle="modal"
               data-target="#addTaughtModuleModal">
-              Add Module
+              Add Taught Module
             </button>
             {{else}}
             <button id="UnableAddTaughtModuleBtn" type="button" class="btn btn-success mr-2" data-toggle="popover"
               data-trigger="focus" title="Attention" data-placement="bottom"
-              data-content="There are no Modules. Please create a &ldquo;Module&rdquo; first.">
+              data-content="There are no &ldquo;Modules&rdquo;. Please create a &ldquo;Module&rdquo; first.">
               Add Module
             </button>
             {{/if}}
@@ -118,13 +118,17 @@
       <!-- Courseworks Calendar -->
       <div class="tab-pane" id="courseworksCalendar" role="tabpanel">
         <div class="table-responsive">
-          <table id="courseworksTbl" class="table">
+          <table id="d-cct-courseworksTable" class="table">
             <caption class="h5 py-0">Courseworks</caption>
             <thead>
               <tr>
                 <th scope="col">#</th>
-                <th scope="col">Modules</th>
-                <th scope="col">Due Date</th>
+                <th scope="col" class="sort-modules">Modules
+                  <i class="fas fa-angle-down"></i>
+                </th>
+                <th scope="col" class="sort-dueDate">Due Date
+                  <i class="fas fa-angle-down"></i>
+                </th>
                 <th scope="col">Edit</th>
                 <th scope="col">
                   <div class="custom-control custom-checkbox checkThemAll">
@@ -146,15 +150,15 @@
                   {{courseworkDate}}
                 </td>
                 <td>
-                  <button type="button" class="btn btn-sm btn-primary p-0" data-id={{id}}>
+                  <button type="button" class="btn btn-sm btn-primary p-0" data-id={{moduleID}}>
                     <i class="fas fa-pencil-alt moduleEdit"></i>
                   </button>
                 </td>
                 <td>
                   <div class="custom-control custom-checkbox">
-                    <input type="checkbox" id="cwtf-{{id}}" class="custom-control-input" name="modulesID"
-                      value="{{id}}">
-                    <label class="custom-control-label" for="cwtf-{{id}}"></label>
+                    <input type="checkbox" id="dcctct-{{moduleID}}" class="custom-control-input" name="modulesID"
+                      value="{{moduleID}}">
+                    <label class="custom-control-label" for="dcctct-{{moduleID}}"></label>
                   </div>
                 </td>
               </tr>
@@ -173,7 +177,7 @@
           {{else}}
           <button type="button" id="UnableAddCourseworksBtn" class="btn btn-success mr-2" data-toggle="popover"
             data-trigger="focus" title="Attention" data-placement="bottom"
-            data-content="There are no &ldquo;Taught Modules&rdquo;. Please create a Module first.">
+            data-content="There are no &ldquo;Taught Modules&rdquo;. Please create a &ldquo;Taught Module&rdquo; first.">
             Add Module
           </button>
           {{/if}}

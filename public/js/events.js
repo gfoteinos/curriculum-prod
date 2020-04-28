@@ -38,7 +38,7 @@ const UICtrl = (function() {
    * ======================== */
   // ======== GATHER UI SELECTORS ========
   const UISelectors = {
-    // -------- Courses Form --------
+    // -------- COURSES FORM --------
     coursesForm: "#coursesForm",
     coursesTable: "#coursesTable",
     coursesTableBody: "#coursesTable tbody",
@@ -61,7 +61,7 @@ const UICtrl = (function() {
     // ---- Create Course Form Modal----
     saveCourseBtn: "#saveCourseBtn",
 
-    // -------- Modules Form --------
+    // -------- MODULES FORM --------
     modulesForm: "#modulesForm",
     modulesTable: "#modulesTable",
     modulesTableBody: "#modulesTable tbody",
@@ -82,36 +82,64 @@ const UICtrl = (function() {
     cancelDeleteModulesModalBtn: "#cancelDeleteModulesModalBtn",
     deleteModulesModalBtn: "#deleteModulesModalBtn",
 
-    // -------- Dashboard Form --------
-    // -------- Modules List Tab -> Taught Modules Table --------
-    taughtModulesForm: "#taughtModulesForm",
-    taughtModulesTable: "#taughtModulesTable",
-    taughtModulesTableBody: "#taughtModulesTable tbody",
-    taughtModulesTableColumnTitle: "#taughtModulesTable .sort-title",
-    taughtModulesTableColumnCourse: "#taughtModulesTable .sort-course",
-    taughtModulesTableColumnLevel: "#taughtModulesTable .sort-level",
-    taughtModulesCheckboxAll:
+    // -------- DASHBOARD FORM --------
+    // ------------ Modules List Tab ------------
+    // -------- Form --------
+    // taughtModulesForm: "#taughtModulesForm",
+    // ---- "Taught Modules" Table ----
+    d_mlt_taughtModulesTable: "#taughtModulesTable",
+    d_mlt_taughtModulesTableBody: "#taughtModulesTable tbody",
+    d_mlt_taughtModulesTableColumnTitle: "#taughtModulesTable .sort-title",
+    d_mlt_taughtModulesTableColumnCourse: "#taughtModulesTable .sort-course",
+    d_mlt_taughtModulesTableColumnLevel: "#taughtModulesTable .sort-level",
+    d_mlt_taughtModulesCheckboxAll:
       "#taughtModulesTable thead input[type='checkbox']",
-    triggerModalDeleteTaughtModulesBtn: "#triggerModalDeleteTaughtModulesBtn",
-    deleteTaughtModulesBtn: "#deleteTaughtModulesBtn",
-    triggerModalAddTaughtModuleBtn: "#triggerModalAddTaughtModuleBtn",
-    // ---- Add Modules Modal ----
-    modulesTableModal: "#modulesTableModal",
-    modulesTableBodyModal: "#modulesTableModal tbody",
-    modulesTableModalColumnTitle: "#modulesTableModal .sort-title",
-    modulesTableModalColumnCourse: "#modulesTableModal .sort-course",
-    modulesTableModalColumnLevel: "#modulesTableModal .sort-level",
-    modulesModalCheckboxAll: "#modulesTableModal thead input[type='checkbox']",
-    // ---- Delete Taught Modules Form Modal ----
-    deleteTaughtModulesModal: "#deleteTaughtModulesModal",
-    cancelDeleteTaughtModulesModalBtn: "#cancelDeleteTaughtModulesModalBtn",
-    deleteTaughtModulesModalBtn: "#deleteTaughtModulesModalBtn",
-    // -------- Courseworks calendar Tab -> Add courseworks modal --------
-    courseworksTableModal: "#courseworksTableModal",
-    courseworksTableBodyModal: "#courseworksTableModal tbody",
-    taughtModulesModalCheckboxAll:
-      "#courseworksTableModal thead input[type='checkbox']",
-    addCourseworksBtn: "#addCourseworksBtn"
+    // ---- Buttons ----
+    d_mlt_triggerModalDeleteTaughtModulesBtn:
+      "#triggerModalDeleteTaughtModulesBtn",
+    d_mlt_deleteTaughtModulesBtn: "#deleteTaughtModulesBtn",
+    d_mlt_triggerModalAddTaughtModuleBtn: "#triggerModalAddTaughtModuleBtn",
+    // -------- Add "Taught Modules" Modal --------
+    // ---- "Modules" Table ----
+    d_mlt_atm_m_modulesTable: "#modulesTableModal",
+    d_mlt_atm_m_modulesTableBody: "#modulesTableModal tbody",
+    d_mlt_atm_m_modulesTableColumnTitle: "#modulesTableModal .sort-title",
+    d_mlt_atm_m_modulesTableColumnCourse: "#modulesTableModal .sort-course",
+    d_mlt_atm_m_modulesTableColumnLevel: "#modulesTableModal .sort-level",
+    d_mlt_atm_m_modulesCheckboxAll:
+      "#modulesTableModal thead input[type='checkbox']",
+    // -------- Delete "Taught Modules" Modal --------
+    d_mlt_dtm_m_deleteTaughtModules: "#deleteTaughtModulesModal",
+    // ---- Buttons ----
+    d_mlt_dtm_m_cancelDeleteTaughtModulesBtn:
+      "#cancelDeleteTaughtModulesModalBtn",
+    d_mlt_dtm_m_deleteTaughtModulesBtn: "#deleteTaughtModulesModalBtn",
+    // ------------ Courseworks Calendar Tab ------------
+    // -------- Form --------
+    // ---- "Courseworks" Table ----
+    d_cct_courseworksTable: "#d-cct-courseworksTable",
+    d_cct_courseworksTableBody: "#d-cct-courseworksTable tbody",
+    d_cct_courseworksTableColumnModule: "#d-cct-courseworksTable .sort-modules",
+    d_cct_courseworksTableColumnDueDate: "#d-cct-courseworksTable .sort-dueDate",
+    d_cct_courseworksCheckboxAll:
+      "#d-cct-courseworksTable thead input[type='checkbox']",
+    // ---- Buttons ----
+    // -------- Add Courseworks Modal --------
+    // d_cct_ac_m_taughtModulesTable: "#d_cct_ac_m_taughtModulesTable",
+    // ---- "Taught Modules" Table ----
+    // d_cct_ac_m_taughtModulesTable: "#d_cct_ac_m_taughtModulesTable",
+    d_cct_ac_m_taughtModulesTableBody: "#d_cct_ac_m_taughtModulesTable tbody",
+    d_cct_ac_m_taughtModulesTableColumnTitle:
+      "#d_cct_ac_m_taughtModulesTable .sort-title",
+    d_cct_ac_m_taughtModulesCheckboxAll:
+      "#d_cct_ac_m_taughtModulesTable thead input[type='checkbox']"
+    // d_cct_ac_m_addCourseworksBtn: "#addCourseworksBtn",
+    // // -------- Delete "Courseworks" Modal --------
+    // d_cct_dc_m_deleteCourseworks: "#deleteTaughtModulesModal",
+    // // ---- Buttons ----
+    // d_cct_dc_m_cancelDeleteCourseworksBtn:
+    //   "#cancelDeleteTaughtModulesModalBtn",
+    // d_cct_dc_m_deleteCourseworksBtn: "#deleteTaughtModulesModalBtn",
   };
 
   /* ========================
@@ -321,10 +349,10 @@ const UICtrl = (function() {
     getAllTablesElementID: function(tableID) {
       // Gather UI Selector IDs
       const taughtModulesTableID = document.querySelector(
-        UISelectors.taughtModulesTable
+        UISelectors.d_mlt_taughtModulesTable
       ).id;
       const modulesTableModalID = document.querySelector(
-        UISelectors.modulesTableModal
+        UISelectors.d_mlt_atm_m_modulesTable
       ).id;
 
       // Get the table which will be compared
@@ -351,7 +379,7 @@ const UICtrl = (function() {
         UISelectors.deleteModulesModal
       ).id;
       const taughtModulesModalID = document.querySelector(
-        UISelectors.deleteTaughtModulesModal
+        UISelectors.d_mlt_dtm_m_deleteTaughtModules
       ).id;
 
       // ======== Gather All Necessary Elements ========
@@ -390,17 +418,20 @@ const UICtrl = (function() {
         // -------- Get the "Taught Modules" table elements --------
         // Get the checkbox "check all" element
         checkboxCheckAll = document.querySelector(
-          UISelectors.taughtModulesCheckboxAll
+          UISelectors.d_mlt_taughtModulesCheckboxAll
         );
         // ---- Gather all checkboxes ----
-        tableID = document.querySelector(UISelectors.taughtModulesTable).id;
+        tableID = document.querySelector(UISelectors.d_mlt_taughtModulesTable)
+          .id;
         checkboxes = UICtrl.getCheckBoxes(`#${tableID}`);
         // Get the trigger "Delete" modules button
         triggerDeleteBtn = document.querySelector(
-          UISelectors.triggerModalDeleteTaughtModulesBtn
+          UISelectors.d_mlt_triggerModalDeleteTaughtModulesBtn
         );
         // Get the "Delete" courses button
-        deleteBtn = document.querySelector(UISelectors.deleteTaughtModulesBtn);
+        deleteBtn = document.querySelector(
+          UISelectors.d_mlt_deleteTaughtModulesBtn
+        );
       }
 
       return {
@@ -504,17 +535,17 @@ const App = (function(UICtrl) {
 
     // "Dashboard" -> "Modules List" tab -> ("Taught Modules" table)
     document
-      .querySelector(UISelectors.taughtModulesCheckboxAll)
+      .querySelector(UISelectors.d_mlt_taughtModulesCheckboxAll)
       .addEventListener("click", checkUncheckAll);
 
     // "Dashboard" -> "Add Modules" modal form -> ("Modules" table)
     document
-      .querySelector(UISelectors.modulesModalCheckboxAll)
+      .querySelector(UISelectors.d_mlt_atm_m_modulesCheckboxAll)
       .addEventListener("click", checkUncheckAll);
 
     // "Dashboard" -> "Add Courseworks" modal form -> ("Taught Modules" table)
     document
-      .querySelector(UISelectors.taughtModulesModalCheckboxAll)
+      .querySelector(UISelectors.d_cct_ac_m_taughtModulesCheckboxAll)
       .addEventListener("click", checkUncheckAll);
 
     // -------- Check/Unckeck A Selected Table Row --------
@@ -530,17 +561,17 @@ const App = (function(UICtrl) {
 
     // "Dashboard" -> "Modules List" tab -> ("Taught Modules" table)
     document
-      .querySelector(UISelectors.taughtModulesTableBody)
+      .querySelector(UISelectors.d_mlt_taughtModulesTableBody)
       .addEventListener("click", checkUncheckRow);
 
     // "Dashboard" -> "Add Modules" modal form -> ("Modules" table)
     document
-      .querySelector(UISelectors.modulesTableBodyModal)
+      .querySelector(UISelectors.d_mlt_atm_m_modulesTableBody)
       .addEventListener("click", checkUncheckRow);
 
     // "Dashboard" -> "Add Courseworks" modal form -> ("Taught Modules" table)
     document
-      .querySelector(UISelectors.courseworksTableBodyModal)
+      .querySelector(UISelectors.d_cct_ac_m_taughtModulesTableBody)
       .addEventListener("click", checkUncheckRow);
 
     // -------------------- Sort Table --------------------
@@ -571,42 +602,53 @@ const App = (function(UICtrl) {
       .querySelector(UISelectors.modulesTableColumnLevel)
       .addEventListener("click", sortTable);
 
-    // --- Sort "Dashboard" -> "Add Modules" modal form -> ("Modules" table) ---
-    // Sort Title column
-    document
-      .querySelector(UISelectors.modulesTableModalColumnTitle)
-      .addEventListener("click", sortTable);
-
-    // Sort "Course" column
-    document
-      .querySelector(UISelectors.modulesTableModalColumnCourse)
-      .addEventListener("click", sortTable);
-
-    // Sort "Level" column
-    document
-      .querySelector(UISelectors.modulesTableModalColumnLevel)
-      .addEventListener("click", sortTable);
-
     // --- Sort "Dashboard" -> "Modules List" tab -> ("Taught Modules" table) ---
     // Sort Title column
     document
-      .querySelector(UISelectors.taughtModulesTableColumnTitle)
+      .querySelector(UISelectors.d_mlt_taughtModulesTableColumnTitle)
       .addEventListener("click", sortTable);
 
     // Sort "Course" column
     document
-      .querySelector(UISelectors.taughtModulesTableColumnCourse)
+      .querySelector(UISelectors.d_mlt_taughtModulesTableColumnCourse)
       .addEventListener("click", sortTable);
 
     // Sort "Level" column
     document
-      .querySelector(UISelectors.taughtModulesTableColumnLevel)
+      .querySelector(UISelectors.d_mlt_taughtModulesTableColumnLevel)
+      .addEventListener("click", sortTable);
+
+    // --- Sort "Dashboard" -> "Add Taught Modules" modal -> ("Modules" table) ---
+    // Sort Title column
+    document
+      .querySelector(UISelectors.d_mlt_atm_m_modulesTableColumnTitle)
+      .addEventListener("click", sortTable);
+
+    // Sort "Course" column
+    document
+      .querySelector(UISelectors.d_mlt_atm_m_modulesTableColumnCourse)
+      .addEventListener("click", sortTable);
+
+    // Sort "Level" column
+    document
+      .querySelector(UISelectors.d_mlt_atm_m_modulesTableColumnLevel)
+      .addEventListener("click", sortTable);
+
+    // --- Sort "Dashboard" -> "Add Courseworks" modal -> ("Taught Modules" table) ---
+    // Sort Title column
+    document
+      .querySelector(UISelectors.d_cct_ac_m_taughtModulesTableColumnTitle)
       .addEventListener("click", sortTable);
 
     // ---------------- Disable Table Row/Rows ----------------
-    // "Dashboard" -> "Add Modules" modal form -> ("Modules" table)
+    // "Dashboard" -> "Add Modules" modal -> ("Modules" table)
     document
-      .querySelector(UISelectors.triggerModalAddTaughtModuleBtn)
+      .querySelector(UISelectors.d_mlt_triggerModalAddTaughtModuleBtn)
+      .addEventListener("click", disableRows);
+
+    // "Dashboard" -> "Add Courseworks" modal -> ("Taught Modules" table)
+    document
+      .querySelector(UISelectors.d_mlt_triggerModalAddTaughtModuleBtn)
       .addEventListener("click", disableRows);
 
     // -------------------- Edit Table Row --------------------
@@ -646,18 +688,18 @@ const App = (function(UICtrl) {
     // -------- "Delete Taught Modules" modal --------
     // "No" Button
     document
-      .querySelector(UISelectors.cancelDeleteTaughtModulesModalBtn)
+      .querySelector(UISelectors.d_mlt_dtm_m_cancelDeleteTaughtModulesBtn)
       .addEventListener("click", cancelDeletion);
 
     // "Yes" Button
     document
-      .querySelector(UISelectors.deleteTaughtModulesModalBtn)
+      .querySelector(UISelectors.d_mlt_dtm_m_deleteTaughtModulesBtn)
       .addEventListener("click", confirmDeletion);
 
     // // ---- Enable/Disable "Plus" button when date element has value  ----
     // // "Dashboard" -> "Courseworks" tab -> ("Add Courseworks" modal)
     // document
-    //   .querySelector(UISelectors.courseworksTableModal)
+    //   .querySelector(UISelectors.d_cct_ac_m_taughtModulesTable)
     //   .addEventListener("change", enableDisableBtn);
   };
 
@@ -784,7 +826,7 @@ const App = (function(UICtrl) {
       `#${tableAllElementsID}`
     );
 
-    // ---- Disable Checkboxes From Table With Has All Elements ----
+    // ---- Disable Rows From Table With Has All Elements ----
     let id;
     lessElementsCheckboxes.forEach(checkbox => {
       id = checkbox.value;
