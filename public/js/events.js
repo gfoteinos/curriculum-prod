@@ -117,17 +117,20 @@ const UICtrl = (function() {
     // ------------ Courseworks Calendar Tab ------------
     // -------- Form --------
     // ---- "Courseworks" Table ----
-    d_cct_courseworksTable: "#d-cct-courseworksTable",
+    courseworksCalendarTabTable: "#d-cct-courseworksTable",
     d_cct_courseworksTableBody: "#d-cct-courseworksTable tbody",
     d_cct_courseworksTableColumnModule: "#d-cct-courseworksTable .sort-modules",
-    d_cct_courseworksTableColumnDueDate: "#d-cct-courseworksTable .sort-dueDate",
+    d_cct_courseworksTableColumnDueDate:
+      "#d-cct-courseworksTable .sort-dueDate",
     d_cct_courseworksCheckboxAll:
       "#d-cct-courseworksTable thead input[type='checkbox']",
     // ---- Buttons ----
+    d_cct_deleteCourseworksBtn: "#d-cct-deleteCourseworksBtn",
+    d_cct_triggerModalAddCourseworksBtn: "#d-cct-triggerModalAddCourseworksBtn",
     // -------- Add Courseworks Modal --------
     // d_cct_ac_m_taughtModulesTable: "#d_cct_ac_m_taughtModulesTable",
     // ---- "Taught Modules" Table ----
-    // d_cct_ac_m_taughtModulesTable: "#d_cct_ac_m_taughtModulesTable",
+    addCourseworksModalTable: "#d_cct_ac_m_taughtModulesTable",
     d_cct_ac_m_taughtModulesTableBody: "#d_cct_ac_m_taughtModulesTable tbody",
     d_cct_ac_m_taughtModulesTableColumnTitle:
       "#d_cct_ac_m_taughtModulesTable .sort-title",
@@ -348,16 +351,26 @@ const UICtrl = (function() {
     },
     getAllTablesElementID: function(tableID) {
       // Gather UI Selector IDs
-      const taughtModulesTableID = document.querySelector(
+      const taughtModulesModulesTabTable = document.querySelector(
         UISelectors.d_mlt_taughtModulesTable
       ).id;
-      const modulesTableModalID = document.querySelector(
+      const addTaughtModulesModalTable = document.querySelector(
         UISelectors.d_mlt_atm_m_modulesTable
+      ).id;
+      const courseworksCalendarTable = document.querySelector(
+        UISelectors.courseworksCalendarTabTable
+      ).id;
+      const addCourseworksModalTable = document.querySelector(
+        UISelectors.addCourseworksModalTable
       ).id;
 
       // Get the table which will be compared
-      if (tableID === taughtModulesTableID) {
-        tableAllElementsID = modulesTableModalID;
+      if (tableID === taughtModulesModulesTabTable) {
+        tableAllElementsID = addTaughtModulesModalTable;
+      }
+      // Get the table which will be compared
+      if (tableID === courseworksCalendarTable) {
+        tableAllElementsID = addCourseworksModalTable;
       }
 
       return tableAllElementsID;
@@ -369,6 +382,14 @@ const UICtrl = (function() {
       );
 
       return checkboxes;
+    },
+    getDates: function(tableID) {
+      // Gather all dates according to the table
+      const dates = document.querySelectorAll(
+        `${tableID} tbody input[type="date"]`
+      );
+      
+      return dates;
     },
     getTableDeleteElements: function(modalID) {
       // -------- Gather The Modals IDs --------
@@ -538,15 +559,20 @@ const App = (function(UICtrl) {
       .querySelector(UISelectors.d_mlt_taughtModulesCheckboxAll)
       .addEventListener("click", checkUncheckAll);
 
-    // "Dashboard" -> "Add Modules" modal form -> ("Modules" table)
+    // "Dashboard" -> "Add Modules" modal -> ("Modules" table)
     document
       .querySelector(UISelectors.d_mlt_atm_m_modulesCheckboxAll)
       .addEventListener("click", checkUncheckAll);
 
-    // "Dashboard" -> "Add Courseworks" modal form -> ("Taught Modules" table)
+    // "Dashboard" -> "Courseworks Calendar" -> ("Courseworks" table)
     document
-      .querySelector(UISelectors.d_cct_ac_m_taughtModulesCheckboxAll)
+      .querySelector(UISelectors.d_cct_courseworksCheckboxAll)
       .addEventListener("click", checkUncheckAll);
+
+    // // "Dashboard" -> "Add Courseworks" modal -> ("Taught Modules" table)
+    // document
+    //   .querySelector(UISelectors.d_cct_ac_m_taughtModulesCheckboxAll)
+    //   .addEventListener("click", checkUncheckAll);
 
     // -------- Check/Unckeck A Selected Table Row --------
     // "Courses" form -> ("Courses" table)
@@ -569,10 +595,15 @@ const App = (function(UICtrl) {
       .querySelector(UISelectors.d_mlt_atm_m_modulesTableBody)
       .addEventListener("click", checkUncheckRow);
 
-    // "Dashboard" -> "Add Courseworks" modal form -> ("Taught Modules" table)
+    // "Dashboard" -> "Courseworks Calendar" tab -> ("Courseworks" table)
     document
-      .querySelector(UISelectors.d_cct_ac_m_taughtModulesTableBody)
+      .querySelector(UISelectors.d_cct_courseworksTableBody)
       .addEventListener("click", checkUncheckRow);
+      
+    // // "Dashboard" -> "Add Courseworks" modal form -> ("Taught Modules" table)
+    // document
+    //   .querySelector(UISelectors.d_cct_ac_m_taughtModulesTableBody)
+    //   .addEventListener("click", checkUncheckRow);
 
     // -------------------- Sort Table --------------------
     // ---- Sort "Courses" form -> ("Courses" table) ----
@@ -634,6 +665,17 @@ const App = (function(UICtrl) {
       .querySelector(UISelectors.d_mlt_atm_m_modulesTableColumnLevel)
       .addEventListener("click", sortTable);
 
+    // --- Sort "Dashboard" -> "Courseworks Calendar" tab -> ("Courseworks" table) ---
+    // Sort Modules column
+    document
+      .querySelector(UISelectors.d_cct_courseworksTableColumnModule)
+      .addEventListener("click", sortTable);
+
+    // Sort "Due Date" column
+    document
+      .querySelector(UISelectors.d_cct_courseworksTableColumnDueDate)
+      .addEventListener("click", sortTable);
+
     // --- Sort "Dashboard" -> "Add Courseworks" modal -> ("Taught Modules" table) ---
     // Sort Title column
     document
@@ -648,7 +690,7 @@ const App = (function(UICtrl) {
 
     // "Dashboard" -> "Add Courseworks" modal -> ("Taught Modules" table)
     document
-      .querySelector(UISelectors.d_mlt_triggerModalAddTaughtModuleBtn)
+      .querySelector(UISelectors.d_cct_triggerModalAddCourseworksBtn)
       .addEventListener("click", disableRows);
 
     // -------------------- Edit Table Row --------------------
@@ -819,26 +861,47 @@ const App = (function(UICtrl) {
     );
 
     // ---- Get Checkboxes From Tables ----
-    const lessElementsCheckboxes = UICtrl.getCheckBoxes(
-      `#${tableLessElementsID}`
-    );
     const allElementsCheckboxes = UICtrl.getCheckBoxes(
       `#${tableAllElementsID}`
     );
-
-    // ---- Disable Rows From Table With Has All Elements ----
-    let id;
-    lessElementsCheckboxes.forEach(checkbox => {
-      id = checkbox.value;
-      allElementsCheckboxes.forEach(checkBox => {
-        if (id === checkBox.value) {
-          // ---- Disable row ----
-          checkBox.setAttribute("disabled", "");
-          let tr = checkBox.parentElement.parentElement.parentElement;
-          tr.classList.add("text-muted");
-        }
+    const lessElementsCheckboxes = UICtrl.getCheckBoxes(
+      `#${tableLessElementsID}`
+    );
+    
+    // ---- Disable Rows From Table Which Has All Elements ---- 
+    if(allElementsCheckboxes.length > 0) {
+      // In case of the table has checkboxes
+      let id;
+      lessElementsCheckboxes.forEach(checkbox => {
+        id = checkbox.value;
+        allElementsCheckboxes.forEach(checkBox => {
+          if (id === checkBox.value) {
+            // ---- Disable row ----
+            checkBox.setAttribute("disabled", "");
+            let tr = checkBox.parentElement.parentElement.parentElement;
+            tr.classList.add("text-muted");
+          }
+        });
       });
-    });
+    } else {
+      const allElementsDates = UICtrl.getDates(
+        `#${tableAllElementsID}`
+      );
+      let id;
+      lessElementsCheckboxes.forEach(checkbox => {
+        id = checkbox.value;
+        allElementsDates.forEach(date => {
+          console.log(date);
+          if (id === date.getAttribute("data-id")) {
+            // ---- Disable row ----
+            date.setAttribute("disabled", "");
+            let tr = date.parentElement.parentElement;
+            tr.classList.add("text-muted");
+          }
+        });
+      });
+      console.log("Is table without checkboxes")
+    }
   };
 
   // ---------------- Edit Table Row ----------------

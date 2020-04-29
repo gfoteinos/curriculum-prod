@@ -141,12 +141,12 @@
                   <th scope="col" class="sort-dueDate">
                     Due Date
                   </th>
-                  <th scope="col">
+                  {{!-- <th scope="col">
                     <div class="custom-control custom-checkbox checkThemAll">
                       <input type="checkbox" class="custom-control-input" id="dcctacmtm-CheckAll">
                       <label class="custom-control-label" for="dcctacmtm-CheckAll"></label>
                     </div>
-                  </th>
+                  </th> --}}
                 </tr>
               </thead>
               <tbody>
@@ -157,16 +157,16 @@
                     {{moduleName}}
                   </td>
                   <td>
-                    <input type="date" id="dcctacmtmDate-{{moduleID}}" class="form-control" name="date">
+                    <input type="date" id="dcctacmtmDate-{{moduleID}}" class="form-control" name="date" data-id="{{moduleID}}">
                     <label for="dcctacmtmDate-{{moduleID}}" class="sr-only">Coursework Date</label>
                   </td>
-                  <td>
+                  {{!-- <td>
                     <div class="custom-control custom-checkbox">
                       <input type="checkbox" id="dcctacmtm-{{moduleID}}" class="custom-control-input" name="modulesID"
                         value="{{moduleID}}">
                       <label class="custom-control-label" for="dcctacmtm-{{moduleID}}"></label>
                     </div>
-                  </td>
+                  </td> --}}
                 </tr>
                 {{/each}}
               </tbody>
@@ -174,7 +174,7 @@
           </div>
           <div class="d-flex justify-content-end mt-3">
             <!-- Add Courseworks Button -->
-            <button type="submit" id="addCourseworksBtn" class="btn btn-success mr-2" data-trigger="true" disabled>
+            <button type="submit" id="addCourseworksBtn" class="btn btn-success mr-2">
               <i class="fas fa-plus"></i>
             </button>
           </div>
