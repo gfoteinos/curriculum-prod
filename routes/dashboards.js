@@ -289,6 +289,7 @@ router.get("/facultyMember", (req, res, next) => {
       if (facultyMember) {
         // Fill in "Taught Modules" table to pass it later in the view
         let counter = 1;
+        let courseworksCounter = 1;
         taughtModules = facultyMember.taughtModules;
         taughtModules.forEach(taughtModule => {
           // Convert to String
@@ -329,11 +330,15 @@ router.get("/facultyMember", (req, res, next) => {
                 taughtModuleID: taughtModule._id.toString(),
                 moduleID: taughtModule.moduleID.id,
                 moduleName: taughtModule.moduleID.name,
+                courseworksAA: courseworksCounter,
                 courseworkDate: dateUKFormat,
                 courseName: course.name,
                 courseDegree: course.degree
               });
               counter++;
+              if(dateUKFormat) {
+                courseworksCounter++;
+              }
             }
           });
         });
@@ -972,37 +977,22 @@ router.post("/facultyMember/courseworks/:id", (req, res) => {
     .populate("taughtModules.moduleID")
     .then(member => {
       if (member) {
-        // If the faculty member exist add "coursework" in a taught module
-        const taughtModulesToAddCourseworksIDs = req.body.modulesID;
-        let dateText;
-        req.body.date.forEach(item => {
-          if (item !== "") {
-            dateText = item;
-          }
-        });
-        if (typeof taughtModulesToAddCourseworksIDs === "string") {
-          // In case of adding one coursework
-          member.taughtModules.forEach(taughtModule => {
-            if (taughtModule.moduleID.id === taughtModulesToAddCourseworksIDs) {
+        // ---- If The Faculty Member Exist Add "Coursework" In A Taught Module ----
+        // Get the data from UI form 
+        const uiTaughtModulesIDs = req.body.taughtModuleID;
+        const uiDates = req.body.date;
+
+        // Add courseworks to the database
+        member.taughtModules.forEach(taughtModule => {
+          uiTaughtModulesIDs.forEach( (uiTaughtModuleID, index) => {
+            if(taughtModule._id.toString() === uiTaughtModuleID && uiDates[index] !== "") {
               const newCoursework = {
-                date: dateText
+                date: uiDates[index]
               };
               taughtModule.coursework = newCoursework;
             }
           });
-        } else {
-          // In case of adding many courseworks
-          taughtModulesToAddCourseworksIDs.forEach((id, index) => {
-            member.taughtModules.forEach(taughtModule => {
-              if (taughtModule.moduleID.id === id) {
-                const newCoursework = {
-                  date: req.body.date[index]
-                };
-                taughtModule.coursework = newCoursework;
-              }
-            });
-          });
-        }
+        });
       }
 
       // Save to the database

@@ -141,12 +141,6 @@
                   <th scope="col" class="sort-dueDate">
                     Due Date
                   </th>
-                  {{!-- <th scope="col">
-                    <div class="custom-control custom-checkbox checkThemAll">
-                      <input type="checkbox" class="custom-control-input" id="dcctacmtm-CheckAll">
-                      <label class="custom-control-label" for="dcctacmtm-CheckAll"></label>
-                    </div>
-                  </th> --}}
                 </tr>
               </thead>
               <tbody>
@@ -160,13 +154,7 @@
                     <input type="date" id="dcctacmtmDate-{{moduleID}}" class="form-control" name="date" data-id="{{moduleID}}">
                     <label for="dcctacmtmDate-{{moduleID}}" class="sr-only">Coursework Date</label>
                   </td>
-                  {{!-- <td>
-                    <div class="custom-control custom-checkbox">
-                      <input type="checkbox" id="dcctacmtm-{{moduleID}}" class="custom-control-input" name="modulesID"
-                        value="{{moduleID}}">
-                      <label class="custom-control-label" for="dcctacmtm-{{moduleID}}"></label>
-                    </div>
-                  </td> --}}
+                  <input id="dcctacmtm-{{taughtModuleID}}" name="taughtModuleID" type="hidden" value="{{taughtModuleID}}">
                 </tr>
                 {{/each}}
               </tbody>

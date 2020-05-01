@@ -1,6 +1,6 @@
 
 {{!-- ======== TAUGHT MODULES MANAGEMENT TAB ======== --}}
-{{!-- ---- When Click "Add Module" At "Modules List" Tab ---- --}}
+{{!-- ---- When Click "Add Taught Modules" At "Modules List" Tab ---- --}}
 {{!-- In case of "taught module" already exist --}}
 
 {{!-- In case of success adding "Taught Module" --}}
@@ -13,4 +13,12 @@
 {{#equal success_msg 'Taught Modules have been deleted successfully.' }}
 <div class="alert alert-success mt-3 mb-0 mx-4">{{success_msg}}</div>
 <script>dashboardClick()</script>
+{{/equal}}
+
+{{!-- ======== COURSEWORKS CALENDAR MANAGEMENT TAB ======== --}}
+{{!-- ---- When Click "Add Courseworks" At "Courseworks Calendar" Tab ---- --}}
+{{!-- In case of success adding "Coursework" --}}
+{{#equal success_msg 'Courseworks have been added successfully.' }}
+<div class="alert alert-success mt-3 mb-0 mx-4">{{success_msg}}</div>
+<script>courseworksCalendarClick()</script>
 {{/equal}}

@@ -12,6 +12,14 @@ const dashboardClick = function() {
   };
 };
 
+// Click "Courseworks Calendar" link on on "dashboard/faculty" url
+const courseworksCalendarClick = function() {
+  window.onload = function() {
+    document.getElementById("dashboard-list").click();
+    document.getElementById("courseworksCalendarLink").click();
+  };
+};
+
 // Click "Courses" link on on "dashboard/faculty-or-student" url
 const coursesClick = function() {
   window.onload = function() {
@@ -388,7 +396,7 @@ const UICtrl = (function() {
       const dates = document.querySelectorAll(
         `${tableID} tbody input[type="date"]`
       );
-      
+
       return dates;
     },
     getTableDeleteElements: function(modalID) {
@@ -599,7 +607,7 @@ const App = (function(UICtrl) {
     document
       .querySelector(UISelectors.d_cct_courseworksTableBody)
       .addEventListener("click", checkUncheckRow);
-      
+
     // // "Dashboard" -> "Add Courseworks" modal form -> ("Taught Modules" table)
     // document
     //   .querySelector(UISelectors.d_cct_ac_m_taughtModulesTableBody)
@@ -852,7 +860,7 @@ const App = (function(UICtrl) {
 
   // ---------------- Disable Table Row/Rows ----------------
   const disableRows = function(e) {
-    // ---- Get The Table Which Will Be Compared ----
+    // ---- Get The Tables Which Will Be Compared ----
     const tableLessElementsID =
       e.target.parentElement.previousElementSibling.children[0].id;
 
@@ -867,9 +875,9 @@ const App = (function(UICtrl) {
     const lessElementsCheckboxes = UICtrl.getCheckBoxes(
       `#${tableLessElementsID}`
     );
-    
-    // ---- Disable Rows From Table Which Has All Elements ---- 
-    if(allElementsCheckboxes.length > 0) {
+
+    // ---- Disable Rows From Table Which Has All Elements ----
+    if (allElementsCheckboxes.length > 0) {
       // In case of the table has checkboxes
       let id;
       lessElementsCheckboxes.forEach(checkbox => {
@@ -884,23 +892,56 @@ const App = (function(UICtrl) {
         });
       });
     } else {
-      const allElementsDates = UICtrl.getDates(
-        `#${tableAllElementsID}`
-      );
-      let id;
+      // In case of the table has input dates elements without checkboxes
+      const allInputDatesElements = UICtrl.getDates(`#${tableAllElementsID}`);
+
+      let moduleID;
+      let dateContent;
       lessElementsCheckboxes.forEach(checkbox => {
-        id = checkbox.value;
-        allElementsDates.forEach(date => {
-          console.log(date);
-          if (id === date.getAttribute("data-id")) {
+        moduleID = checkbox.value;
+        dateContent =
+          checkbox.parentElement.parentElement.previousElementSibling
+            .previousElementSibling.innerText;
+
+        /**
+         * Match the rows of two tables by "module id" and then
+         * replace the "input date" with "labels" & disable the row
+         */
+        allInputDatesElements.forEach(inputDate => {
+          // console.log(inputDate.previousElementSibling.tagName);
+          if (moduleID === inputDate.getAttribute("data-id")) {
+            /**
+             * Build "label" element only one time not every time the 
+             * "Add Coursworks" button clicked
+             */
+            if (inputDate.previousElementSibling === null) {
+              // --- Build "label" element ---
+              // Create lebel
+              const label = document.createElement("label");
+              // Add HTML
+              label.innerHTML = `<label>${dateContent}</label>`;
+              // --- Insert "label" element before "input date" element  ---
+              selector = `#${inputDate.getAttribute("id")}`;
+              document
+                .querySelector(selector)
+                .insertAdjacentElement("beforebegin", label);
+            }
+
             // ---- Disable row ----
-            date.setAttribute("disabled", "");
-            let tr = date.parentElement.parentElement;
+
+            // date.setAttribute("disabled", "");
+            inputDate.classList.add("d-none");
+            let tr = inputDate.parentElement.parentElement;
             tr.classList.add("text-muted");
+
+            // date.value = dateContent;
+
+            // Add hidden input with
+            // let inputHidden = date.parentElement.nextElementSibling;
+            // inputHidden.setAttribute("disabled", "");
           }
         });
       });
-      console.log("Is table without checkboxes")
     }
   };
 

@@ -9,7 +9,7 @@
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#courseworksCalendar" role="tab" aria-controls="courseworksCalendar"
+        <a id="courseworksCalendarLink" class="nav-link" href="#courseworksCalendar" role="tab" aria-controls="courseworksCalendar"
           aria-selected="false">
           <h4 class="card-text mb-0">Courseworks</h4>
           <small>Calendar</small>
@@ -142,7 +142,7 @@
               {{#each listTaughtModules}}
               {{#if courseworkDate}}
               <tr>
-                <th scope="row">{{aa}}</th>
+                <th scope="row">{{courseworksAA}}</th>
                 <td class="module">
                   {{moduleName}}
                 </td>
