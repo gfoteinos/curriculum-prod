@@ -22,3 +22,13 @@
 <div class="alert alert-success mt-3 mb-0 mx-4">{{success_msg}}</div>
 <script>courseworksCalendarClick()</script>
 {{/equal}}
+{{!-- In case of there was not any Coursework selected to add --}}
+{{#equal error_msg 'It was not selected any coursework to add.' }}
+<div class="alert alert-danger mt-3 mb-0 mx-4">{{error_msg}}</div>
+<script>courseworksCalendarClick()</script>
+{{/equal}}
+{{!-- In case of success deleting "Courseworks" --}}
+{{#equal success_msg 'Courseworks have been deleted successfully.' }}
+<div class="alert alert-success mt-3 mb-0 mx-4">{{success_msg}}</div>
+<script>courseworksCalendarClick()</script>
+{{/equal}}

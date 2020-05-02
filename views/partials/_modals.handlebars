@@ -151,8 +151,8 @@
                     {{moduleName}}
                   </td>
                   <td>
-                    <input type="date" id="dcctacmtmDate-{{moduleID}}" class="form-control" name="date" data-id="{{moduleID}}">
-                    <label for="dcctacmtmDate-{{moduleID}}" class="sr-only">Coursework Date</label>
+                    <input type="date" id="dcctacmtmDate-{{taughtModuleID}}" class="form-control" name="date" data-id="{{taughtModuleID}}">
+                    <label for="dcctacmtmDate-{{taughtModuleID}}" class="sr-only">Coursework Date</label>
                   </td>
                   <input id="dcctacmtm-{{taughtModuleID}}" name="taughtModuleID" type="hidden" value="{{taughtModuleID}}">
                 </tr>
@@ -162,7 +162,7 @@
           </div>
           <div class="d-flex justify-content-end mt-3">
             <!-- Add Courseworks Button -->
-            <button type="submit" id="addCourseworksBtn" class="btn btn-success mr-2">
+            <button type="submit" id="addCourseworksBtn" class="btn btn-success mr-2" disabled>
               <i class="fas fa-plus"></i>
             </button>
           </div>

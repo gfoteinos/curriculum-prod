@@ -124,6 +124,7 @@ const UICtrl = (function() {
     d_mlt_dtm_m_deleteTaughtModulesBtn: "#deleteTaughtModulesModalBtn",
     // ------------ Courseworks Calendar Tab ------------
     // -------- Form --------
+    // courseworksForm: "#courseworksForm",
     // ---- "Courseworks" Table ----
     courseworksCalendarTabTable: "#d-cct-courseworksTable",
     d_cct_courseworksTableBody: "#d-cct-courseworksTable tbody",
@@ -536,6 +537,12 @@ const UICtrl = (function() {
         triggerButton.disabled = true;
       }
     }
+    // ,
+    // removeElement: function(elementID) {
+    //   // Removes an element from the document
+    //   const element = document.getElementById(elementID);
+    //   element.parentNode.removeChild(element);
+    // }
   };
 })();
 
@@ -577,11 +584,6 @@ const App = (function(UICtrl) {
       .querySelector(UISelectors.d_cct_courseworksCheckboxAll)
       .addEventListener("click", checkUncheckAll);
 
-    // // "Dashboard" -> "Add Courseworks" modal -> ("Taught Modules" table)
-    // document
-    //   .querySelector(UISelectors.d_cct_ac_m_taughtModulesCheckboxAll)
-    //   .addEventListener("click", checkUncheckAll);
-
     // -------- Check/Unckeck A Selected Table Row --------
     // "Courses" form -> ("Courses" table)
     document
@@ -607,11 +609,6 @@ const App = (function(UICtrl) {
     document
       .querySelector(UISelectors.d_cct_courseworksTableBody)
       .addEventListener("click", checkUncheckRow);
-
-    // // "Dashboard" -> "Add Courseworks" modal form -> ("Taught Modules" table)
-    // document
-    //   .querySelector(UISelectors.d_cct_ac_m_taughtModulesTableBody)
-    //   .addEventListener("click", checkUncheckRow);
 
     // -------------------- Sort Table --------------------
     // ---- Sort "Courses" form -> ("Courses" table) ----
@@ -711,6 +708,11 @@ const App = (function(UICtrl) {
     document
       .querySelector(UISelectors.modulesTableBody)
       .addEventListener("click", editModule);
+
+    // --- Sort "Dashboard" -> "Courseworks Calendar" tab -> ("Courseworks" table) ---
+    document
+      .querySelector(UISelectors.d_cct_courseworksTableBody)
+      .addEventListener("click", editCoursework);
 
     // ---------------- Delete Table Row/Rows ----------------
     // -------- "Delete Courses" modal --------
@@ -908,10 +910,9 @@ const App = (function(UICtrl) {
          * replace the "input date" with "labels" & disable the row
          */
         allInputDatesElements.forEach(inputDate => {
-          // console.log(inputDate.previousElementSibling.tagName);
           if (moduleID === inputDate.getAttribute("data-id")) {
             /**
-             * Build "label" element only one time not every time the 
+             * Build "label" element only one time not every time the
              * "Add Coursworks" button clicked
              */
             if (inputDate.previousElementSibling === null) {
@@ -928,20 +929,23 @@ const App = (function(UICtrl) {
             }
 
             // ---- Disable row ----
-
-            // date.setAttribute("disabled", "");
             inputDate.classList.add("d-none");
-            let tr = inputDate.parentElement.parentElement;
+            const tr = inputDate.parentElement.parentElement;
             tr.classList.add("text-muted");
-
-            // date.value = dateContent;
-
-            // Add hidden input with
-            // let inputHidden = date.parentElement.nextElementSibling;
-            // inputHidden.setAttribute("disabled", "");
           }
         });
       });
+
+      for (let i = 0; i < allInputDatesElements.length; i++) {
+        const tr = allInputDatesElements[i].parentElement.parentElement;
+        if (tr.classList.contains("text-muted") === false) {
+          // Enable "add" button
+          const button = document.querySelector(`#${tableAllElementsID}`)
+            .parentElement.parentElement.lastElementChild.firstElementChild;
+          button.removeAttribute("disabled");
+          break;
+        }
+      }
     }
   };
 
@@ -1043,6 +1047,31 @@ const App = (function(UICtrl) {
         color,
         description
       );
+    }
+  };
+
+  const editCoursework = function(e) {
+    if (e.target.classList.contains("courseworkEdit")) {
+      // const dateText =
+      //   e.target.parentElement.parentElement.previousElementSibling;
+      // dateText.parentNode.removeChild(dateText);
+      const tableCell =
+        e.target.parentElement.parentElement.previousElementSibling;
+      tableCell.textContent = "";
+
+      // --- Build "date" element ---
+      const id = e.target.parentElement.parentElement.nextElementSibling.firstElementChild.firstElementChild.value;
+      // Create input date
+      const date = document.createElement("date");
+      // Add HTML
+      date.innerHTML = `<input type="date" id="dcctctDate-${id}" class="form-control" name="date" data-id="${id}">
+      <label for="dcctctDate-${id}" class="sr-only">Coursework Date</label>`;
+      // --- Insert "date" element before "input date" element  ---
+      selector = `#${tableCell.getAttribute("id")}`;
+      document
+        .querySelector(selector)
+        .insertAdjacentElement("afterbegin", date);
+      // console.log('click')
     }
   };
 

@@ -336,7 +336,7 @@ router.get("/facultyMember", (req, res, next) => {
                 courseDegree: course.degree
               });
               counter++;
-              if(dateUKFormat) {
+              if (dateUKFormat) {
                 courseworksCounter++;
               }
             }
@@ -929,24 +929,28 @@ router.delete("/facultyMember/taughtModules/:id", (req, res) => {
     .populate("taughtModules.moduleID")
     .then(member => {
       if (member) {
+        // -------- If The Faculty Member Exist Delete Taught Modules --------
         const moduleIDsToDelete = req.body.modulesID;
-        // If the faculty member exist delete taught modules
+        // ---- In case of delete one "taught module" ----
         if (typeof moduleIDsToDelete === "string") {
           member.taughtModules.forEach((taughtModule, index) => {
             if (taughtModule.moduleID.id === moduleIDsToDelete) {
               // member.taughtModules.splice(index, 1);
               const id = taughtModule._id.toString();
-              taughtModule.remove({ _id: id });
+              // taughtModule.remove({ _id: id });
+              taughtModule.remove();
             }
           });
         } else {
+          // ---- In case of delete many "taught modules" ----
           // const moduleIDsToDelete = req.body.modulesID;
           moduleIDsToDelete.forEach(id => {
             member.taughtModules.forEach(taughtModule => {
               if (taughtModule.moduleID.id === id) {
                 // member.taughtModules.splice(index, 1);
                 const id = taughtModule._id.toString();
-                taughtModule.remove({ _id: id });
+                // taughtModule.remove({ _id: id });
+                taughtModule.remove();
               }
             });
           });
@@ -976,30 +980,91 @@ router.post("/facultyMember/courseworks/:id", (req, res) => {
   FacultyMember.findOne({ userID: req.params.id })
     .populate("taughtModules.moduleID")
     .then(member => {
+      let addCourseworks = false;
       if (member) {
         // ---- If The Faculty Member Exist Add "Coursework" In A Taught Module ----
-        // Get the data from UI form 
+        // Get the data from UI form
         const uiTaughtModulesIDs = req.body.taughtModuleID;
         const uiDates = req.body.date;
 
         // Add courseworks to the database
         member.taughtModules.forEach(taughtModule => {
-          uiTaughtModulesIDs.forEach( (uiTaughtModuleID, index) => {
-            if(taughtModule._id.toString() === uiTaughtModuleID && uiDates[index] !== "") {
+          uiTaughtModulesIDs.forEach((uiTaughtModuleID, index) => {
+            if (
+              taughtModule._id.toString() === uiTaughtModuleID &&
+              uiDates[index] !== ""
+            ) {
               const newCoursework = {
                 date: uiDates[index]
               };
               taughtModule.coursework = newCoursework;
+              addCourseworks = true;
             }
           });
         });
+      }
+
+      if (addCourseworks) {
+        // Save to the database
+        member
+          .save()
+          .then(member => {
+            req.flash(
+              "success_msg",
+              "Courseworks have been added successfully."
+            );
+            res.redirect("/dashboards/facultyMember");
+          })
+          .catch(err => {
+            // Catch any errors
+            console.log(err.message);
+            return;
+          });
+      } else {
+        req.flash(
+          "error_msg",
+          "It was not selected any coursework to add."
+        );
+        res.redirect("/dashboards/facultyMember");
+      }
+    });
+});
+
+// Update "facultymember" collection - Delete Courseworks
+router.delete("/facultyMember/courseworks/:id", (req, res) => {
+  FacultyMember.findOne({ userID: req.params.id })
+    .populate("taughtModules.moduleID")
+    .then(member => {
+      if (member) {
+        // -------- If The Faculty Member Exist Delete Courseworks --------
+        const uiTaughtModuleIDs = req.body.taughtModulesID;
+        // ---- In case of delete one "coursework" ----
+        if (typeof uiTaughtModuleIDs === "string") {
+          member.taughtModules.forEach((taughtModule) => {
+            if (taughtModule._id.toString() === uiTaughtModuleIDs) {
+              taughtModule.coursework = undefined;
+            }
+          });
+        } else {
+          // ---- In case of delete many "courseworks" ----
+          uiTaughtModuleIDs.forEach(uiID => {
+            member.taughtModules.forEach(taughtModule => {
+              if (taughtModule._id.toString() === uiID) {
+                taughtModule.coursework = undefined;
+              }
+            });
+          });
+        }
       }
 
       // Save to the database
       member
         .save()
         .then(member => {
-          req.flash("success_msg", "Courseworks have been added successfully.");
+          req.flash(
+            "success_msg",
+            "Courseworks have been deleted successfully."
+          );
           res.redirect("/dashboards/facultyMember");
         })
         .catch(err => {
@@ -1009,7 +1074,6 @@ router.post("/facultyMember/courseworks/:id", (req, res) => {
         });
     });
 });
-
 // console.log(`db.id: ${typeof(courseID)} - req.param.id: ${typeof(req.params.id)}, db.name: ${typeof(course.name)} - req.body.name: ${typeof(req.body.name)}, db.degree: ${typeof(course.name)} - req.body.degree: ${typeof(req.body.degree)}`);
 
 /* ========================

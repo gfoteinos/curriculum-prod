@@ -9,8 +9,8 @@
         </a>
       </li>
       <li class="nav-item">
-        <a id="courseworksCalendarLink" class="nav-link" href="#courseworksCalendar" role="tab" aria-controls="courseworksCalendar"
-          aria-selected="false">
+        <a id="courseworksCalendarLink" class="nav-link" href="#courseworksCalendar" role="tab"
+          aria-controls="courseworksCalendar" aria-selected="false">
           <h4 class="card-text mb-0">Courseworks</h4>
           <small>Calendar</small>
         </a>
@@ -34,8 +34,8 @@
     <div class="tab-content mt-3">
       <!-- Modules List -->
       <div class="tab-pane active" id="taughtModules" role="tabpanel">
-        <form action="/dashboards/facultyMember/taughtModules/{{faculty.id}}?_method=DELETE" method="post"
-          id="taughtModulesForm">
+        <form id="taughtModulesForm" action="/dashboards/facultyMember/taughtModules/{{faculty.id}}?_method=DELETE"
+          method="post">
           <input type="hidden" name="_method" value="DELETE">
 
           <div class="table-responsive">
@@ -94,13 +94,13 @@
             <!-- Add Taught Module Button -->
             <button type="button" id="triggerModalAddTaughtModuleBtn" class="btn btn-success mr-2" data-toggle="modal"
               data-target="#addTaughtModuleModal">
-              Add Taught Module
+              Add Taught Modules
             </button>
             {{else}}
             <button id="UnableAddTaughtModuleBtn" type="button" class="btn btn-success mr-2" data-toggle="popover"
               data-trigger="focus" title="Attention" data-placement="bottom"
               data-content="There are no &ldquo;Modules&rdquo;. Please create a &ldquo;Module&rdquo; first.">
-              Add Module
+              Add Taught Modules
             </button>
             {{/if}}
             <!-- Trigger Delete Taught Module Modal -->
@@ -117,75 +117,80 @@
       </div>
       <!-- Courseworks Calendar -->
       <div class="tab-pane" id="courseworksCalendar" role="tabpanel">
-        <div class="table-responsive">
-          <table id="d-cct-courseworksTable" class="table">
-            <caption class="h5 py-0">Courseworks</caption>
-            <thead>
-              <tr>
-                <th scope="col">#</th>
-                <th scope="col" class="sort-modules">Modules
-                  <i class="fas fa-angle-down"></i>
-                </th>
-                <th scope="col" class="sort-dueDate">Due Date
-                  <i class="fas fa-angle-down"></i>
-                </th>
-                <th scope="col">Edit</th>
-                <th scope="col">
-                  <div class="custom-control custom-checkbox checkThemAll">
-                    <input type="checkbox" class="custom-control-input" id="cwtfCheckAll">
-                    <label class="custom-control-label" for="cwtfCheckAll"></label>
-                  </div>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {{#each listTaughtModules}}
-              {{#if courseworkDate}}
-              <tr>
-                <th scope="row">{{courseworksAA}}</th>
-                <td class="module">
-                  {{moduleName}}
-                </td>
-                <td class="dueDate">
-                  {{courseworkDate}}
-                </td>
-                <td>
-                  <button type="button" class="btn btn-sm btn-primary p-0" data-id={{moduleID}}>
-                    <i class="fas fa-pencil-alt moduleEdit"></i>
-                  </button>
-                </td>
-                <td>
-                  <div class="custom-control custom-checkbox">
-                    <input type="checkbox" id="dcctct-{{moduleID}}" class="custom-control-input" name="modulesID"
-                      value="{{moduleID}}">
-                    <label class="custom-control-label" for="dcctct-{{moduleID}}"></label>
-                  </div>
-                </td>
-              </tr>
-              {{/if}}
-              {{/each}}
-            </tbody>
-          </table>
-        </div>
-        <div class="d-flex justify-content-end mt-3">
-          <!-- Add Courseworks Button -->
-          {{#if listTaughtModules}}
-          <button type="button" id="d-cct-triggerModalAddCourseworksBtn" class="btn btn-success mr-2" data-toggle="modal"
-            data-target="#addCourseworksModal">
-            Add Coursework
-          </button>
-          {{else}}
-          <button type="button" id="UnableAddCourseworksBtn" class="btn btn-success mr-2" data-toggle="popover"
-            data-trigger="focus" title="Attention" data-placement="bottom"
-            data-content="There are no &ldquo;Taught Modules&rdquo;. Please create a &ldquo;Taught Module&rdquo; first.">
-            Add Module
-          </button>
-          {{/if}}
-          <!-- Delete Courseworks Button -->
-          <button type="button" id="d-cct-deleteCourseworksBtn" class="btn btn-danger" data-trigger="true" disabled>
-            Delete
-          </button>
-        </div>
+        <form id="courseworksForm" action="/dashboards/facultyMember/courseworks/{{faculty.id}}?_method=DELETE"
+          method="post">
+          <input type="hidden" name="_method" value="DELETE">
+
+          <div class="table-responsive">
+            <table id="d-cct-courseworksTable" class="table">
+              <caption class="h5 py-0">Courseworks</caption>
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col" class="sort-modules">Modules
+                    <i class="fas fa-angle-down"></i>
+                  </th>
+                  <th scope="col" class="sort-dueDate">Due Date
+                    <i class="fas fa-angle-down"></i>
+                  </th>
+                  <th scope="col">Edit</th>
+                  <th scope="col">
+                    <div class="custom-control custom-checkbox checkThemAll">
+                      <input type="checkbox" class="custom-control-input" id="cwtfCheckAll">
+                      <label class="custom-control-label" for="cwtfCheckAll"></label>
+                    </div>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {{#each listTaughtModules}}
+                {{#if courseworkDate}}
+                <tr>
+                  <th scope="row">{{courseworksAA}}</th>
+                  <td class="module">
+                    {{moduleName}}
+                  </td>
+                  <td id="dcctct-tableCell" class="dueDate">
+                    {{courseworkDate}}
+                  </td>
+                  <td>
+                    <button type="button" class="btn btn-sm btn-primary p-0" data-id={{moduleID}}>
+                      <i class="fas fa-pencil-alt courseworkEdit"></i>
+                    </button>
+                  </td>
+                  <td>
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" id="dcctct-{{taughtModuleID}}" class="custom-control-input" name="taughtModulesID"
+                        value="{{taughtModuleID}}">
+                      <label class="custom-control-label" for="dcctct-{{taughtModuleID}}"></label>
+                    </div>
+                  </td>
+                </tr>
+                {{/if}}
+                {{/each}}
+              </tbody>
+            </table>
+          </div>
+          <div class="d-flex justify-content-end mt-3">
+            <!-- Add Courseworks Button -->
+            {{#if listTaughtModules}}
+            <button type="button" id="d-cct-triggerModalAddCourseworksBtn" class="btn btn-success mr-2"
+              data-toggle="modal" data-target="#addCourseworksModal">
+              Add Courseworks
+            </button>
+            {{else}}
+            <button type="button" id="UnableAddCourseworksBtn" class="btn btn-success mr-2" data-toggle="popover"
+              data-trigger="focus" title="Attention" data-placement="bottom"
+              data-content="There are no &ldquo;Taught Modules&rdquo;. Please add a &ldquo;Taught Module&rdquo; first.">
+              Add Courseworks
+            </button>
+            {{/if}}
+            <!-- Delete Courseworks Button -->
+            <button type="submit" id="d-cct-deleteCourseworksBtn" class="btn btn-danger" data-trigger="true" disabled>
+              Delete
+            </button>
+          </div>
+        </form>
       </div>
       <!-- Exams Calendar -->
       <div class="tab-pane" id="examsCalendar" role="tabpanel" aria-labelledby="examsCalendar-tab">
