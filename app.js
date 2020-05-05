@@ -84,8 +84,8 @@ app.set('view engine', 'handlebars');
 // app.use(express.json());
 
 // // Body-parse middleware 
-app.use(bodyParser.urlencoded({ extended: false }))
-app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 // Express-session middleware 
 app.use(session({

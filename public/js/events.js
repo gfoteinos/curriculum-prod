@@ -536,13 +536,19 @@ const UICtrl = (function() {
       } else {
         triggerButton.disabled = true;
       }
+    },
+    addNewElement: function(newElement, parentElementID, position, html) {
+      // Add HTML
+      newElement.innerHTML = html;
+      document
+        .querySelector(parentElementID)
+        .insertAdjacentElement(position, newElement);
+    },
+    removeElement: function(elementID) {
+      // Removes an element from the document
+      const element = document.getElementById(elementID);
+      element.parentNode.removeChild(element);
     }
-    // ,
-    // removeElement: function(elementID) {
-    //   // Removes an element from the document
-    //   const element = document.getElementById(elementID);
-    //   element.parentNode.removeChild(element);
-    // }
   };
 })();
 
@@ -713,6 +719,10 @@ const App = (function(UICtrl) {
     document
       .querySelector(UISelectors.d_cct_courseworksTableBody)
       .addEventListener("click", editCoursework);
+
+    document
+      .querySelector(UISelectors.d_cct_courseworksTableBody)
+      .addEventListener("click", saveDateCoursework);
 
     // ---------------- Delete Table Row/Rows ----------------
     // -------- "Delete Courses" modal --------
@@ -1052,26 +1062,86 @@ const App = (function(UICtrl) {
 
   const editCoursework = function(e) {
     if (e.target.classList.contains("courseworkEdit")) {
-      // const dateText =
-      //   e.target.parentElement.parentElement.previousElementSibling;
-      // dateText.parentNode.removeChild(dateText);
-      const tableCell =
-        e.target.parentElement.parentElement.previousElementSibling;
-      tableCell.textContent = "";
+      // ---- Hide edit button ----
+      const editBtn = e.target.parentElement;
+      editBtn.classList.add("d-none");
 
-      // --- Build "date" element ---
-      const id = e.target.parentElement.parentElement.nextElementSibling.firstElementChild.firstElementChild.value;
-      // Create input date
-      const date = document.createElement("date");
-      // Add HTML
-      date.innerHTML = `<input type="date" id="dcctctDate-${id}" class="form-control" name="date" data-id="${id}">
-      <label for="dcctctDate-${id}" class="sr-only">Coursework Date</label>`;
-      // --- Insert "date" element before "input date" element  ---
-      selector = `#${tableCell.getAttribute("id")}`;
-      document
-        .querySelector(selector)
-        .insertAdjacentElement("afterbegin", date);
-      // console.log('click')
+      // ---- Remove date text & hide span text ----
+      const dateParentElement =
+        e.target.parentElement.parentElement.previousElementSibling;
+      dateParentElement.firstElementChild.textContent = "";
+      dateParentElement.firstElementChild.classList.add("d-none");
+
+      // Display input date
+      dateParentElement.lastElementChild.classList.remove("d-none");
+
+      // Display Save button
+      const saveBtn = e.target.parentElement.nextElementSibling;
+      saveBtn.classList.remove("d-none");
+    }
+  };
+
+  const saveDateCoursework = function(e) {
+    if (e.target.classList.contains("courseworkDateSave")) {
+      // ---- Get the "Faculty Member" id ----
+      let formAction =
+        e.target.parentElement.parentElement.parentElement.parentElement
+          .parentElement.parentElement.parentElement.action;
+      formAction = formAction.split("/");
+      formAction = formAction[6].split("?");
+      facultyMemberID = formAction[0];
+
+      // Get the "Taught Module" id
+      let taughtModuleID = e.target.parentElement.id.split("-");
+      taughtModuleID = taughtModuleID[2];
+      console.log(facultyMemberID);
+      console.log(taughtModuleID);
+
+      const inputDate =
+        e.target.parentElement.parentElement.previousElementSibling
+          .lastElementChild.firstElementChild;
+      dateValue = inputDate.value;
+
+      const data = {
+        uiTaughtModuleID: taughtModuleID,
+        uiCourseworkDate: dateValue
+      };
+
+      const options = {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+      };
+      fetch(
+        `/dashboards/facultyMember/courseworks/${facultyMemberID}`,
+        options
+      ).then(response => {
+        console.log(response);
+      });
+
+      // ---- Hide save button ----
+      const saveBtn = e.target.parentElement;
+      saveBtn.classList.add("d-none");
+
+      // ---- Display span text & set the new date ----
+      const dateParentElement =
+        e.target.parentElement.parentElement.previousElementSibling;
+      dateParentElement.firstElementChild.classList.remove("d-none");
+
+
+      // Convert date value to English UK short format 
+      const parameters = { day: 'numeric',  month: 'numeric', year: 'numeric'  };
+      dueDate = new Date(dateValue).toLocaleString('en-GB', parameters);
+      dateParentElement.firstElementChild.textContent = dueDate;
+
+      // Hide input date
+      dateParentElement.lastElementChild.classList.add("d-none");
+
+      // Display edit button 
+      const editBtn = e.target.parentElement.previousElementSibling;
+      editBtn.classList.remove("d-none");
     }
   };
 

@@ -150,18 +150,27 @@
                   <td class="module">
                     {{moduleName}}
                   </td>
-                  <td id="dcctct-tableCell" class="dueDate">
-                    {{courseworkDate}}
+                  <td id="dcctct-td-{{taughtModuleID}}" class="dueDate">
+                    <span>{{courseworkDate}}</span>
+                    <span id="dcctct-span-{{taughtModuleID}}"class="d-none">
+                      <input type="date" id="dcctct-date-{{taughtModuleID}}" class="form-control" name="date">
+                      <label for="dcctct-date-{{taughtModuleID}}" class="sr-only">Coursework Date</label>
+                    </span>
                   </td>
-                  <td>
-                    <button type="button" class="btn btn-sm btn-primary p-0" data-id={{moduleID}}>
+                  <td id="dcctct-tdBtn-{{taughtModuleID}}">
+                    <button id="dcctct-bt-{{taughtModuleID}}" type="button" class="btn btn-sm btn-primary p-0"
+                      data-id={{moduleID}}>
                       <i class="fas fa-pencil-alt courseworkEdit"></i>
+                    </button>
+                    <button id="dcctct-saveBtn-{{taughtModuleID}}" type="button" class="btn btn-sm btn-success p-0 d-none"
+                      data-id={{moduleID}}>
+                      <i class="fas fa-save courseworkDateSave"></i>
                     </button>
                   </td>
                   <td>
                     <div class="custom-control custom-checkbox">
-                      <input type="checkbox" id="dcctct-{{taughtModuleID}}" class="custom-control-input" name="taughtModulesID"
-                        value="{{taughtModuleID}}">
+                      <input type="checkbox" id="dcctct-{{taughtModuleID}}" class="custom-control-input"
+                        name="taughtModulesID" value="{{taughtModuleID}}">
                       <label class="custom-control-label" for="dcctct-{{taughtModuleID}}"></label>
                     </div>
                   </td>

@@ -5,6 +5,10 @@ const express = require("express");
 const path = require("path");
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
+
+const bodyParser = require("body-parser");
+var urlencodedParser = bodyParser.urlencoded({ extended: false });
+
 // const passport = require('passport');
 const router = express.Router();
 const multer = require("multer"); // Used for uploading files
@@ -1021,13 +1025,62 @@ router.post("/facultyMember/courseworks/:id", (req, res) => {
             return;
           });
       } else {
-        req.flash(
-          "error_msg",
-          "It was not selected any coursework to add."
-        );
+        req.flash("error_msg", "It was not selected any coursework to add.");
         res.redirect("/dashboards/facultyMember");
       }
     });
+});
+
+// Update "facultymember collection" - Add Courseworks
+router.put("/facultyMember/courseworks/:id", (req, res) => {
+  FacultyMember.findOne({ userID: req.params.id })
+    .populate("taughtModules.moduleID")
+    .then(member => {
+      let addCourseworks = false;
+      if (member) {
+        // Get the data from UI form
+        const uiTaughtModuleID = req.body.uiTaughtModuleID;
+        const uiCourseworkDate = req.body.uiCourseworkDate;
+        console.log(uiTaughtModuleID);
+        console.log(uiCourseworkDate);
+        member.taughtModules.forEach(taughtModule => {
+          if (
+            taughtModule._id.toString() === uiTaughtModuleID &&
+            uiCourseworkDate !== ""
+          ) {
+            const newCoursework = {
+              date: uiCourseworkDate
+            };
+            taughtModule.coursework = newCoursework;
+            addCourseworks = true;
+          }
+        });
+      }
+
+      if (addCourseworks) {
+        // Save to the database
+        member
+          .save()
+          .then(member => {
+            req.flash(
+              "success_msg",
+              "Courseworks have been updated successfully."
+            );
+            res.redirect("/dashboards/facultyMember");
+          })
+          .catch(err => {
+            // Catch any errors
+            console.log(err.message);
+            return;
+          });
+      } else {
+        req.flash("error_msg", "It was not selected any coursework day to update.");
+        res.redirect("/dashboards/facultyMember");
+      }
+    });
+  console.log(req.body);
+
+  res.send("Coursework edit");
 });
 
 // Update "facultymember" collection - Delete Courseworks
@@ -1040,7 +1093,7 @@ router.delete("/facultyMember/courseworks/:id", (req, res) => {
         const uiTaughtModuleIDs = req.body.taughtModulesID;
         // ---- In case of delete one "coursework" ----
         if (typeof uiTaughtModuleIDs === "string") {
-          member.taughtModules.forEach((taughtModule) => {
+          member.taughtModules.forEach(taughtModule => {
             if (taughtModule._id.toString() === uiTaughtModuleIDs) {
               taughtModule.coursework = undefined;
             }
