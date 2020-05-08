@@ -1031,7 +1031,7 @@ router.post("/facultyMember/courseworks/:id", (req, res) => {
     });
 });
 
-// Update "facultymember collection" - Add Courseworks
+// Update "facultymember collection" - Update Courseworks
 router.put("/facultyMember/courseworks/:id", (req, res) => {
   FacultyMember.findOne({ userID: req.params.id })
     .populate("taughtModules.moduleID")
@@ -1080,7 +1080,7 @@ router.put("/facultyMember/courseworks/:id", (req, res) => {
     });
   console.log(req.body);
 
-  res.send("Coursework edit");
+  // res.send("Coursework edit");
 });
 
 // Update "facultymember" collection - Delete Courseworks

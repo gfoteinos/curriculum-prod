@@ -151,10 +151,15 @@
                     {{moduleName}}
                   </td>
                   <td>
-                    <input type="date" id="dcctacmtmDate-{{taughtModuleID}}" class="form-control" name="date" data-id="{{taughtModuleID}}">
-                    <label for="dcctacmtmDate-{{taughtModuleID}}" class="sr-only">Coursework Date</label>
+                    <span class="d-none">{{courseworkDate}}</span>
+                    <span id="dcctacmtm-span-{{taughtModuleID}}">
+                      <input type="date" id="dcctacmtmDate-{{taughtModuleID}}" class="form-control" name="date"
+                        data-id="{{taughtModuleID}}">
+                      <label for="dcctacmtmDate-{{taughtModuleID}}" class="sr-only">Coursework Date</label>
+                    </span>
                   </td>
-                  <input id="dcctacmtm-{{taughtModuleID}}" name="taughtModuleID" type="hidden" value="{{taughtModuleID}}">
+                  <input id="dcctacmtm-{{taughtModuleID}}" name="taughtModuleID" type="hidden"
+                    value="{{taughtModuleID}}">
                 </tr>
                 {{/each}}
               </tbody>

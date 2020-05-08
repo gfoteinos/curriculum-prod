@@ -124,7 +124,7 @@ const UICtrl = (function() {
     d_mlt_dtm_m_deleteTaughtModulesBtn: "#deleteTaughtModulesModalBtn",
     // ------------ Courseworks Calendar Tab ------------
     // -------- Form --------
-    // courseworksForm: "#courseworksForm",
+    courseworksForm: "#courseworksForm",
     // ---- "Courseworks" Table ----
     courseworksCalendarTabTable: "#d-cct-courseworksTable",
     d_cct_courseworksTableBody: "#d-cct-courseworksTable tbody",
@@ -133,9 +133,11 @@ const UICtrl = (function() {
       "#d-cct-courseworksTable .sort-dueDate",
     d_cct_courseworksCheckboxAll:
       "#d-cct-courseworksTable thead input[type='checkbox']",
+    d_cct_courseworksSaveBtns: "#d-cct-courseworksTable tbody .btn-success",
     // ---- Buttons ----
-    d_cct_deleteCourseworksBtn: "#d-cct-deleteCourseworksBtn",
-    d_cct_triggerModalAddCourseworksBtn: "#d-cct-triggerModalAddCourseworksBtn",
+    d_cct_deleteCourseworksBtn: "#d-cct-f-deleteCourseworksBtn",
+    d_cct_triggerModalAddCourseworksBtn:
+      "#d-cct-f-triggerModalAddCourseworksBtn",
     // -------- Add Courseworks Modal --------
     // d_cct_ac_m_taughtModulesTable: "#d_cct_ac_m_taughtModulesTable",
     // ---- "Taught Modules" Table ----
@@ -144,8 +146,8 @@ const UICtrl = (function() {
     d_cct_ac_m_taughtModulesTableColumnTitle:
       "#d_cct_ac_m_taughtModulesTable .sort-title",
     d_cct_ac_m_taughtModulesCheckboxAll:
-      "#d_cct_ac_m_taughtModulesTable thead input[type='checkbox']"
-    // d_cct_ac_m_addCourseworksBtn: "#addCourseworksBtn",
+      "#d_cct_ac_m_taughtModulesTable thead input[type='checkbox']",
+    d_cct_ac_m_addCourseworksBtn: "#addCourseworksBtn"
     // // -------- Delete "Courseworks" Modal --------
     // d_cct_dc_m_deleteCourseworks: "#deleteTaughtModulesModal",
     // // ---- Buttons ----
@@ -358,7 +360,7 @@ const UICtrl = (function() {
         }
       }
     },
-    getAllTablesElementID: function(tableID) {
+    getModalTableID: function(tableID) {
       // Gather UI Selector IDs
       const taughtModulesModulesTabTable = document.querySelector(
         UISelectors.d_mlt_taughtModulesTable
@@ -520,35 +522,139 @@ const UICtrl = (function() {
 
       return button;
     },
-    OnOffButton: function(checkboxes, triggerButton) {
-      // ======== Get all checkboxes that are checked ========
-      let listChecked = [];
-      checkboxes.forEach(checkbox => {
-        if (checkbox.checked === true) {
-          listChecked.push(checkbox);
-        }
+    updateData: function(data, path) {
+      const options = {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+      };
+      fetch(path, options).then(response => {
+        console.log(response);
       });
+    },
+    OnOffButton: function(elements, button) {
+      // Initialize vars 
+      let displayElement = false;
+      let disableElement = true;
+      let typeButton = false;
+      let typeCheckbox = false;
 
-      // ======== Enable/Disable Button ========
-      // If a checkbox is checked, enable button else disable button
-      if (listChecked.length > 0) {
-        triggerButton.disabled = false;
-      } else {
-        triggerButton.disabled = true;
+      for (const element of elements) {
+        if (element.type === "button") {
+          typeButton = true;
+          if (!element.classList.contains("d-none")) {
+            displayElement = true;
+            break;
+          }
+        }
+        if (element.type === "checkbox") {
+          typeCheckbox = true;
+          if (element.checked === true) {
+            disableElement = false;
+            break;
+          }
+        }
+      }
+
+      if (typeCheckbox) {
+        if (disableElement) {
+          button.setAttribute("disabled", "");
+        } else {
+          button.removeAttribute("disabled");
+        }
+      } else if (typeButton) {
+        if (displayElement) {
+          button.setAttribute("disabled", "");
+        } else {
+          button.removeAttribute("disabled");
+        }
       }
     },
-    addNewElement: function(newElement, parentElementID, position, html) {
-      // Add HTML
-      newElement.innerHTML = html;
-      document
-        .querySelector(parentElementID)
-        .insertAdjacentElement(position, newElement);
+    disableModalTableCheckboxRows: function(
+      modalTableCheckboxes,
+      targetTableCheckboxes
+    ) {
+      // In case of the table has checkboxes
+      let targetTableCheckboxID;
+      targetTableCheckboxes.forEach(checkbox => {
+        targetTableCheckboxID = checkbox.value;
+        modalTableCheckboxes.forEach(modalTableCheckbox => {
+          if (targetTableCheckboxID === modalTableCheckbox.value) {
+            // Disable checkbox
+            modalTableCheckbox.setAttribute("disabled", "");
+
+            // ---- Disable row ----
+            let tr =
+              modalTableCheckbox.parentElement.parentElement.parentElement;
+            tr.classList.add("text-muted");
+          }
+        });
+      });
     },
-    removeElement: function(elementID) {
-      // Removes an element from the document
-      const element = document.getElementById(elementID);
-      element.parentNode.removeChild(element);
+    disableModalTableInputDatesRow: function(
+      targetTableCheckboxes,
+      modalTableInputDateElements
+    ) {
+      let targetTableTaughtModuleID;
+      let targetTableDateText;
+      targetTableCheckboxes.forEach(checkbox => {
+        targetTableTaughtModuleID = checkbox.value;
+        targetTableDateText =
+          checkbox.parentElement.parentElement.previousElementSibling
+            .previousElementSibling.firstElementChild.innerText;
+
+        /**
+         * Match the rows of two tables and then hide the "input date",
+         * display the "date text" & disable the row
+         */
+        modalTableInputDateElements.forEach(inputDate => {
+          let modalTableDateText =
+            inputDate.parentElement.previousElementSibling;
+          let modalTableInputDate = inputDate;
+          if (
+            targetTableTaughtModuleID === inputDate.getAttribute("data-id") &&
+            modalTableDateText.innerText !== ""
+          ) {
+            // Update & Display date text
+            modalTableDateText.innerText = targetTableDateText;
+            modalTableDateText.classList.remove("d-none");
+
+            // Hide input date
+            modalTableInputDate.parentElement.classList.add("d-none");
+
+            // ---- Disable row ----
+            // UICtrl.disableDateRows(inputDate);
+            const tr = inputDate.parentElement.parentElement.parentElement;
+            tr.classList.add("text-muted");
+          }
+        });
+      });
+    },
+    enableModalSubmitButton: function(table, button) {
+      // Enable modal submit button
+      for (let i = 0; i < table.length; i++) {
+        const tr = table[i].parentElement.parentElement.parentElement;
+        if (tr.classList.contains("text-muted") === false) {
+          // Enable button
+          button.removeAttribute("disabled");
+          break;
+        }
+      }
     }
+    // addNewElement: function(newElement, parentElementID, position, html) {
+    //   // Add HTML
+    //   newElement.innerHTML = html;
+    //   document
+    //     .querySelector(parentElementID)
+    //     .insertAdjacentElement(position, newElement);
+    // },
+    // removeElement: function(elementID) {
+    //   // Removes an element from the document
+    //   const element = document.getElementById(elementID);
+    //   element.parentNode.removeChild(element);
+    // }
   };
 })();
 
@@ -873,89 +979,39 @@ const App = (function(UICtrl) {
   // ---------------- Disable Table Row/Rows ----------------
   const disableRows = function(e) {
     // ---- Get The Tables Which Will Be Compared ----
-    const tableLessElementsID =
+    const targetElementsTableID =
       e.target.parentElement.previousElementSibling.children[0].id;
 
-    const tableAllElementsID = UICtrl.getAllTablesElementID(
-      tableLessElementsID
-    );
+    const modalTableID = UICtrl.getModalTableID(targetElementsTableID);
 
     // ---- Get Checkboxes From Tables ----
-    const allElementsCheckboxes = UICtrl.getCheckBoxes(
-      `#${tableAllElementsID}`
-    );
-    const lessElementsCheckboxes = UICtrl.getCheckBoxes(
-      `#${tableLessElementsID}`
+    const modalTableCheckboxes = UICtrl.getCheckBoxes(`#${modalTableID}`);
+    const targetTableCheckboxes = UICtrl.getCheckBoxes(
+      `#${targetElementsTableID}`
     );
 
-    // ---- Disable Rows From Table Which Has All Elements ----
-    if (allElementsCheckboxes.length > 0) {
-      // In case of the table has checkboxes
-      let id;
-      lessElementsCheckboxes.forEach(checkbox => {
-        id = checkbox.value;
-        allElementsCheckboxes.forEach(checkBox => {
-          if (id === checkBox.value) {
-            // ---- Disable row ----
-            checkBox.setAttribute("disabled", "");
-            let tr = checkBox.parentElement.parentElement.parentElement;
-            tr.classList.add("text-muted");
-          }
-        });
-      });
+    // ---- Disable Rows From Modal Table ----
+    if (modalTableCheckboxes.length > 0) {
+      // In case of table has checkboxes
+      UICtrl.disableModalTableCheckboxRows(
+        modalTableCheckboxes,
+        targetTableCheckboxes
+      );
     } else {
-      // In case of the table has input dates elements without checkboxes
-      const allInputDatesElements = UICtrl.getDates(`#${tableAllElementsID}`);
+      // In case of table has input dates elements without checkboxes
+      const modalTableDateElements = UICtrl.getDates(`#${modalTableID}`);
 
-      let moduleID;
-      let dateContent;
-      lessElementsCheckboxes.forEach(checkbox => {
-        moduleID = checkbox.value;
-        dateContent =
-          checkbox.parentElement.parentElement.previousElementSibling
-            .previousElementSibling.innerText;
+      UICtrl.disableModalTableInputDatesRow(
+        targetTableCheckboxes,
+        modalTableDateElements
+      );
 
-        /**
-         * Match the rows of two tables by "module id" and then
-         * replace the "input date" with "labels" & disable the row
-         */
-        allInputDatesElements.forEach(inputDate => {
-          if (moduleID === inputDate.getAttribute("data-id")) {
-            /**
-             * Build "label" element only one time not every time the
-             * "Add Coursworks" button clicked
-             */
-            if (inputDate.previousElementSibling === null) {
-              // --- Build "label" element ---
-              // Create lebel
-              const label = document.createElement("label");
-              // Add HTML
-              label.innerHTML = `<label>${dateContent}</label>`;
-              // --- Insert "label" element before "input date" element  ---
-              selector = `#${inputDate.getAttribute("id")}`;
-              document
-                .querySelector(selector)
-                .insertAdjacentElement("beforebegin", label);
-            }
-
-            // ---- Disable row ----
-            inputDate.classList.add("d-none");
-            const tr = inputDate.parentElement.parentElement;
-            tr.classList.add("text-muted");
-          }
-        });
-      });
-
-      for (let i = 0; i < allInputDatesElements.length; i++) {
-        const tr = allInputDatesElements[i].parentElement.parentElement;
-        if (tr.classList.contains("text-muted") === false) {
-          // Enable "add" button
-          const button = document.querySelector(`#${tableAllElementsID}`)
-            .parentElement.parentElement.lastElementChild.firstElementChild;
-          button.removeAttribute("disabled");
-          break;
-        }
-      }
+      // ---- Enable modal submit button ----
+      const UISelectors = UICtrl.getUISelectors();
+      const button = document.querySelector(
+        UISelectors.d_cct_ac_m_addCourseworksBtn
+      );
+      UICtrl.enableModalSubmitButton(modalTableDateElements, button);
     }
   };
 
@@ -1062,86 +1118,133 @@ const App = (function(UICtrl) {
 
   const editCoursework = function(e) {
     if (e.target.classList.contains("courseworkEdit")) {
-      // ---- Hide edit button ----
+      // ---- Hide "edit icon" button ----
       const editBtn = e.target.parentElement;
       editBtn.classList.add("d-none");
 
-      // ---- Remove date text & hide span text ----
-      const dateParentElement =
-        e.target.parentElement.parentElement.previousElementSibling;
-      dateParentElement.firstElementChild.textContent = "";
-      dateParentElement.firstElementChild.classList.add("d-none");
+      // Hide "coursework date" text
+      const spanCourseworkDate =
+        e.target.parentElement.parentElement.previousElementSibling
+          .firstElementChild;
+      spanCourseworkDate.classList.add("d-none");
 
       // Display input date
-      dateParentElement.lastElementChild.classList.remove("d-none");
+      const inputDate =
+        e.target.parentElement.parentElement.previousElementSibling
+          .lastElementChild;
+      inputDate.classList.remove("d-none");
 
-      // Display Save button
+      // Display "save icon" button
       const saveBtn = e.target.parentElement.nextElementSibling;
       saveBtn.classList.remove("d-none");
+
+      // ---- Disable "Add Coursework" button ----
+      // Get UI Selectors
+      const UISelectors = UICtrl.getUISelectors();
+
+      const addCourseworksBtn = document.querySelector(
+        UISelectors.d_cct_triggerModalAddCourseworksBtn
+      );
+
+      const saveButtons = document.querySelectorAll(
+        UISelectors.d_cct_courseworksSaveBtns
+      );
+
+      const buttons = Object.values(saveButtons);
+
+      UICtrl.OnOffButton(buttons, addCourseworksBtn);
     }
   };
 
   const saveDateCoursework = function(e) {
     if (e.target.classList.contains("courseworkDateSave")) {
       // ---- Get the "Faculty Member" id ----
-      let formAction =
-        e.target.parentElement.parentElement.parentElement.parentElement
-          .parentElement.parentElement.parentElement.action;
+
+      // Get UI Selectors
+      const UISelectors = UICtrl.getUISelectors();
+
+      // ---- Get "Faculty Member" id parameter ----
+      const form = document.querySelector(UISelectors.courseworksForm);
+      let formAction = form.action;
       formAction = formAction.split("/");
       formAction = formAction[6].split("?");
       facultyMemberID = formAction[0];
 
       // Get the "Taught Module" id
-      let taughtModuleID = e.target.parentElement.id.split("-");
-      taughtModuleID = taughtModuleID[2];
+      let taughtModuleID = e.target.parentElement.getAttribute("data-id");
+      // taughtModuleID = taughtModuleID[2];
+
       console.log(facultyMemberID);
       console.log(taughtModuleID);
 
+      // Gather the elements needed
       const inputDate =
         e.target.parentElement.parentElement.previousElementSibling
           .lastElementChild.firstElementChild;
-      dateValue = inputDate.value;
 
-      const data = {
-        uiTaughtModuleID: taughtModuleID,
-        uiCourseworkDate: dateValue
-      };
+      const inputDateParentElement =
+        e.target.parentElement.parentElement.previousElementSibling;
 
-      const options = {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(data)
-      };
-      fetch(
-        `/dashboards/facultyMember/courseworks/${facultyMemberID}`,
-        options
-      ).then(response => {
-        console.log(response);
-      });
+      const spanDateText = inputDateParentElement.firstElementChild;
+
+      // Get the new coursework date
+      let newCourseworkDate = inputDate.value;
+
+      if (newCourseworkDate) {
+        // Set the data to be updated
+        const data = {
+          uiTaughtModuleID: taughtModuleID,
+          uiCourseworkDate: newCourseworkDate
+        };
+        // Set the path
+        const path = `/dashboards/facultyMember/courseworks/${facultyMemberID}`;
+
+        // Update data
+        UICtrl.updateData(data, path);
+
+        // ---- Set the new coursework date ----
+        // Convert date value to English UK short format
+        const parameters = {
+          day: "numeric",
+          month: "numeric",
+          year: "numeric"
+        };
+        newCourseworkDate = new Date(newCourseworkDate).toLocaleString(
+          "en-GB",
+          parameters
+        );
+        spanDateText.textContent = newCourseworkDate;
+      } else {
+        // inputDateParentElement.firstElementChild.textContent = "date";
+      }
 
       // ---- Hide save button ----
       const saveBtn = e.target.parentElement;
       saveBtn.classList.add("d-none");
 
-      // ---- Display span text & set the new date ----
-      const dateParentElement =
-        e.target.parentElement.parentElement.previousElementSibling;
-      dateParentElement.firstElementChild.classList.remove("d-none");
-
-
-      // Convert date value to English UK short format 
-      const parameters = { day: 'numeric',  month: 'numeric', year: 'numeric'  };
-      dueDate = new Date(dateValue).toLocaleString('en-GB', parameters);
-      dateParentElement.firstElementChild.textContent = dueDate;
+      // ---- Display span text with the new coursework date ----
+      spanDateText.classList.remove("d-none");
 
       // Hide input date
-      dateParentElement.lastElementChild.classList.add("d-none");
+      const spanInputDate = inputDateParentElement.lastElementChild;
+      spanInputDate.classList.add("d-none");
 
-      // Display edit button 
+      // Display edit button
       const editBtn = e.target.parentElement.previousElementSibling;
       editBtn.classList.remove("d-none");
+
+      // ---- Enable "Add Courseworks" button ----
+      const addCourseworksBtn = document.querySelector(
+        UISelectors.d_cct_triggerModalAddCourseworksBtn
+      );
+
+      const saveIconButtons = document.querySelectorAll(
+        UISelectors.d_cct_courseworksSaveBtns
+      );
+
+      const buttons = Object.values(saveIconButtons);
+
+      UICtrl.OnOffButton(buttons, addCourseworksBtn);
     }
   };
 
