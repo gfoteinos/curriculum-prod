@@ -29,7 +29,9 @@
       </li>
     </ul>
   </div>
-  {{> _formMsgsDashboard }}
+  <div class="alertMessages">
+    {{> _formMsgsDashboard }}
+  </div>
   <div class="card-body">
     <div class="tab-content mt-3">
       <!-- Modules List -->
@@ -158,12 +160,10 @@
                     </span>
                   </td>
                   <td>
-                    <button type="button" class="btn btn-sm btn-primary p-0"
-                      data-id={{taughtModuleID}}>
+                    <button type="button" class="btn btn-sm btn-primary p-0" data-id={{taughtModuleID}}>
                       <i class="fas fa-pencil-alt courseworkEdit"></i>
                     </button>
-                    <button type="button" class="btn btn-sm btn-success p-0 d-none"
-                      data-id={{taughtModuleID}}>
+                    <button type="button" class="btn btn-sm btn-success p-0 d-none" data-id={{taughtModuleID}}>
                       <i class="fas fa-save courseworkDateSave"></i>
                     </button>
                   </td>

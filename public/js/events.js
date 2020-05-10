@@ -91,6 +91,7 @@ const UICtrl = (function() {
     deleteModulesModalBtn: "#deleteModulesModalBtn",
 
     // -------- DASHBOARD FORM --------
+    dashboardMessages: "#dashboard .alertMessages",
     // ------------ Modules List Tab ------------
     // -------- Form --------
     // taughtModulesForm: "#taughtModulesForm",
@@ -522,7 +523,37 @@ const UICtrl = (function() {
 
       return button;
     },
-    updateData: function(data, path) {
+    showAlertMessage: function(alert, position) {
+      if (alert.type === "success") {
+        // --- Built & Insert An Alert ----
+        const div = document.createElement("div");
+        div.className = "alert alert-success mt-3 mb-n3 mx-4";
+        div.innerHTML = `${alert.message}`;
+        position.insertAdjacentElement("beforeend", div);
+      }
+
+      /**
+       * In this way the "alert" time out seems to start again with the 
+       * click of the last coursework update
+       */
+      // Show only the alert of last update coursework 
+      const alerts = position.children;
+      if(alerts.length > 1) {
+        let counter = 1;
+        for(alertItem of alerts) {
+          if (counter < alerts.length) {
+            alertItem.classList.add("d-none");
+          }
+          counter++;
+        }
+      }
+
+      // Alert timeout
+      setTimeout(function() {
+        position.firstElementChild.remove();
+      }, 5000);
+    },
+    updateData: async function(data, path) {
       const options = {
         method: "PUT",
         headers: {
@@ -530,12 +561,11 @@ const UICtrl = (function() {
         },
         body: JSON.stringify(data)
       };
-      fetch(path, options).then(response => {
-        console.log(response);
-      });
+      const response = await fetch(path, options);
+      return response.json();
     },
     OnOffButton: function(elements, button) {
-      // Initialize vars 
+      // Initialize vars
       let displayElement = false;
       let disableElement = true;
       let typeButton = false;
@@ -1158,11 +1188,10 @@ const App = (function(UICtrl) {
 
   const saveDateCoursework = function(e) {
     if (e.target.classList.contains("courseworkDateSave")) {
-      // ---- Get the "Faculty Member" id ----
-
+      // ---- GATHER THE ELEMENTS NEEDED ----
       // Get UI Selectors
       const UISelectors = UICtrl.getUISelectors();
-
+      
       // ---- Get "Faculty Member" id parameter ----
       const form = document.querySelector(UISelectors.courseworksForm);
       let formAction = form.action;
@@ -1170,14 +1199,8 @@ const App = (function(UICtrl) {
       formAction = formAction[6].split("?");
       facultyMemberID = formAction[0];
 
-      // Get the "Taught Module" id
       let taughtModuleID = e.target.parentElement.getAttribute("data-id");
-      // taughtModuleID = taughtModuleID[2];
 
-      console.log(facultyMemberID);
-      console.log(taughtModuleID);
-
-      // Gather the elements needed
       const inputDate =
         e.target.parentElement.parentElement.previousElementSibling
           .lastElementChild.firstElementChild;
@@ -1187,10 +1210,10 @@ const App = (function(UICtrl) {
 
       const spanDateText = inputDateParentElement.firstElementChild;
 
-      // Get the new coursework date
       let newCourseworkDate = inputDate.value;
 
       if (newCourseworkDate) {
+        // ---- UPDATE THE DATABASE ----
         // Set the data to be updated
         const data = {
           uiTaughtModuleID: taughtModuleID,
@@ -1199,11 +1222,16 @@ const App = (function(UICtrl) {
         // Set the path
         const path = `/dashboards/facultyMember/courseworks/${facultyMemberID}`;
 
-        // Update data
-        UICtrl.updateData(data, path);
+        // Update data & show update message
+        UICtrl.updateData(data, path).then(alert => {
+          const position = document.querySelector(
+            UISelectors.dashboardMessages
+          );
+          UICtrl.showAlertMessage(alert, position);
+        });
 
-        // ---- Set the new coursework date ----
-        // Convert date value to English UK short format
+        // ---- SET THE NEW COURSEWORK DATE ----
+        // ---- Convert Date Value To English Uk Short Format ----
         const parameters = {
           day: "numeric",
           month: "numeric",
@@ -1213,16 +1241,15 @@ const App = (function(UICtrl) {
           "en-GB",
           parameters
         );
+        // Set New Coursework Date
         spanDateText.textContent = newCourseworkDate;
-      } else {
-        // inputDateParentElement.firstElementChild.textContent = "date";
       }
 
-      // ---- Hide save button ----
+      // Hide save button
       const saveBtn = e.target.parentElement;
       saveBtn.classList.add("d-none");
 
-      // ---- Display span text with the new coursework date ----
+      // Display span text with the new coursework date
       spanDateText.classList.remove("d-none");
 
       // Hide input date
@@ -1237,13 +1264,10 @@ const App = (function(UICtrl) {
       const addCourseworksBtn = document.querySelector(
         UISelectors.d_cct_triggerModalAddCourseworksBtn
       );
-
       const saveIconButtons = document.querySelectorAll(
         UISelectors.d_cct_courseworksSaveBtns
       );
-
       const buttons = Object.values(saveIconButtons);
-
       UICtrl.OnOffButton(buttons, addCourseworksBtn);
     }
   };

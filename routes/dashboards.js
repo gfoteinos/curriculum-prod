@@ -324,6 +324,12 @@ router.get("/facultyMember", (req, res, next) => {
                   taughtModule.coursework.date
                 ).toLocaleString("en-GB", options);
                 tempDate = tempDate.split("/");
+                tempDate.forEach((item, index) => {
+                  if(item.length === 1) {
+                    item = `0${item}`;
+                    tempDate[index] = item;
+                  }
+                });
                 dateUKFormat = `${tempDate[1]}/${tempDate[0]}/${tempDate[2]}`;
               } else {
                 dateUKFormat = "";
@@ -1038,16 +1044,13 @@ router.put("/facultyMember/courseworks/:id", (req, res) => {
     .then(member => {
       let addCourseworks = false;
       if (member) {
-        // Get the data from UI form
+        // ---- Get the data from UI form ----
         const uiTaughtModuleID = req.body.uiTaughtModuleID;
         const uiCourseworkDate = req.body.uiCourseworkDate;
-        console.log(uiTaughtModuleID);
-        console.log(uiCourseworkDate);
+        
         member.taughtModules.forEach(taughtModule => {
-          if (
-            taughtModule._id.toString() === uiTaughtModuleID &&
-            uiCourseworkDate !== ""
-          ) {
+          if (taughtModule._id.toString() === uiTaughtModuleID && uiCourseworkDate !== "") {
+            // ---- Update Data ----
             const newCoursework = {
               date: uiCourseworkDate
             };
@@ -1062,25 +1065,18 @@ router.put("/facultyMember/courseworks/:id", (req, res) => {
         member
           .save()
           .then(member => {
-            req.flash(
-              "success_msg",
-              "Courseworks have been updated successfully."
-            );
-            res.redirect("/dashboards/facultyMember");
+            res.json({
+              type: "success",
+              message: 'Courseworks have been updated successfully.'
+            })
           })
           .catch(err => {
             // Catch any errors
             console.log(err.message);
             return;
           });
-      } else {
-        req.flash("error_msg", "It was not selected any coursework day to update.");
-        res.redirect("/dashboards/facultyMember");
       }
     });
-  console.log(req.body);
-
-  // res.send("Coursework edit");
 });
 
 // Update "facultymember" collection - Delete Courseworks
