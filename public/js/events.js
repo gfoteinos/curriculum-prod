@@ -232,48 +232,6 @@ const UICtrl = (function() {
         }
       });
     },
-    // Deletion Functionality
-    populateDeletionData: function(listData, formID) {
-      // ======== Create Html Inputs To Insert In The Courses Form ========
-      // ---- Built Input Elements For Data Input Ids ----
-      // Initialize elements vars
-      let inputs = "";
-
-      // Create inputs
-      let itemArray = [],
-        id = "";
-      listData.forEach(function(item) {
-        id = item.getAttribute("data-id");
-        // Building html code
-        inputs += `<input type="text" name="ids" id="${id}" class="d-none" value="${id}"></input>`;
-      });
-
-      // ---- Built Div Element To Wrap Inputs ----
-      // Create div element
-      const div = document.createElement("div");
-      // Add class to div
-      div.className = "dataIDForDelete";
-      // Add inputs to div
-      div.innerHTML = `${inputs}`;
-
-      // ======== Insert Html Elements ========
-      // -------- Gather The Form IDs --------
-      const coursesFormID = document.querySelector(UISelectors.coursesForm).id;
-      const modulesFormID = document.querySelector(UISelectors.modulesForm).id;
-
-      // -------- Insert inputs --------
-      if (formID === coursesFormID) {
-        // Insert inputs in "Courses" form
-        document
-          .querySelector(UISelectors.coursesForm)
-          .insertAdjacentElement("beforeend", div);
-      } else if (formID === modulesFormID) {
-        // Insert inputs in "Modules" form
-        document
-          .querySelector(UISelectors.modulesForm)
-          .insertAdjacentElement("beforeend", div);
-      }
-    },
     // ---------------- Tables ----------------
     sortTableColumn: function(table, columnIndex) {
       // Initialize variables
@@ -918,9 +876,7 @@ const App = (function(UICtrl) {
     const checkboxes = UICtrl.getCheckBoxes(`#${tableID}`);
 
     // Gather all buttons which are on the form's bottom
-    const buttons =
-      e.target.parentElement.parentElement.parentElement.parentElement
-        .parentElement.parentElement.nextElementSibling.children;
+    const buttons = document.querySelector(`#${tableID}`).parentElement.nextElementSibling.children;
 
     // Get the trigger(enable/disable) button
     const triggerButton = UICtrl.getTriggerBtn(buttons);
@@ -942,9 +898,7 @@ const App = (function(UICtrl) {
       const checkboxes = UICtrl.getCheckBoxes(`#${tableID}`);
 
       // Gather all buttons which are on the form's bottom
-      const buttons =
-        e.target.parentElement.parentElement.parentElement.parentElement
-          .parentElement.parentElement.nextElementSibling.children;
+      const buttons = document.querySelector(`#${tableID}`).parentElement.nextElementSibling.children;
 
       // Get the trigger(enable/disable) button
       const triggerButton = UICtrl.getTriggerBtn(buttons);
@@ -1147,7 +1101,7 @@ const App = (function(UICtrl) {
   };
 
   const editCoursework = function(e) {
-    if (e.target.classList.contains("courseworkEdit")) {
+    if (e.target.classList.contains("courseworkDateEdit")) {
       // ---- Hide "edit icon" button ----
       const editBtn = e.target.parentElement;
       editBtn.classList.add("d-none");

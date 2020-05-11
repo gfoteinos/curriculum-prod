@@ -130,16 +130,18 @@
                 <tr>
                   <th scope="col">#</th>
                   <th scope="col" class="sort-modules">Modules
-                    <i class="fas fa-angle-down"></i>
+                    <i class="fas fa-angle-down" aria-hidden="true"></i>
+                    <span class="sr-only">Sort Descending</span>
                   </th>
                   <th scope="col" class="sort-dueDate">Due Date
-                    <i class="fas fa-angle-down"></i>
+                    <i class="fas fa-angle-down" aria-hidden="true"></i>
+                    <span class="sr-only">Sort Descending</span>
                   </th>
                   <th scope="col">Edit</th>
                   <th scope="col">
                     <div class="custom-control custom-checkbox checkThemAll">
-                      <input type="checkbox" class="custom-control-input" id="cwtfCheckAll">
-                      <label class="custom-control-label" for="cwtfCheckAll"></label>
+                      <input type="checkbox" class="custom-control-input" id="d-cct-ct-CheckboxAll">
+                      <label class="custom-control-label" for="d-cct-ct-CheckboxAll"></label>
                     </div>
                   </th>
                 </tr>
@@ -160,18 +162,18 @@
                     </span>
                   </td>
                   <td>
-                    <button type="button" class="btn btn-sm btn-primary p-0" data-id={{taughtModuleID}}>
-                      <i class="fas fa-pencil-alt courseworkEdit"></i>
+                    <button type="button" class="btn btn-sm btn-primary p-0" aria-label="edit">
+                      <i class="fas fa-pencil-alt courseworkDateEdit"></i>
                     </button>
-                    <button type="button" class="btn btn-sm btn-success p-0 d-none" data-id={{taughtModuleID}}>
+                    <button type="button" class="btn btn-sm btn-success p-0 d-none" aria-label="save" data-id={{taughtModuleID}}>
                       <i class="fas fa-save courseworkDateSave"></i>
                     </button>
                   </td>
                   <td>
                     <div class="custom-control custom-checkbox">
-                      <input type="checkbox" id="d-cct-ct-{{taughtModuleID}}" class="custom-control-input"
+                      <input type="checkbox" id="d-cct-ct-checkbox-{{taughtModuleID}}" class="custom-control-input"
                         name="taughtModulesID" value="{{taughtModuleID}}">
-                      <label class="custom-control-label" for="d-cct-ct-{{taughtModuleID}}"></label>
+                      <label class="custom-control-label" for="d-cct-ct-checkbox-{{taughtModuleID}}"></label>
                     </div>
                   </td>
                 </tr>
@@ -183,19 +185,18 @@
           <div class="d-flex justify-content-end mt-3">
             <!-- Add Courseworks Button -->
             {{#if listTaughtModules}}
-            <button type="button" id="d-cct-f-triggerModalAddCourseworksBtn" class="btn btn-success mr-2"
-              data-toggle="modal" data-target="#addCourseworksModal">
+            <button type="button" id="d-cct-f-triggerModalAddCourseworksBtn" class="btn btn-success mr-2" aria-label="Add Courseworks" data-toggle="modal" data-target="#addCourseworksModal">
               Add Courseworks
             </button>
             {{else}}
-            <button type="button" id="UnableAddCourseworksBtn" class="btn btn-success mr-2" data-toggle="popover"
+            <button type="button" id="UnableAddCourseworksBtn" class="btn btn-success mr-2" aria-label="Add Courseworks" data-toggle="popover"
               data-trigger="focus" title="Attention" data-placement="bottom"
               data-content="There are no &ldquo;Taught Modules&rdquo;. Please add a &ldquo;Taught Module&rdquo; first.">
               Add Courseworks
             </button>
             {{/if}}
             <!-- Delete Courseworks Button -->
-            <button type="submit" id="d-cct-deleteCourseworksBtn" class="btn btn-danger" data-trigger="true" disabled>
+            <button type="submit" id="d-cct-f-deleteCourseworksBtn" class="btn btn-danger" aria-label="Delete Courseworks" data-trigger="true" disabled>
               Delete
             </button>
           </div>
