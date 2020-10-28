@@ -207,6 +207,7 @@ router.get("/facultyMember", (req, res, next) => {
           linkedin: req.user.linkedin
         };
         req.faculty = faculty;
+        // console.log(req.user);
         next();
       }
     })
@@ -294,6 +295,7 @@ router.get("/facultyMember", (req, res, next) => {
         // Fill in "Taught Modules" table to pass it later in the view
         let counter = 1;
         let courseworksCounter = 1;
+        let examsCounter = 1;
         taughtModules = facultyMember.taughtModules;
         taughtModules.forEach(taughtModule => {
           // Convert to String
@@ -313,6 +315,7 @@ router.get("/facultyMember", (req, res, next) => {
                * module" row
                */
 
+              let courseworkDateUKFormat;
               if (taughtModule.coursework.date) {
                 // Convert date value to English UK short format
                 const options = {
@@ -320,19 +323,47 @@ router.get("/facultyMember", (req, res, next) => {
                   month: "numeric",
                   year: "numeric"
                 };
-                tempDate = new Date(
+                let tempDate = new Date(
                   taughtModule.coursework.date
                 ).toLocaleString("en-GB", options);
                 tempDate = tempDate.split("/");
                 tempDate.forEach((item, index) => {
-                  if(item.length === 1) {
+                  if (item.length === 1) {
                     item = `0${item}`;
                     tempDate[index] = item;
                   }
                 });
-                dateUKFormat = `${tempDate[1]}/${tempDate[0]}/${tempDate[2]}`;
+                courseworkDateUKFormat = `${tempDate[1]}/${tempDate[0]}/${tempDate[2]}`;
               } else {
-                dateUKFormat = "";
+                courseworkDateUKFormat = "";
+              }
+
+              let examDateUKFormat;
+              let examTime;
+              if (taughtModule.exam.date) {
+                // Convert date value to English UK short format
+                const options = {
+                  day: "numeric",
+                  month: "numeric",
+                  year: "numeric"
+                };
+                let tempDate = new Date(taughtModule.exam.date).toLocaleString(
+                  "en-GB",
+                  options
+                );
+                tempDate = tempDate.split("/");
+                tempDate.forEach((item, index) => {
+                  if (item.length === 1) {
+                    item = `0${item}`;
+                    tempDate[index] = item;
+                  }
+                });
+                examDateUKFormat = `${tempDate[1]}/${tempDate[0]}/${tempDate[2]}`;
+                let tempTime = new Date(taughtModule.exam.date);
+                examTime = `${tempTime.getHours()}:${tempTime.getMinutes()}`;
+              } else {
+                examDateUKFormat = "";
+                examTime = "";
               }
 
               listTaughtModules.push({
@@ -341,13 +372,20 @@ router.get("/facultyMember", (req, res, next) => {
                 moduleID: taughtModule.moduleID.id,
                 moduleName: taughtModule.moduleID.name,
                 courseworksAA: courseworksCounter,
-                courseworkDate: dateUKFormat,
+                courseworkDate: courseworkDateUKFormat,
                 courseName: course.name,
-                courseDegree: course.degree
+                courseDegree: course.degree,
+                examsAA: examsCounter,
+                examDate: examDateUKFormat,
+                examTime: examTime,
+                examClassroom: taughtModule.exam.classroom
               });
               counter++;
-              if (dateUKFormat) {
+              if (courseworkDateUKFormat) {
                 courseworksCounter++;
+              }
+              if (examDateUKFormat) {
+                examsCounter++;
               }
             }
           });
@@ -992,9 +1030,15 @@ router.post("/facultyMember/courseworks/:id", (req, res) => {
     .then(member => {
       let addCourseworks = false;
       if (member) {
-        // ---- If The Faculty Member Exist Add "Coursework" In A Taught Module ----
+        // ---- If The Faculty Member Exist ----
         // Get the data from UI form
-        const uiTaughtModulesIDs = req.body.taughtModuleID;
+        let uiTaughtModulesIDs = [];
+        if (typeof req.body.taughtModuleID === "string") {
+          // If there is only 1 taught module
+          uiTaughtModulesIDs.push(req.body.taughtModuleID);
+        } else {
+          uiTaughtModulesIDs = req.body.taughtModuleID;
+        }
         const uiDates = req.body.date;
 
         // Add courseworks to the database
@@ -1047,9 +1091,12 @@ router.put("/facultyMember/courseworks/:id", (req, res) => {
         // ---- Get the data from UI form ----
         const uiTaughtModuleID = req.body.uiTaughtModuleID;
         const uiCourseworkDate = req.body.uiCourseworkDate;
-        
+
         member.taughtModules.forEach(taughtModule => {
-          if (taughtModule._id.toString() === uiTaughtModuleID && uiCourseworkDate !== "") {
+          if (
+            taughtModule._id.toString() === uiTaughtModuleID &&
+            uiCourseworkDate !== ""
+          ) {
             // ---- Update Data ----
             const newCoursework = {
               date: uiCourseworkDate
@@ -1067,8 +1114,8 @@ router.put("/facultyMember/courseworks/:id", (req, res) => {
           .then(member => {
             res.json({
               type: "success",
-              message: 'Courseworks have been updated successfully.'
-            })
+              message: "Courseworks have been updated successfully."
+            });
           })
           .catch(err => {
             // Catch any errors
@@ -1123,6 +1170,123 @@ router.delete("/facultyMember/courseworks/:id", (req, res) => {
         });
     });
 });
+
+// Update "facultymember collection" - Add Exams
+router.post("/facultyMember/exams/:id", (req, res) => {
+  // res.send("Add Exams");
+  FacultyMember.findOne({ userID: req.params.id })
+    .populate("taughtModules.moduleID")
+    .then(member => {
+      let addExams = false;
+      if (member) {
+        // ---- If The Faculty Member Exist ----
+        // Get the data from UI form
+        let uiTaughtModulesIDs = [];
+        let uiDates = [];
+        let uiTimes = [];
+        let uiClassrooms = [];
+        if (typeof req.body.taughtModuleID === "string") {
+          // If there is only 1 taught module
+          uiTaughtModulesIDs.push(req.body.taughtModuleID);
+          uiDates.push(req.body.date);
+          uiTimes.push(req.body.time);
+          uiClassrooms.push(req.body.classroom);
+        } else {
+          uiTaughtModulesIDs = req.body.taughtModuleID;
+          uiDates = req.body.date;
+          uiTimes = req.body.time;
+          uiClassrooms = req.body.classroom;
+        }
+
+        // Add exams to the database
+        member.taughtModules.forEach(taughtModule => {
+          uiTaughtModulesIDs.forEach((uiTaughtModuleID, index) => {
+            if (
+              taughtModule._id.toString() === uiTaughtModuleID &&
+              uiDates[index] !== "" &&
+              uiTimes[index] !== "" &&
+              uiClassrooms[index] !== ""
+            ) {
+              let uiDate = new Date(uiDates[index]);
+              let uiTime = uiTimes[index].split(":");
+              uiDate.setHours(uiTime[0], uiTime[1], 0);
+              const newExam = {
+                date: uiDate,
+                classroom: uiClassrooms[index]
+              };
+              taughtModule.exam = newExam;
+              addExams = true;
+            }
+          });
+        });
+      }
+
+      if (addExams) {
+        // Save to the database
+        member
+          .save()
+          .then(member => {
+            req.flash("success_msg", "Exams have been added successfully.");
+            res.redirect("/dashboards/facultyMember");
+          })
+          .catch(err => {
+            // Catch any errors
+            console.log(err.message);
+            return;
+          });
+      } else {
+        req.flash("error_msg", "It was not selected any exam to add.");
+        res.redirect("/dashboards/facultyMember");
+      }
+    });
+});
+
+// Update "facultymember" collection - Delete Exams
+router.delete("/facultyMember/exams/:id", (req, res) => {
+  FacultyMember.findOne({ userID: req.params.id })
+    .populate("taughtModules.moduleID")
+    .then(member => {
+      let deleteExams = false;
+      if (member) {
+        // -------- If The Faculty Member Exist --------
+        // Get "taught module" ids
+        let uiTaughtModuleIDs = req.body.taughtModulesID;
+
+        if (typeof uiTaughtModuleIDs === "string") {
+          //  In case of one exam selected convert to array
+          let idArray = [];
+          idArray.push(uiTaughtModuleIDs);
+          uiTaughtModuleIDs = idArray;
+        }
+
+        // ---- Delete exams ----
+        uiTaughtModuleIDs.forEach(uiID => {
+          member.taughtModules.forEach(taughtModule => {
+            if (taughtModule._id.toString() === uiID) {
+              taughtModule.exam = undefined;
+              deleteExams = true;
+            }
+          });
+        });
+      }
+
+      if (deleteExams) {
+        // Save to the database
+        member
+          .save()
+          .then(member => {
+            req.flash("success_msg", "Exams have been deleted successfully.");
+            res.redirect("/dashboards/facultyMember");
+          })
+          .catch(err => {
+            // Catch any errors
+            console.log(err.message);
+            return;
+          });
+      }
+    });
+});
+
 // console.log(`db.id: ${typeof(courseID)} - req.param.id: ${typeof(req.params.id)}, db.name: ${typeof(course.name)} - req.body.name: ${typeof(req.body.name)}, db.degree: ${typeof(course.name)} - req.body.degree: ${typeof(req.body.degree)}`);
 
 /* ========================

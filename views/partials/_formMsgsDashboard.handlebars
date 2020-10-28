@@ -1,6 +1,6 @@
 
 {{!-- ======== TAUGHT MODULES MANAGEMENT TAB ======== --}}
-{{!-- ---- When Click "Add Taught Modules" At "Modules List" Tab ---- --}}
+{{!-- ---- When Click "Add Taught Modules" ---- --}}
 {{!-- In case of "taught module" already exist --}}
 
 {{!-- In case of success adding "Taught Module" --}}
@@ -16,14 +16,14 @@
 {{/equal}}
 
 {{!-- ======== COURSEWORKS CALENDAR MANAGEMENT TAB ======== --}}
-{{!-- ---- When Click "Add Courseworks" At "Courseworks Calendar" Tab ---- --}}
+{{!-- ---- When Click "Add Courseworks" ---- --}}
 {{!-- In case of success adding "Coursework" --}}
 {{#equal success_msg 'Courseworks have been added successfully.' }}
 <div class="alert alert-success mt-3 mb-0 mx-4">{{success_msg}}</div>
 <script>courseworksCalendarClick()</script>
 {{/equal}}
 {{!-- In case of there was not any Coursework selected to add --}}
-{{#equal error_msg 'It was not selected any coursework to add.' }}
+{{#equal error_msg 'It was not selected any "coursework" to add.' }}
 <div class="alert alert-danger mt-3 mb-0 mx-4">{{error_msg}}</div>
 <script>courseworksCalendarClick()</script>
 {{/equal}}
@@ -31,4 +31,22 @@
 {{#equal success_msg 'Courseworks have been deleted successfully.' }}
 <div class="alert alert-success mt-3 mb-0 mx-4">{{success_msg}}</div>
 <script>courseworksCalendarClick()</script>
+{{/equal}}
+
+{{!-- ======== EXAMS CALENDAR MANAGEMENT TAB ======== --}}
+{{!-- ---- When Click "Add Exams" ---- --}}
+{{!-- In case of success adding "Exams" --}}
+{{#equal success_msg 'Exams have been added successfully.' }}
+<div class="alert alert-success mt-3 mb-0 mx-4">{{success_msg}}</div>
+<script>examsCalendarClick()</script>
+{{/equal}}
+{{!-- In case of there was not any "exam" selected to add --}}
+{{#equal error_msg 'It was not selected any exam to add.' }}
+<div class="alert alert-danger mt-3 mb-0 mx-4">{{error_msg}}</div>
+<script>examsCalendarClick()</script>
+{{/equal}}
+{{!-- In case of success deleting "Exams" --}}
+{{#equal success_msg 'Exams have been deleted successfully.' }}
+<div class="alert alert-success mt-3 mb-0 mx-4">{{success_msg}}</div>
+<script>examsCalendarClick()</script>
 {{/equal}}

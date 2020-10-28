@@ -16,7 +16,8 @@
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#examsCalendar" role="tab" aria-controls="examsCalendar" aria-selected="false">
+        <a id="examsCalendarLink" class="nav-link" href="#examsCalendar" role="tab" aria-controls="examsCalendar"
+          aria-selected="false">
           <h4 class="card-text mb-0">Exams</h4>
           <small>Calendar</small>
         </a>
@@ -141,7 +142,8 @@
                   <th scope="col">
                     <div class="custom-control custom-checkbox checkThemAll">
                       <input type="checkbox" class="custom-control-input" id="d-cct-ct-CheckboxAll">
-                      <label class="custom-control-label" for="d-cct-ct-CheckboxAll"></label>
+                      <label class="custom-control-label" for="d-cct-ct-CheckboxAll">
+                      </label>
                     </div>
                   </th>
                 </tr>
@@ -165,7 +167,8 @@
                     <button type="button" class="btn btn-sm btn-primary p-0" aria-label="edit">
                       <i class="fas fa-pencil-alt courseworkDateEdit"></i>
                     </button>
-                    <button type="button" class="btn btn-sm btn-success p-0 d-none" aria-label="save" data-id={{taughtModuleID}}>
+                    <button type="button" class="btn btn-sm btn-success p-0 d-none" aria-label="save"
+                      data-id={{taughtModuleID}}>
                       <i class="fas fa-save courseworkDateSave"></i>
                     </button>
                   </td>
@@ -185,43 +188,139 @@
           <div class="d-flex justify-content-end mt-3">
             <!-- Add Courseworks Button -->
             {{#if listTaughtModules}}
-            <button type="button" id="d-cct-f-triggerModalAddCourseworksBtn" class="btn btn-success mr-2" aria-label="Add Courseworks" data-toggle="modal" data-target="#addCourseworksModal">
+            <button type="button" id="d-cct-f-triggerModalAddCourseworksBtn" class="btn btn-success mr-2" data-toggle="modal" data-target="#addCourseworksModal">
               Add Courseworks
             </button>
             {{else}}
-            <button type="button" id="UnableAddCourseworksBtn" class="btn btn-success mr-2" aria-label="Add Courseworks" data-toggle="popover"
-              data-trigger="focus" title="Attention" data-placement="bottom"
+            <button type="button" id="UnableAddCourseworksBtn" class="btn btn-success mr-2" data-toggle="popover" data-trigger="focus" title="Attention" data-placement="bottom"
               data-content="There are no &ldquo;Taught Modules&rdquo;. Please add a &ldquo;Taught Module&rdquo; first.">
               Add Courseworks
             </button>
             {{/if}}
             <!-- Delete Courseworks Button -->
-            <button type="submit" id="d-cct-f-deleteCourseworksBtn" class="btn btn-danger" aria-label="Delete Courseworks" data-trigger="true" disabled>
+            <button type="submit" id="d-cct-f-deleteCourseworksBtn" class="btn btn-danger"
+              aria-label="Delete Courseworks" data-trigger="true" disabled>
               Delete
             </button>
           </div>
         </form>
       </div>
       <!-- Exams Calendar -->
-      <div class="tab-pane" id="examsCalendar" role="tabpanel" aria-labelledby="examsCalendar-tab">
-        <div class="table-responsive">
-          <table id="examsTbl" class="table">
-            <caption class="h5 py-0">Exams</caption>
-            <thead>
-              <tr>
-                <th scope="col">#</th>
-                <th scope="col">Module</th>
-                <th scope="col">Date</th>
-                <th scope="col">Time</th>
-                <th scope="col">Class</th>
-                <th scope="col"></th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
+      <div class="tab-pane" id="examsCalendar" role="tabpanel">
+        <form id="examsForm" action="/dashboards/facultyMember/exams/{{faculty.id}}?_method=DELETE" method="post">
+          <input type="hidden" name="_method" value="DELETE">
+
+          <div class="table-responsive">
+            <table id="d-ect-examsTable" class="table">
+              <caption class="h5 py-0">Exams</caption>
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col" class="sort-modules">Modules
+                    <i class="fas fa-angle-down" aria-hidden="true"></i>
+                    <span class="sr-only">Sort Descending</span>
+                  </th>
+                  <th scope="col" class="sort-date">Date
+                    <i class="fas fa-angle-down" aria-hidden="true"></i>
+                    <span class="sr-only">Sort Descending</span>
+                  </th>
+                  <th scope="col" class="sort-time">Time
+                    <i class="fas fa-angle-down" aria-hidden="true"></i>
+                    <span class="sr-only">Sort Descending</span>
+                  </th>
+                  <th scope="col" class="sort-classroom">Class
+                    <i class="fas fa-angle-down" aria-hidden="true"></i>
+                    <span class="sr-only">Sort Descending</span>
+                  </th>
+                  <th scope="col">Edit</th>
+                  <th scope="col">
+                    <div class="custom-control custom-checkbox checkThemAll">
+                      <input type="checkbox" class="custom-control-input" id="d-ect-et-CheckboxAll">
+                      <label class="custom-control-label" for="d-ect-et-CheckboxAll">
+                      </label>
+                    </div>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {{#each listTaughtModules}}
+                {{#if examDate}}
+                <tr>
+                  <th scope="row">{{examsAA}}</th>
+                  <td class="module">
+                    {{moduleName}}
+                  </td>
+                  <td class="dueDate">
+                    <span>{{examDate}}</span>
+                    <span class="d-none">
+                      <input type="date" id="d-ect-et-date-{{taughtModuleID}}" class="form-control" name="date">
+                      <label for="d-ect-et-date-{{taughtModuleID}}" class="sr-only">Exam Date</label>
+                    </span>
+                  </td>
+                  <td>
+                    <span>{{examTime}}</span>
+                    <span class="d-none">
+                      <label for="d-ect-et-time-{{taughtModuleID}}" class="sr-only">Time</label>
+                      <input type="time" id="d-ect-et-time-{{taughtModuleID}}" class="form-control" name="time"
+                        min="09:00" max="18:00" size="10" pattern="[0-9]{2}:[0-9]{2}"
+                        aria-describedby="d-ect-et-timeHelp-{{taughtModuleID}}">
+                      <small class="form-text text-muted" id="d-ect-et-timeHelp-{{taughtModuleID}}">9am to 6pm</small>
+                    </span>
+                  </td>
+                  <td>
+                    <span>{{examClassroom}}</span>
+                    <span class="d-none">
+                      <label for="d-ect-et-classRoom-{{taughtModuleID}}" class="sr-only">Class Room</label>
+                      <input type="text" id="d-ect-et-classRoom-{{taughtModuleID}}" class="form-control short-width"
+                        name="classRoom" maxlength="5" pattern="[a-zA-Z0-9]{5}"
+                        aria-describedby="d-ect-et-classRoomHelp-{{taughtModuleID}}">
+                      <small id="d-ect-et-classRoomHelp-{{taughtModuleID}}" class="form-text text-muted">e.g.
+                        AB12D</small>
+                    </span>
+                  </td>
+                  <td>
+                    <button type="button" class="btn btn-sm btn-primary p-0" aria-label="edit">
+                      <i class="fas fa-pencil-alt examDateEdit"></i>
+                    </button>
+                    <button type="button" class="btn btn-sm btn-success p-0 d-none" aria-label="save"
+                      data-id={{taughtModuleID}}>
+                      <i class="fas fa-save examDateSave"></i>
+                    </button>
+                  </td>
+                  <td>
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" id="d-ect-et-checkbox-{{taughtModuleID}}" class="custom-control-input"
+                        name="taughtModulesID" value="{{taughtModuleID}}">
+                      <label class="custom-control-label" for="d-ect-et-checkbox-{{taughtModuleID}}"></label>
+                    </div>
+                  </td>
+                </tr>
+                {{/if}}
+                {{/each}}
+              </tbody>
+            </table>
+          </div>
+          <div class="d-flex justify-content-end mt-3">
+            <!-- Add Exams Button -->
+            {{#if listTaughtModules}}
+            <button type="button" id="d-ect-f-triggerModalAddExamsBtn" class="btn btn-success mr-2" data-toggle="modal" data-target="#addExamsModal">
+              Add Exams
+            </button>
+            {{else}}
+            <button type="button" id="UnableAddExamsBtn" class="btn btn-success mr-2" data-toggle="popover" data-trigger="focus" title="Attention" data-placement="bottom"
+              data-content="There are no &ldquo;Taught Modules&rdquo;. Please add a &ldquo;Taught Module&rdquo; first.">
+              Add Exams
+            </button>
+            {{/if}}
+            <!-- Delete Exams Button -->
+            <button type="submit" id="d-ect-f-deleteExamsBtn" class="btn btn-danger" aria-label="Delete Exams"
+              data-trigger="true" disabled>
+              Delete
+            </button>
+          </div>
+        </form>
       </div>
-      <!-- Modules Grades                    -->
+      <!-- Modules Grades -->
       <div class="tab-pane" id="modulesGrades" role="tabpanel" aria-labelledby="modulesGrades-tab">
         <div class="table-responsive">
           <table class="table">

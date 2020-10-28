@@ -177,6 +177,104 @@
   </div>
 </div>
 
+<!-- Add Exams -->
+<div id="addExamsModal" class="modal fade modal--default" role="dialog">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header d-flex align-items-center">
+        <div class="flex-column">
+          <h3 class="mb-0">Add Exams</h3>
+          <small>Select any &ldquo;Taught module&rdquo; from the list in order to be added into
+            &ldquo;Exams&rdquo; list</small>
+        </div>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form action="/dashboards/facultyMember/exams/{{faculty.id}}" method="post">
+          <div class="table-responsive">
+            <table id="d_ect_ae_m_taughtModulesTable" class="table">
+              <caption class="h5 py-0">Taught Modules</caption>
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col" class="sort-title">
+                    Title
+                    <i class="fas fa-angle-down" aria-hidden="true"></i>
+                    <span class="sr-only">Sort Descending</span>
+                  </th>
+                  <th scope="col" class="head-row__date">
+                    Date
+                    <i class="fas fa-angle-down" aria-hidden="true"></i>
+                    <span class="sr-only">Sort Descending</span>
+                  </th>
+                  <th scope="col" class="head-row__time">
+                    Time
+                    <i class="fas fa-angle-down" aria-hidden="true"></i>
+                    <span class="sr-only">Sort Descending</span>
+                  </th>
+                  <th scope="col" class="head-row__classroom">
+                    Classroom
+                    <i class="fas fa-angle-down" aria-hidden="true"></i>
+                    <span class="sr-only">Sort Descending</span>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {{#each listTaughtModules}}
+                <tr>
+                  <th scope="row">{{aa}}</th>
+                  <td class="title">
+                    {{moduleName}}
+                  </td>
+                  <td>
+                    <span class="d-none">{{examDate}}</span>
+                    <span id="d-ect-aem-tm-span-{{taughtModuleID}}">
+                      <input type="date" id="d-ect-aem-tm-Date-{{taughtModuleID}}" class="form-control" name="date"
+                        data-id="{{taughtModuleID}}">
+                      <label for="d-ect-aem-tm-Date-{{taughtModuleID}}" class="sr-only">Coursework Date</label>  
+                    </span>
+                  </td>
+                  <td>
+                    <span class="d-none">{{examTime}}</span>
+                    <span id="d-ect-aem-tm-span-{{taughtModuleID}}">
+                      <label for="d-ect-aem-tm-Time-{{taughtModuleID}}" class="sr-only">Time</label>
+                      <input type="time" id="d-ect-aem-tm-Time-{{taughtModuleID}}" class="form-control" name="time"
+                        min="09:00" max="18:00" size="10" pattern="[0-9]{2}:[0-9]{2}"
+                        aria-describedby="d-ect-aem-tm-timeHelp-{{taughtModuleID}}">
+                      <small class="form-text text-muted" id="d-ect-aem-tm-timeHelp-{{taughtModuleID}}">9am to 6pm</small>
+                    </span>
+                  </td>
+                  <td>
+                    <span class="d-none">{{examClassroom}}</span>
+                    <span id="d-ect-aem-tm-span-{{taughtModuleID}}">
+                      <label for="d-ect-aem-tm-classRoom-{{taughtModuleID}}" class="sr-only">Class Room</label>
+                      <input type="text" id="d-ect-aem-tm-classRoom-{{taughtModuleID}}" class="form-control short-width"
+                        name="classroom" maxlength="5" pattern="[a-zA-Z0-9]{5}"
+                        aria-describedby="d-ect-aem-tm-classRoomHelp-{{taughtModuleID}}">
+                      <small id="d-ect-aem-tm-classRoomHelp-{{taughtModuleID}}" class="form-text text-muted">e.g. AB12D</small>
+                    </span>
+                  </td>
+                  <input id="d-ect-aem-tm-{{taughtModuleID}}" name="taughtModuleID" type="hidden"
+                    value="{{taughtModuleID}}">
+                </tr>
+                {{/each}}
+              </tbody>
+            </table>
+          </div>
+          <div class="d-flex justify-content-end mt-3">
+            <!-- Add Exams Button -->
+            <button type="submit" id="addExamsBtn" class="btn btn-success mr-2" disabled>
+              <i class="fas fa-plus"></i>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
 {{!-- ======== Courses ======== --}}
 <!-- Edit Course -->
 <div id="editCourseModal" class="modal fade modal--default" role="dialog">

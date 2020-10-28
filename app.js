@@ -13,7 +13,7 @@ const passport = require('passport');
 const mongoose = require('mongoose');
 
 
-// ==== Initialize App - Create The Express Application ====
+// ==== Initialize the App - Create The Express Application ====
 
 const app = express();
 

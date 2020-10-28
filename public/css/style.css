@@ -59,6 +59,16 @@ form label {
 }
 
 /* TABLES */
+.head-row__date {
+  width: 180px;
+}
+.head-row__time {
+  width: 100px;
+}
+.head-row__classroom {
+  width: 150px;
+}
+
 caption {
   caption-side: top;
 }

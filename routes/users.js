@@ -41,6 +41,8 @@ router.post(
     failureFlash: true
   }),
   function(req, res) {
+    // console.log(req.user);
+    // console.log(req.body);
     // Find user via email
     User.findOne({ email: req.body.email })
       // Redirect to the right view according to user type (faculty member or Student)
@@ -97,7 +99,7 @@ router.post(
               } else {
                 /*
                  * The "facultymember" collection is not exist. There is the
-                 * first time that a user is loged in in the app 
+                 * first time ever someone trying to loged in in the app 
                  */ 
                 // ---- Create Faculty Member ----
                 // Prepare data for saving

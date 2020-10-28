@@ -26,6 +26,14 @@ const FacultyMemberSchema = new Schema({
       date: {
         type: Date
       }
+    },
+    exam: {
+      date: {
+        type: Date
+      },
+      classroom: {
+        type: String
+      }
     }
   }]
 });
