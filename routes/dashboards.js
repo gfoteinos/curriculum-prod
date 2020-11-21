@@ -12,6 +12,7 @@ var urlencodedParser = bodyParser.urlencoded({ extended: false });
 // const passport = require('passport');
 const router = express.Router();
 const multer = require("multer"); // Used for uploading files
+const { reverse } = require("dns");
 
 /**
  * On that version the "multer" works perfect for uploading images to heroku
@@ -297,98 +298,100 @@ router.get("/facultyMember", (req, res, next) => {
         let courseworksCounter = 1;
         let examsCounter = 1;
         taughtModules = facultyMember.taughtModules;
+        // Object.keys(taughtModules);
         taughtModules.forEach(taughtModule => {
           // Convert to String
-          moduleCourseID = taughtModule.moduleID.courseID;
-          moduleCourseID = moduleCourseID.toString();
+          if (taughtModule.moduleID !== null) {
+            moduleCourseID = taughtModule.moduleID.courseID;
+            moduleCourseID = moduleCourseID.toString();
 
-          req.listCourses.forEach(course => {
-            // Convert to String
-            courseID = course.id;
-            courseID = courseID.toString();
+            req.listCourses.forEach(course => {
+              // Convert to String
+              courseID = course.id;
+              courseID = courseID.toString();
 
-            // Connect module with course
-            if (courseID === moduleCourseID) {
-              /*
-               * If "courseID" in "modules" collection is maching with
-               * the "_id" of "Courses" collection then build a "taught
-               * module" row
-               */
+              // Connect module with course
+              if (courseID === moduleCourseID) {
+                /*
+                 * If "courseID" in "modules" collection is maching with
+                 * the "_id" of "Courses" collection then build a "taught
+                 * module" row
+                 */
 
-              let courseworkDateUKFormat;
-              if (taughtModule.coursework.date) {
-                // Convert date value to English UK short format
-                const options = {
-                  day: "numeric",
-                  month: "numeric",
-                  year: "numeric"
-                };
-                let tempDate = new Date(
-                  taughtModule.coursework.date
-                ).toLocaleString("en-GB", options);
-                tempDate = tempDate.split("/");
-                tempDate.forEach((item, index) => {
-                  if (item.length === 1) {
-                    item = `0${item}`;
-                    tempDate[index] = item;
-                  }
+                let courseworkDateUKFormat;
+                if (taughtModule.coursework.date) {
+                  // Convert date value to English UK short format
+                  const options = {
+                    day: "numeric",
+                    month: "numeric",
+                    year: "numeric"
+                  };
+                  let tempDate = new Date(
+                    taughtModule.coursework.date
+                  ).toLocaleString("en-GB", options);
+                  tempDate = tempDate.split("/");
+                  tempDate.forEach((item, index) => {
+                    if (item.length === 1) {
+                      item = `0${item}`;
+                      tempDate[index] = item;
+                    }
+                  });
+                  courseworkDateUKFormat = `${tempDate[1]}/${tempDate[0]}/${tempDate[2]}`;
+                } else {
+                  courseworkDateUKFormat = "";
+                }
+
+                let examDateUKFormat;
+                let examTime;
+                if (taughtModule.exam.date) {
+                  // Convert date value to English UK short format
+                  const options = {
+                    day: "numeric",
+                    month: "numeric",
+                    year: "numeric"
+                  };
+                  let tempDate = new Date(
+                    taughtModule.exam.date
+                  ).toLocaleString("en-GB", options);
+                  tempDate = tempDate.split("/");
+                  tempDate.forEach((item, index) => {
+                    if (item.length === 1) {
+                      item = `0${item}`;
+                      tempDate[index] = item;
+                    }
+                  });
+                  examDateUKFormat = `${tempDate[1]}/${tempDate[0]}/${tempDate[2]}`;
+                  let tempTime = new Date(taughtModule.exam.date);
+                  examTime = `${tempTime.getHours()}:${tempTime.getMinutes()}`;
+                } else {
+                  examDateUKFormat = "";
+                  examTime = "";
+                }
+
+                listTaughtModules.push({
+                  aa: counter,
+                  taughtModuleID: taughtModule._id.toString(),
+                  moduleID: taughtModule.moduleID.id,
+                  moduleName: taughtModule.moduleID.name,
+                  courseworksAA: courseworksCounter,
+                  courseworkDate: courseworkDateUKFormat,
+                  courseName: course.name,
+                  courseDegree: course.degree,
+                  examsAA: examsCounter,
+                  examDate: examDateUKFormat,
+                  examTime: examTime,
+                  examClassroom: taughtModule.exam.classroom
                 });
-                courseworkDateUKFormat = `${tempDate[1]}/${tempDate[0]}/${tempDate[2]}`;
-              } else {
-                courseworkDateUKFormat = "";
+                counter++;
+                if (courseworkDateUKFormat) {
+                  courseworksCounter++;
+                }
+                if (examDateUKFormat) {
+                  examsCounter++;
+                }
               }
-
-              let examDateUKFormat;
-              let examTime;
-              if (taughtModule.exam.date) {
-                // Convert date value to English UK short format
-                const options = {
-                  day: "numeric",
-                  month: "numeric",
-                  year: "numeric"
-                };
-                let tempDate = new Date(taughtModule.exam.date).toLocaleString(
-                  "en-GB",
-                  options
-                );
-                tempDate = tempDate.split("/");
-                tempDate.forEach((item, index) => {
-                  if (item.length === 1) {
-                    item = `0${item}`;
-                    tempDate[index] = item;
-                  }
-                });
-                examDateUKFormat = `${tempDate[1]}/${tempDate[0]}/${tempDate[2]}`;
-                let tempTime = new Date(taughtModule.exam.date);
-                examTime = `${tempTime.getHours()}:${tempTime.getMinutes()}`;
-              } else {
-                examDateUKFormat = "";
-                examTime = "";
-              }
-
-              listTaughtModules.push({
-                aa: counter,
-                taughtModuleID: taughtModule._id.toString(),
-                moduleID: taughtModule.moduleID.id,
-                moduleName: taughtModule.moduleID.name,
-                courseworksAA: courseworksCounter,
-                courseworkDate: courseworkDateUKFormat,
-                courseName: course.name,
-                courseDegree: course.degree,
-                examsAA: examsCounter,
-                examDate: examDateUKFormat,
-                examTime: examTime,
-                examClassroom: taughtModule.exam.classroom
-              });
-              counter++;
-              if (courseworkDateUKFormat) {
-                courseworksCounter++;
-              }
-              if (examDateUKFormat) {
-                examsCounter++;
-              }
-            }
-          });
+            });
+          }
         });
       }
       req.listTaughtModules = listTaughtModules;
@@ -738,31 +741,97 @@ router.put("/facultyMember/courses/:id", (req, res) => {
 
 // Delete Course
 router.delete("/facultyMember/courses/", (req, res) => {
-  // ======== Delete Courses ========
   // Get the selected course ids
-  let ids = req.body.coursesID;
+  let coursesIdsToDelete = req.body.coursesID;
 
-  /* In case of only one "course" is selected to delete the "id" is a string.
+  /* In case of only one "course" is selected to delete, the "id" is a string.
    *  In order to delete the "course" it needs to be converted to an array of
    *  one object.
    */
-  //  Convert to an array of one object
-  if (typeof ids === "string") {
+  //  ---- Convert to an array of one object ----
+  if (typeof coursesIdsToDelete === "string") {
     let idArray = [];
-    idArray.push(ids);
-    ids = idArray;
+    idArray.push(coursesIdsToDelete);
+    coursesIdsToDelete = idArray;
   }
 
-  // Delete the courses from the database
-  ids.forEach(id => {
-    Course.deleteOne({ _id: id })
-      // Catch any errors
-      .catch(err => {
-        req.flash("error_msg", err.message);
-        res.redirect("/dashboards/facultyMember");
-        return;
+  /**
+   * Remove "taught modules" which are related to deleted courses
+   * from every "faculty member"
+   */
+  FacultyMember.find({})
+    .populate("taughtModules.moduleID")
+    .then(members => {
+      if (members) {
+        members.forEach(member => {
+          if (member) {
+            coursesIdsToDelete.forEach(id => {
+              /**
+               * Because the array is being re-indexed when a "taught module" is
+               * removed as a result it let one item and not removed all of
+               * them. A solution is to iterate in reverse.
+               */
+              for (let i = member.taughtModules.length - 1; i >= 0; i--) {
+                let courseID = member.taughtModules[i].moduleID.courseID;
+                courseID = courseID.toString();
+                if (courseID === id) {
+                  member.taughtModules[i].remove();
+                }
+              }
+            });
+            // Save changes in Database
+            member.save().catch(err => {
+              // Catch any errors
+              console.log(err.message);
+              return;
+            });
+          }
+        });
+      }
+    })
+    /**
+     * Delete Modules Which Are Related To Deleted Courses
+     * From The Database
+     */
+    .then(() => {
+      Module.find({}).then(modules => {
+        if (modules) {
+          modules.forEach(module => {
+            coursesIdsToDelete.forEach(id => {
+              if (module.courseID.toString() === id) {
+                Module.deleteOne({ _id: module.id })
+                  // Catch any errors
+                  .catch(err => {
+                    req.flash("error_msg", err.message);
+                    res.redirect("/dashboards/facultyMember");
+                    return;
+                  });
+              }
+            });
+          });
+        }
       });
-  });
+    })
+    // ==== Delete Courses from Database ====
+    .then(() => {
+      Course.find().then(courses => {
+        if (courses) {
+          courses.forEach(course => {
+            coursesIdsToDelete.forEach(id => {
+              if (course.id === id) {
+                Course.deleteOne({ _id: id })
+                  // Catch any errors
+                  .catch(err => {
+                    req.flash("error_msg", err.message);
+                    res.redirect("/dashboards/facultyMember");
+                    return;
+                  });
+              }
+            });
+          });
+        }
+      });
+    });
 
   // ======== Flash Success Message & Redirect Back To The Page ========
   req.flash("success_msg", "Courses deleted successfully.");
@@ -900,29 +969,51 @@ router.put("/facultyMember/modules/:id", (req, res) => {
 router.delete("/facultyMember/modules/", (req, res) => {
   // ======== Delete Modules ========
   // Get the selected module ids
-  let ids = req.body.modulesID;
+  let modulesIdsToDelete = req.body.modulesID;
 
   /* In case of only one "module" is selected to delete, the "id" is a string.
    *  In order to delete the "module" it needs to be converted to an array of
    *  one object.
    */
-  //  Convert to an array of one object
-  if (typeof ids === "string") {
+  //  ---- Convert to an array of one object ----
+  if (typeof modulesIdsToDelete === "string") {
     let idArray = [];
-    idArray.push(ids);
-    ids = idArray;
+    idArray.push(modulesIdsToDelete);
+    modulesIdsToDelete = idArray;
   }
 
-  // Delete the modules from the database
-  ids.forEach(id => {
-    Module.deleteOne({ _id: id })
-      // Catch any errors
-      .catch(err => {
-        req.flash("error_msg", err.message);
-        res.redirect("/dashboards/facultyMember");
-        return;
+  FacultyMember.find({})
+    .populate("taughtModules.moduleID")
+    .then(members => {
+      if (members) {
+        // ==== Remove "Taught Module" Form Every "Faculty Member" ====
+        members.forEach(member => {
+          modulesIdsToDelete.forEach(id => {
+            member.taughtModules.forEach(taughtModule => {
+              if (taughtModule.moduleID.id === id) {
+                taughtModule.remove();
+              }
+            });
+          });
+          // Save changes in Database
+          member.save().catch(err => {
+            // Catch any errors
+            console.log(err.message);
+            return;
+          });
+        });
+      }
+      // ==== Delete Modules From The Database ====
+      modulesIdsToDelete.forEach(id => {
+        Module.deleteOne({ _id: id })
+          // Catch any errors
+          .catch(err => {
+            req.flash("error_msg", err.message);
+            res.redirect("/dashboards/facultyMember");
+            return;
+          });
       });
-  });
+    });
 
   // ======== Flash Success Message & Redirect Back To The Page ========
   req.flash("success_msg", "Modules deleted successfully.");
@@ -984,7 +1075,7 @@ router.delete("/facultyMember/taughtModules/:id", (req, res) => {
           member.taughtModules.forEach((taughtModule, index) => {
             if (taughtModule.moduleID.id === moduleIDsToDelete) {
               // member.taughtModules.splice(index, 1);
-              const id = taughtModule._id.toString();
+              const id = taughtModule._id.toString(); //Bug-todelete?
               // taughtModule.remove({ _id: id });
               taughtModule.remove();
             }
@@ -996,7 +1087,7 @@ router.delete("/facultyMember/taughtModules/:id", (req, res) => {
             member.taughtModules.forEach(taughtModule => {
               if (taughtModule.moduleID.id === id) {
                 // member.taughtModules.splice(index, 1);
-                const id = taughtModule._id.toString();
+                const id = taughtModule._id.toString(); //Bug-to delete?
                 // taughtModule.remove({ _id: id });
                 taughtModule.remove();
               }
