@@ -742,17 +742,17 @@ router.put("/facultyMember/courses/:id", (req, res) => {
 // Delete Course
 router.delete("/facultyMember/courses/", (req, res) => {
   // Get the selected course ids
-  let coursesIdsToDelete = req.body.coursesID;
+  let uiCourseIdsToDelete = req.body.coursesID;
 
   /* In case of only one "course" is selected to delete, the "id" is a string.
    *  In order to delete the "course" it needs to be converted to an array of
    *  one object.
    */
   //  ---- Convert to an array of one object ----
-  if (typeof coursesIdsToDelete === "string") {
+  if (typeof uiCourseIdsToDelete === "string") {
     let idArray = [];
-    idArray.push(coursesIdsToDelete);
-    coursesIdsToDelete = idArray;
+    idArray.push(uiCourseIdsToDelete);
+    uiCourseIdsToDelete = idArray;
   }
 
   /**
@@ -764,28 +764,26 @@ router.delete("/facultyMember/courses/", (req, res) => {
     .then(members => {
       if (members) {
         members.forEach(member => {
-          if (member) {
-            coursesIdsToDelete.forEach(id => {
-              /**
-               * Because the array is being re-indexed when a "taught module" is
-               * removed as a result it let one item and not removed all of
-               * them. A solution is to iterate in reverse.
-               */
-              for (let i = member.taughtModules.length - 1; i >= 0; i--) {
-                let courseID = member.taughtModules[i].moduleID.courseID;
-                courseID = courseID.toString();
-                if (courseID === id) {
-                  member.taughtModules[i].remove();
-                }
+          uiCourseIdsToDelete.forEach(uiID => {
+            /**
+             * Because the array is being re-indexed when a "taught module" is
+             * removed as a result it let one item and not removed all of
+             * them. A solution is to iterate in reverse.
+             */
+            for (let i = member.taughtModules.length - 1; i >= 0; i--) {
+              let dbCourseID = member.taughtModules[i].moduleID.courseID;
+              dbCourseID = dbCourseID.toString();
+              if (dbCourseID === uiID) {
+                member.taughtModules[i].remove();
               }
-            });
-            // Save changes in Database
-            member.save().catch(err => {
-              // Catch any errors
-              console.log(err.message);
-              return;
-            });
-          }
+            }
+          });
+          // Save changes in Database
+          member.save().catch(err => {
+            // Catch any errors
+            console.log(err.message);
+            return;
+          });
         });
       }
     })
@@ -797,8 +795,9 @@ router.delete("/facultyMember/courses/", (req, res) => {
       Module.find({}).then(modules => {
         if (modules) {
           modules.forEach(module => {
-            coursesIdsToDelete.forEach(id => {
-              if (module.courseID.toString() === id) {
+            uiCourseIdsToDelete.forEach(uiID => {
+              let dbCourseID = module.courseID.toString();
+              if (dbCourseID === uiID) {
                 Module.deleteOne({ _id: module.id })
                   // Catch any errors
                   .catch(err => {
@@ -812,14 +811,14 @@ router.delete("/facultyMember/courses/", (req, res) => {
         }
       });
     })
-    // ==== Delete Courses from Database ====
+    // ==== Delete Courses From The Database ====
     .then(() => {
       Course.find().then(courses => {
         if (courses) {
           courses.forEach(course => {
-            coursesIdsToDelete.forEach(id => {
-              if (course.id === id) {
-                Course.deleteOne({ _id: id })
+            uiCourseIdsToDelete.forEach(uiID => {
+              if (course.id === uiID) {
+                Course.deleteOne({ _id: course.id })
                   // Catch any errors
                   .catch(err => {
                     req.flash("error_msg", err.message);
@@ -969,28 +968,31 @@ router.put("/facultyMember/modules/:id", (req, res) => {
 router.delete("/facultyMember/modules/", (req, res) => {
   // ======== Delete Modules ========
   // Get the selected module ids
-  let modulesIdsToDelete = req.body.modulesID;
+  let uiModuleIdsToDelete = req.body.modulesID;
 
   /* In case of only one "module" is selected to delete, the "id" is a string.
    *  In order to delete the "module" it needs to be converted to an array of
    *  one object.
    */
   //  ---- Convert to an array of one object ----
-  if (typeof modulesIdsToDelete === "string") {
+  if (typeof uiModuleIdsToDelete === "string") {
     let idArray = [];
-    idArray.push(modulesIdsToDelete);
-    modulesIdsToDelete = idArray;
+    idArray.push(uiModuleIdsToDelete);
+    uiModuleIdsToDelete = idArray;
   }
 
+  /**
+   * Remove "taught modules" which are related to deleted modules
+   * from every "faculty member"
+   */
   FacultyMember.find({})
     .populate("taughtModules.moduleID")
     .then(members => {
       if (members) {
-        // ==== Remove "Taught Module" Form Every "Faculty Member" ====
         members.forEach(member => {
-          modulesIdsToDelete.forEach(id => {
+          uiModuleIdsToDelete.forEach(uiID => {
             member.taughtModules.forEach(taughtModule => {
-              if (taughtModule.moduleID.id === id) {
+              if (taughtModule.moduleID.id === uiID) {
                 taughtModule.remove();
               }
             });
@@ -1004,8 +1006,8 @@ router.delete("/facultyMember/modules/", (req, res) => {
         });
       }
       // ==== Delete Modules From The Database ====
-      modulesIdsToDelete.forEach(id => {
-        Module.deleteOne({ _id: id })
+      uiModuleIdsToDelete.forEach(uiID => {
+        Module.deleteOne({ _id: uiID })
           // Catch any errors
           .catch(err => {
             req.flash("error_msg", err.message);
@@ -1064,54 +1066,47 @@ router.post("/facultyMember/taughtModules/:id", (req, res) => {
 
 // Update "facultymember" collection - Delete Taught Modules
 router.delete("/facultyMember/taughtModules/:id", (req, res) => {
+  // Get the selected module ids
+  let uiModuleIdsToDelete = req.body.modulesID;
+
+  /* In case of only one "module" is selected to delete, the "id" is a string.
+   *  In order to delete the "module" it needs to be converted to an array of
+   *  one object.
+   */
+  //  ---- Convert to an array of one object ----
+  if (typeof uiModuleIdsToDelete === "string") {
+    let idArray = [];
+    idArray.push(uiModuleIdsToDelete);
+    uiModuleIdsToDelete = idArray;
+  }
+
+  // ==== Remove Taught Modules Form Faculty Member Collection ====
   FacultyMember.findOne({ userID: req.params.id })
     .populate("taughtModules.moduleID")
     .then(member => {
       if (member) {
-        // -------- If The Faculty Member Exist Delete Taught Modules --------
-        const moduleIDsToDelete = req.body.modulesID;
-        // ---- In case of delete one "taught module" ----
-        if (typeof moduleIDsToDelete === "string") {
-          member.taughtModules.forEach((taughtModule, index) => {
-            if (taughtModule.moduleID.id === moduleIDsToDelete) {
-              // member.taughtModules.splice(index, 1);
-              const id = taughtModule._id.toString(); //Bug-todelete?
-              // taughtModule.remove({ _id: id });
+        uiModuleIdsToDelete.forEach(uiID => {
+          member.taughtModules.forEach(taughtModule => {
+            const dbModuleID = taughtModule.moduleID.id;
+            // console.log(`moduleID ${typeof dbModuleID}`);
+            // console.log(`ID ${typeof uiID}`);
+            if (dbModuleID === uiID) {
               taughtModule.remove();
             }
           });
-        } else {
-          // ---- In case of delete many "taught modules" ----
-          // const moduleIDsToDelete = req.body.modulesID;
-          moduleIDsToDelete.forEach(id => {
-            member.taughtModules.forEach(taughtModule => {
-              if (taughtModule.moduleID.id === id) {
-                // member.taughtModules.splice(index, 1);
-                const id = taughtModule._id.toString(); //Bug-to delete?
-                // taughtModule.remove({ _id: id });
-                taughtModule.remove();
-              }
-            });
-          });
-        }
-      }
-
-      // Save to the database
-      member
-        .save()
-        .then(member => {
-          req.flash(
-            "success_msg",
-            "Taught Modules have been deleted successfully."
-          );
-          res.redirect("/dashboards/facultyMember");
-        })
-        .catch(err => {
-          // Catch any errors
-          console.log(err.message);
-          return;
         });
+      }
+      // Save changes in Database
+      member.save().catch(err => {
+        // Catch any errors
+        console.log(err.message);
+        return;
+      });
     });
+
+  // ======== Flash Success Message & Redirect Back To The Page ========
+  req.flash("success_msg", "Taught Modules have been deleted successfully.");
+  res.redirect("/dashboards/facultyMember");
 });
 
 // Update "facultymember collection" - Add Courseworks
