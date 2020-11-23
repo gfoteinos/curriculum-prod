@@ -9,10 +9,11 @@ const router = express.Router();
 // ======== Load User Model ========
 require("../models/User");
 require("../models/FacultyMember");
-// require('../models/Student');
+require('../models/Student');
 // const student = mongoose.model('students');
 const User = mongoose.model("users");
 const FacultyMember = mongoose.model("facultyMembers");
+const Student = mongoose.model("students");
 
 // ======== ROUTES ========
 
@@ -33,7 +34,7 @@ router.get("/logout", (req, res) => {
   res.redirect("/");
 });
 
-// Load "Login" User Form
+// Post "Login" User Form
 router.post(
   "/login",
   passport.authenticate("local", {
@@ -41,75 +42,13 @@ router.post(
     failureFlash: true
   }),
   function(req, res) {
-    // console.log(req.user);
-    // console.log(req.body);
-    // Find user via email
-    User.findOne({ email: req.body.email })
-      // Redirect to the right view according to user type (faculty member or Student)
+    /**
+     * Redirect To The Right View According To User Type (Faculty Member 
+     * Or Student
+     */
+    User.findOne({ email: req.body.email }) // Find user via email
       .then(user => {
         if (user.userType === "facultyMember") {
-          mongoose.connection.db
-            .listCollections()
-            .toArray(function(err, collInfos) {
-              let isExist = false;
-              // Check the existance of the "facultymembers" collection
-              collInfos.forEach(collection => {
-                if (collection.name === "facultymembers") {
-                  isExist = true;
-                }
-              });
-
-              if (isExist) {
-                // ---- Deside Wether To Create Faculty Member Or Not ----
-                FacultyMember.find({})
-                  .then(members => {
-                    if (members) {
-                      /**
-                       * Check if the login user is just signed up in order to
-                       * create faculty member for that user or not
-                       */
-                       
-                      // Check if "FacultyMember.userID" is matched with "User._id"  
-                      let found = false;
-                      UserID = user._id.toString();
-
-                      for (let member of members) {
-                        memberUserID = member.userID.toString();
-                        if (memberUserID === UserID) {
-                          found = true;
-                          break;
-                        }
-                      }
-
-                      if (!found) {
-                        // ---- Create Faculty Member ----
-                        // Prepare data for saving
-                        const newMember = {
-                          userID: user._id
-                        };
-                        // Save data to the database
-                        new FacultyMember(newMember).save();
-                      }
-                    }
-                  })
-                  .catch(err => {
-                    console.log(err.message);
-                    return;
-                  });
-              } else {
-                /*
-                 * The "facultymember" collection is not exist. There is the
-                 * first time ever someone trying to loged in in the app 
-                 */ 
-                // ---- Create Faculty Member ----
-                // Prepare data for saving
-                const newMember = {
-                  userID: user._id
-                };
-                // Save data to the database
-                new FacultyMember(newMember).save();
-              }
-            });
           res.redirect("/dashboards/facultyMember");
         } else {
           res.redirect("/dashboards/student");
@@ -118,9 +57,9 @@ router.post(
   }
 );
 
-// Load "Sign Up" User Form
+// Post "Sign Up" User Form
 router.post("/signup", (req, res, next) => {
-  // ---- Hundle "sign up" errors ----
+  // -------- Password Form Validation --------
   let errors = [];
 
   // If password doesn't much
@@ -144,14 +83,15 @@ router.post("/signup", (req, res, next) => {
       password2: req.body.password2
     });
   } else {
-    // Check if there is the same email in database
+    // -------- User Existance Form Validation --------
     User.findOne({ email: req.body.email }).then(user => {
-      // If there is one, flash error
+      // Check if there is the same email in database
       if (user) {
+        // If there is one, flash error
         req.flash("error_msg", "Email already registered");
         res.redirect("/users/signup");
       } else {
-        // ---- Save the "new user" in database ----
+        // -------- Save "New User" In Database --------
         // Create a new user object
         const newUser = new User({
           name: req.body.fullName,
@@ -166,8 +106,25 @@ router.post("/signup", (req, res, next) => {
             if (err) throw err;
             newUser.password = hash;
 
-            // Save the newUser to the database
+            // Save the new User to the database
             newUser.save().then(user => {
+              if (req.body.userType === "facultyMember") {
+                // ---- Create Faculty Member ----
+                // Prepare data for saving
+                const newMember = {
+                  userID: user._id
+                };
+                // Save data to the database
+                new FacultyMember(newMember).save();
+              } else {
+                // ---- Create Student ----
+                // Prepare data for saving
+                const newMember = {
+                  userID: user._id
+                };
+                // Save data to the database
+                new Student(newMember).save();
+              }
               req.flash("success_msg", "You are now register");
               res.redirect("/users/login");
             });
@@ -177,28 +134,6 @@ router.post("/signup", (req, res, next) => {
     });
   }
 });
-
-// // Login user form
-// router.post('/login', (req, res, next) => {
-//   // ---- Authenticate user with "passport" ----
-//   // Use "local" strategy
-//   User.findOne({ email: req.body.email })
-//     .then(user => {
-//       if(user.userType = 'facultyMember') {
-//         passport.authenticate('local', {
-//           successRedirect: '/dashboards/facultyMember',
-//           failureRedirect: '/users/login',
-//           failureFlash: true
-//         })(req, res, next);
-//       } else {
-//         passport.authenticate('local', {
-//           successRedirect: '/dashboards/student',
-//           failureRedirect: '/users/login',
-//           failureFlash: true
-//         })(req, res, next);
-//       }
-//     })
-// });
 
 // ======== Export module ========
 
