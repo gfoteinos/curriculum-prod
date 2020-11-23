@@ -1214,47 +1214,42 @@ router.put("/facultyMember/courseworks/:id", (req, res) => {
 
 // Update "facultymember" collection - Delete Courseworks
 router.delete("/facultyMember/courseworks/:id", (req, res) => {
+  // Get the selected module ids
+  let uiTaughtModuleIdsToDelete = req.body.taughtModulesID;
+
+  /* In case of only one "module" is selected to delete, the "id" is a string.
+   *  In order to delete the "module" it needs to be converted to an array of
+   *  one object.
+   */
+  //  ---- Convert to an array of one object ----
+  if (typeof uiTaughtModuleIdsToDelete === "string") {
+    let idArray = [];
+    idArray.push(uiTaughtModuleIdsToDelete);
+    uiTaughtModuleIdsToDelete = idArray;
+  }
+
   FacultyMember.findOne({ userID: req.params.id })
     .populate("taughtModules.moduleID")
     .then(member => {
       if (member) {
-        // -------- If The Faculty Member Exist Delete Courseworks --------
-        const uiTaughtModuleIDs = req.body.taughtModulesID;
-        // ---- In case of delete one "coursework" ----
-        if (typeof uiTaughtModuleIDs === "string") {
+        uiTaughtModuleIdsToDelete.forEach(uiID => {
           member.taughtModules.forEach(taughtModule => {
-            if (taughtModule._id.toString() === uiTaughtModuleIDs) {
+            if (taughtModule._id.toString() === uiID) {
               taughtModule.coursework = undefined;
             }
           });
-        } else {
-          // ---- In case of delete many "courseworks" ----
-          uiTaughtModuleIDs.forEach(uiID => {
-            member.taughtModules.forEach(taughtModule => {
-              if (taughtModule._id.toString() === uiID) {
-                taughtModule.coursework = undefined;
-              }
-            });
-          });
-        }
-      }
-
-      // Save to the database
-      member
-        .save()
-        .then(member => {
-          req.flash(
-            "success_msg",
-            "Courseworks have been deleted successfully."
-          );
-          res.redirect("/dashboards/facultyMember");
-        })
-        .catch(err => {
-          // Catch any errors
-          console.log(err.message);
-          return;
         });
+      }
+      // Save changes in Database
+      member.save().catch(err => {
+        // Catch any errors
+        console.log(err.message);
+        return;
+      });
     });
+  // ======== Flash Success Message & Redirect Back To The Page ========
+  req.flash("success_msg", "Courseworks have been deleted successfully.");
+  res.redirect("/dashboards/facultyMember");
 });
 
 // Update "facultymember collection" - Add Exams
@@ -1329,23 +1324,25 @@ router.post("/facultyMember/exams/:id", (req, res) => {
 
 // Update "facultymember" collection - Delete Exams
 router.delete("/facultyMember/exams/:id", (req, res) => {
+  // Get "taught module" ids
+  let uiTaughtModuleIDs = req.body.taughtModulesID;
+
+  /* In case of only one "module" is selected to delete, the "id" is a string.
+   *  In order to delete the "module" it needs to be converted to an array of
+   *  one object.
+   */
+  //  ---- Convert to an array of one object ----
+  if (typeof uiTaughtModuleIDs === "string") {
+    let idArray = [];
+    idArray.push(uiTaughtModuleIDs);
+    uiTaughtModuleIDs = idArray;
+  }
+
   FacultyMember.findOne({ userID: req.params.id })
     .populate("taughtModules.moduleID")
     .then(member => {
       let deleteExams = false;
       if (member) {
-        // -------- If The Faculty Member Exist --------
-        // Get "taught module" ids
-        let uiTaughtModuleIDs = req.body.taughtModulesID;
-
-        if (typeof uiTaughtModuleIDs === "string") {
-          //  In case of one exam selected convert to array
-          let idArray = [];
-          idArray.push(uiTaughtModuleIDs);
-          uiTaughtModuleIDs = idArray;
-        }
-
-        // ---- Delete exams ----
         uiTaughtModuleIDs.forEach(uiID => {
           member.taughtModules.forEach(taughtModule => {
             if (taughtModule._id.toString() === uiID) {
@@ -1355,22 +1352,16 @@ router.delete("/facultyMember/exams/:id", (req, res) => {
           });
         });
       }
-
-      if (deleteExams) {
-        // Save to the database
-        member
-          .save()
-          .then(member => {
-            req.flash("success_msg", "Exams have been deleted successfully.");
-            res.redirect("/dashboards/facultyMember");
-          })
-          .catch(err => {
-            // Catch any errors
-            console.log(err.message);
-            return;
-          });
-      }
+      // Save changes in Database
+      member.save().catch(err => {
+        // Catch any errors
+        console.log(err.message);
+        return;
+      });
     });
+  // ======== Flash Success Message & Redirect Back To The Page ========
+  req.flash("success_msg", "Exams have been deleted successfully.");
+  res.redirect("/dashboards/facultyMember");
 });
 
 // console.log(`db.id: ${typeof(courseID)} - req.param.id: ${typeof(req.params.id)}, db.name: ${typeof(course.name)} - req.body.name: ${typeof(req.body.name)}, db.degree: ${typeof(course.name)} - req.body.degree: ${typeof(req.body.degree)}`);
