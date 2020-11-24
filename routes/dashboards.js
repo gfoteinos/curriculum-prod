@@ -76,117 +76,6 @@ const Module = mongoose.model("modules");
 /* ========================
  * ROUTES
  * ======================== */
-// Load "Faculty Member" Dashboard
-
-// router.get("/facultyMember", (req, res, next) => {
-//   // -------- Create A "Faculty Member" Object --------
-//   const faculty = {
-//     id: req.user.id,
-//     name: req.user.name,
-//     academicRank: req.user.academicRank,
-//     email: req.user.email,
-//     phone: req.user.phone,
-//     officeNumber: req.user.officeNumber,
-//     photo: req.user.photo,
-//     bio: req.user.bio,
-//     facebook: req.user.facebook,
-//     twitter: req.user.twitter,
-//     linkedin: req.user.linkedin
-//   };
-
-//   // -------- Get All "Courses" --------
-//   Course.find({})
-//     .sort({ name: "asc" })
-//     .then(courses => {
-//       let listCourses = []; // For "Courses" table in "Courses" form
-//       if (courses) {
-//         // Fill in "Courses" table to pass it later in the view
-//         let counter = 1;
-//         courses.forEach(course => {
-//           listCourses.push({
-//             aa: counter,
-//             id: course._id,
-//             name: course.name,
-//             degree: course.degree,
-//             color: course.color,
-//             description: course.description
-//           });
-//           counter++;
-//         });
-//       }
-
-//       // -------- Get All "Modules" --------
-//       Module.find({})
-//         .populate("courseID")
-//         .sort({ name: "asc" })
-//         .then(modules => {
-//           let listModules = []; // For "Modules" table in "Modules" form
-//           if (modules) {
-//             // Fill in "Modules" table to pass it later in the view
-//             let counter = 1;
-//             modules.forEach(module => {
-//               listModules.push({
-//                 aa: counter,
-//                 id: module._id,
-//                 name: module.name,
-//                 course: module.courseID.name,
-//                 degree: module.courseID.degree,
-//                 color: module.color,
-//                 description: module.description
-//               });
-//               counter++;
-//             });
-//           }
-
-//           // -------- Get All "Taught Modules" --------
-//           FacultyMember.findOne({ userID: req.user.id })
-//             .populate("taughtModules")
-//             .then(facultyMember => {
-//               let taughtModulesList = []; // For "Taught Modules" table in "Dashboard - 'Modules List'" tab
-//               if (facultyMember) {
-//                 // Fill in "Taught Modules" table to pass it later in the view
-//                 let counter = 1;
-//                 modules = facultyMember.taughtModules;
-//                 modules.forEach(module => {
-//                   // Convert to String
-//                   moduleCourseID = module.courseID;
-//                   moduleCourseID = moduleCourseID.toString();
-
-//                   listCourses.forEach(course => {
-//                     // Convert to String
-//                     courseID = course.id;
-//                     courseID = courseID.toString();
-
-//                     // Connect module with course
-//                     if (courseID === moduleCourseID) {
-//                       /*
-//                        * If "courseID" in "modules" collection is muching with
-//                        * the "_id" of "Courses" collection then build a "taught
-//                        * module" row
-//                        */
-//                       taughtModulesList.push({
-//                         aa: counter,
-//                         name: module.name,
-//                         courseName: course.name,
-//                         courseDegree: course.degree
-//                       });
-//                       counter++;
-//                     }
-//                   });
-//                 });
-//               }
-//               // -------- Pass Data Sets To The View --------
-//               res.render("dashboards/facultyMember", {
-//                 faculty,
-//                 listCourses,
-//                 listModules,
-//                 taughtModulesList
-//               });
-//             });
-//         });
-//     });
-// });
-
 // ======== LOAD "FACULTY MEMBER" DASHBOARD ========
 // Create A "Faculty Member" Object
 router.get("/facultyMember", (req, res, next) => {
@@ -362,7 +251,14 @@ router.get("/facultyMember", (req, res, next) => {
                   });
                   examDateUKFormat = `${tempDate[1]}/${tempDate[0]}/${tempDate[2]}`;
                   let tempTime = new Date(taughtModule.exam.date);
-                  examTime = `${tempTime.getHours()}:${tempTime.getMinutes()}`;
+                  /**
+                   * Convert time to 2 digits (01) instead of 1 in case of 
+                   * 0-9 minutes
+                   */
+                  let hours = tempTime.getHours().toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false});
+                  let minutes = tempTime.getMinutes().toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false});
+                  /** --------------------------------------------------- */
+                  examTime = `${hours}:${minutes}`;
                 } else {
                   examDateUKFormat = "";
                   examTime = "";
