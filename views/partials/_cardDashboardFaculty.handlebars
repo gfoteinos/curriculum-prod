@@ -100,8 +100,8 @@
               Add Taught Modules
             </button>
             {{else}}
-            <button type="button" id="triggerModalAddTaughtModuleBtn" class="btn btn-success mr-2 d-none" data-toggle="modal"
-              data-target="#addTaughtModuleModal">
+            <button type="button" id="triggerModalAddTaughtModuleBtn" class="btn btn-success mr-2 d-none"
+              data-toggle="modal" data-target="#addTaughtModuleModal">
               Add Taught Modules
             </button>
             <button id="UnableAddTaughtModuleBtn" type="button" class="btn btn-success mr-2" data-toggle="popover"
@@ -111,8 +111,9 @@
             </button>
             {{/if}}
             <!-- Trigger Delete Taught Module Modal -->
-            <button type="button" id="triggerModalDeleteTaughtModulesBtn" class="btn btn-danger" data-trigger="true"
-              data-toggle="modal" data-target="#deleteTaughtModulesModal" disabled>
+            <button type="button" id="triggerModalDeleteTaughtModulesBtn" class="btn btn-danger"
+              aria-label="Delete Taught Modules" data-trigger="true" data-toggle="modal"
+              data-target="#deleteTaughtModulesModal" disabled>
               Delete
             </button>
             <!-- Delete Taught Module Button -->
@@ -168,10 +169,10 @@
                     </span>
                   </td>
                   <td>
-                    <button type="button" class="btn btn-sm btn-primary p-0" aria-label="edit">
+                    <button type="button" class="btn btn-sm btn-primary p-0" aria-label="Edit Coursework">
                       <i class="fas fa-pencil-alt courseworkDateEdit"></i>
                     </button>
-                    <button type="button" class="btn btn-sm btn-success p-0 d-none" aria-label="save"
+                    <button type="button" class="btn btn-sm btn-success p-0 d-none" aria-label="Save Coursework"
                       data-id={{taughtModuleID}}>
                       <i class="fas fa-save courseworkDateSave"></i>
                     </button>
@@ -192,14 +193,17 @@
           <div class="d-flex justify-content-end mt-3">
             <!-- Add Courseworks Button -->
             {{#if listTaughtModules}}
-            <button type="button" id="d-cct-f-triggerModalAddCourseworksBtn" class="btn btn-success mr-2" data-toggle="modal" data-target="#addCourseworksModal">
+            <button type="button" id="d-cct-f-triggerModalAddCourseworksBtn" class="btn btn-success mr-2"
+              data-toggle="modal" data-target="#addCourseworksModal">
               Add Courseworks
             </button>
             {{else}}
-            <button type="button" id="d-cct-f-triggerModalAddCourseworksBtn" class="btn btn-success mr-2 d-none" data-toggle="modal" data-target="#addCourseworksModal">
+            <button type="button" id="d-cct-f-triggerModalAddCourseworksBtn" class="btn btn-success mr-2 d-none"
+              data-toggle="modal" data-target="#addCourseworksModal">
               Add Courseworks
             </button>
-            <button type="button" id="UnableAddCourseworksBtn" class="btn btn-success mr-2" data-toggle="popover" data-trigger="focus" title="Attention" data-placement="bottom"
+            <button type="button" id="UnableAddCourseworksBtn" class="btn btn-success mr-2" data-toggle="popover"
+              data-trigger="focus" title="Attention" data-placement="bottom"
               data-content="There are no &ldquo;Taught Modules&rdquo;. Please add a &ldquo;Taught Module&rdquo; first.">
               Add Courseworks
             </button>
@@ -214,7 +218,7 @@
       </div>
       <!-- Exams Calendar -->
       <div class="tab-pane" id="examsCalendar" role="tabpanel">
-        <form id="examsForm" action="/dashboards/facultyMember/exams/{{faculty.id}}?_method=DELETE" method="post">
+        <form id="examsForm" action="/dashboards/facultyMember/exams/{{faculty.id}}?_method=DELETE" method="post" data-id={{faculty.id}}>
           <input type="hidden" name="_method" value="DELETE">
 
           <div class="table-responsive">
@@ -286,10 +290,11 @@
                     </span>
                   </td>
                   <td>
-                    <button type="button" class="btn btn-sm btn-primary p-0" aria-label="edit">
-                      <i class="fas fa-pencil-alt examDateEdit"></i>
+                    <button type="button" class="btn btn-sm btn-primary p-0" aria-label="Edit Exam" data-id={{taughtModuleID}} data-toggle="modal"
+                      data-target="#editExamModal">
+                      <i class="fas fa-pencil-alt examEdit"></i>
                     </button>
-                    <button type="button" class="btn btn-sm btn-success p-0 d-none" aria-label="save"
+                    <button type="button" class="btn btn-sm btn-success p-0 d-none" aria-label="Save Exam"
                       data-id={{taughtModuleID}}>
                       <i class="fas fa-save examDateSave"></i>
                     </button>
@@ -310,14 +315,17 @@
           <div class="d-flex justify-content-end mt-3">
             <!-- Add Exams Button -->
             {{#if listTaughtModules}}
-            <button type="button" id="d-ect-f-triggerModalAddExamsBtn" class="btn btn-success mr-2" data-toggle="modal" data-target="#addExamsModal">
+            <button type="button" id="d-ect-f-triggerModalAddExamsBtn" class="btn btn-success mr-2" data-toggle="modal"
+              data-target="#addExamsModal">
               Add Exams
             </button>
             {{else}}
-            <button type="button" id="d-ect-f-triggerModalAddExamsBtn" class="btn btn-success mr-2 d-none" data-toggle="modal" data-target="#addExamsModal">
+            <button type="button" id="d-ect-f-triggerModalAddExamsBtn" class="btn btn-success mr-2 d-none"
+              data-toggle="modal" data-target="#addExamsModal">
               Add Exams
             </button>
-            <button type="button" id="UnableAddExamsBtn" class="btn btn-success mr-2" data-toggle="popover" data-trigger="focus" title="Attention" data-placement="bottom"
+            <button type="button" id="UnableAddExamsBtn" class="btn btn-success mr-2" data-toggle="popover"
+              data-trigger="focus" title="Attention" data-placement="bottom"
               data-content="There are no &ldquo;Taught Modules&rdquo;. Please add a &ldquo;Taught Module&rdquo; first.">
               Add Exams
             </button>

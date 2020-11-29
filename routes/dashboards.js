@@ -252,11 +252,17 @@ router.get("/facultyMember", (req, res, next) => {
                   examDateUKFormat = `${tempDate[1]}/${tempDate[0]}/${tempDate[2]}`;
                   let tempTime = new Date(taughtModule.exam.date);
                   /**
-                   * Convert time to 2 digits (01) instead of 1 in case of 
+                   * Convert time to 2 digits (01) instead of 1 in case of
                    * 0-9 minutes
                    */
-                  let hours = tempTime.getHours().toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false});
-                  let minutes = tempTime.getMinutes().toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false});
+                  let hours = tempTime.getHours().toLocaleString("en-US", {
+                    minimumIntegerDigits: 2,
+                    useGrouping: false
+                  });
+                  let minutes = tempTime.getMinutes().toLocaleString("en-US", {
+                    minimumIntegerDigits: 2,
+                    useGrouping: false
+                  });
                   /** --------------------------------------------------- */
                   examTime = `${hours}:${minutes}`;
                 } else {
@@ -1213,6 +1219,60 @@ router.post("/facultyMember/exams/:id", (req, res) => {
           });
       } else {
         req.flash("error_msg", "It was not selected any exam to add.");
+        res.redirect("/dashboards/facultyMember");
+      }
+    });
+});
+
+// Update "facultymember collection" - Update Exams
+router.put("/facultyMember/exams/:id", (req, res) => {
+  FacultyMember.findOne({ userID: req.params.id })
+    .populate("taughtModules.moduleID")
+    .then(member => {
+      let updateExam = false;
+      if (member) {
+        // ---- Get the data from UI form ----
+        const uiTaughtModuleID = req.body.taughtModuleID;
+        const uiExamDate = req.body.date;
+        const uiExamTime = req.body.time;
+        const uiExamClassroom = req.body.classroom;
+
+        // ---- Update Data ----
+        member.taughtModules.forEach(taughtModule => {
+          if (
+            taughtModule._id.toString() === uiTaughtModuleID &&
+            uiExamDate !== "" &&
+            uiExamTime !== "" &&
+            uiExamClassroom !== ""
+          ) {
+            let uiDate = new Date(uiExamDate);
+            let uiTime = uiExamTime.split(":");
+            uiDate.setHours(uiTime[0], uiTime[1], 0);
+            const newExam = {
+              date: uiDate,
+              classroom: uiExamClassroom
+            };
+            taughtModule.exam = newExam;
+            updateExam = true;
+          }
+        });
+      }
+
+      if (updateExam) {
+        // Save to the database
+        member
+          .save()
+          .then(member => {
+            req.flash("success_msg", "Exam has been updated successfully.");
+            res.redirect("/dashboards/facultyMember");
+          })
+          .catch(err => {
+            // Catch any errors
+            console.log(err.message);
+            return;
+          });
+      } else {
+        req.flash("error_msg", "Something went wrong on updating exam. One or more field were not filled in. Please try again.");
         res.redirect("/dashboards/facultyMember");
       }
     });

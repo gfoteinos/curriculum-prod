@@ -51,7 +51,7 @@
                 {{description}}
               </td>
               <td>
-                <button type="button" class="btn btn-sm btn-primary p-0" data-id={{id}}
+                <button type="button" class="btn btn-sm btn-primary p-0" aria-label="Edit Course" data-id={{id}}
                   data-toggle="modal" data-target="#editCourseModal">
                   <i class="fas fa-pencil-alt courseEdit"></i>
                 </button>
@@ -74,7 +74,7 @@
           Create Course
         </button>
         <!-- Trigger Delete Course Modal -->
-        <button type="button" id="triggerDeleteCoursesModalBtn" class="btn btn-danger" data-trigger="true" data-toggle="modal"
+        <button type="button" id="triggerDeleteCoursesModalBtn" class="btn btn-danger" aria-label="Delete Courses" data-trigger="true" data-toggle="modal"
           data-target="#deleteCoursesModal" disabled>
           Delete
         </button>

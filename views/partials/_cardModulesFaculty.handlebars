@@ -58,7 +58,7 @@
                 {{description}}
               </td>
               <td>
-                <button type="button" class="btn btn-sm btn-primary p-0" data-id={{id}} data-toggle="modal"
+                <button type="button" class="btn btn-sm btn-primary p-0" aria-label="Edit Module" data-id={{id}} data-toggle="modal"
                   data-target="#editModuleModal">
                   <i class="fas fa-pencil-alt moduleEdit"></i>
                 </button>
@@ -89,7 +89,7 @@
         </button>
         {{/if}}
         <!-- Trigger Delete Module Modal -->
-        <button type="button" id="triggerDeleteModulesModalBtn" class="btn btn-danger" data-trigger="true"
+        <button type="button" id="triggerDeleteModulesModalBtn" class="btn btn-danger" aria-label="Delete Modules" data-trigger="true"
           data-toggle="modal" data-target="#deleteModulesModal" disabled>
           Delete
         </button>

@@ -59,6 +59,7 @@ const UICtrl = (function() {
     form_cardModules: "#modulesForm",
     form_modalEditCourse: "#editCourseModal form",
     form_modalEditModule: "#editModuleModal form",
+    form_modalEditExam: "#editExamModal form",
     form_tabCourseworks: "#courseworksForm",
 
     tableCheckbox_cardCourses: "#coursesTable",
@@ -121,6 +122,11 @@ const UICtrl = (function() {
     inputTextName_modalEditModule: "#editModuleName",
     inputSelectCourse_modalEditModule: "#editModuleCourseName",
     inputColor_modalEditModule: "#editModuleColor",
+    inputTextName_modalEditExam: "#editExamTaughtModuleName",
+    inputDate_modalEditExam: "#editExamDate",
+    inputTime_modalEditExam: "#editExamTime",
+    inputTextClassroom_modalEditExam: "#editExamClassroom",
+    inputTextTaughtModuleId_modalEditExam: "#editExamTaughtModuleId",
 
     btnAddTaughtModules_tabModules: "#triggerModalAddTaughtModuleBtn",
     btnAddCourseworks_tabCourseworks: "#d-cct-f-triggerModalAddCourseworksBtn",
@@ -284,6 +290,19 @@ const UICtrl = (function() {
           this.checkDirty(); // true
         }
       });
+    },
+    fillInEditExamModalForm: function(action, taughtModuleName, taughtModuleID) {
+      document
+        .querySelector(UISelectors.form_modalEditExam)
+        .setAttribute("action", action);
+        
+      document
+        .querySelector(UISelectors.inputTextTaughtModuleId_modalEditExam)
+        .setAttribute("value", taughtModuleID);
+
+      document.querySelector(
+        UISelectors.inputTextName_modalEditExam
+      ).textContent = taughtModuleName;
     },
     // ---------------- Tables ----------------
     sortTableColumn: function(table, columnIndex) {
@@ -944,6 +963,11 @@ const App = (function(UICtrl) {
       .querySelector(UISelectors.tableCheckboxBody_cardModules)
       .addEventListener("click", editModule);
 
+    // "Exams" tab -> "Exams" table -> ("Edit" Button)
+    document
+      .querySelector(UISelectors.tableCheckboxBody_tabExams)
+      .addEventListener("click", editExam);
+
     // --- Sort "Dashboard" -> "Courseworks Calendar" tab -> ("Courseworks" table) ---
     document
       .querySelector(UISelectors.tableCheckboxBody_tabCourseworks)
@@ -1284,6 +1308,29 @@ const App = (function(UICtrl) {
     }
   };
 
+  const editExam = function(e) {
+    // Initilize variables needed
+    let taughtModuleName, taughtModuleID, facultyID;
+
+    if (e.target.classList.contains("examEdit")) {
+      // -------- GATHER THE INFO FROM "EXAMS" TABLE --------
+      // Modules
+      taughtModuleName =
+        e.target.parentElement.parentElement.parentElement.children[1]
+          .innerText;
+
+      // ModuleID
+      taughtModuleID = e.target.parentElement.getAttribute("data-id");
+
+      // ---- Set Form Action ----
+      facultyID = e.target.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.getAttribute("data-id");
+      const action = `/dashboards/facultyMember/exams/${facultyID}?_method=PUT`;
+
+      // -------- FILL IN THE "EDIT MODULE" MODAL FORM --------
+      UICtrl.fillInEditExamModalForm(action, taughtModuleName, taughtModuleID);
+    }
+  };
+
   const saveDateCoursework = function(e) {
     if (e.target.classList.contains("courseworkDateSave")) {
       // ---- GATHER THE ELEMENTS NEEDED ----
@@ -1329,7 +1376,7 @@ const App = (function(UICtrl) {
         });
 
         // ---- SET THE NEW COURSEWORK DATE ----
-        // ---- Convert Date Value To English Uk Short Format ----
+        // ---- Convert Date Value To English UK Short Format ----
         const parameters = {
           day: "numeric",
           month: "numeric",

@@ -45,6 +45,16 @@
 <div class="alert alert-danger mt-3 mb-0 mx-4">{{error_msg}}</div>
 <script>examsCalendarClick()</script>
 {{/equal}}
+{{!-- In case of success updating "Exams" --}}
+{{#equal success_msg 'Exam has been updated successfully.' }}
+<div class="alert alert-success mt-3 mb-0 mx-4">{{success_msg}}</div>
+<script>examsCalendarClick()</script>
+{{/equal}}
+{{!-- In case of there was not updated an exam successfuly --}}
+{{#equal error_msg 'Something went wrong on updating exam. One or more field were not filled in. Please try again.' }}
+<div class="alert alert-danger mt-3 mb-0 mx-4">{{error_msg}}</div>
+<script>examsCalendarClick()</script>
+{{/equal}}
 {{!-- In case of success deleting "Exams" --}}
 {{#equal success_msg 'Exams have been deleted successfully.' }}
 <div class="alert alert-success mt-3 mb-0 mx-4">{{success_msg}}</div>
