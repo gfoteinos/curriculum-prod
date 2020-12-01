@@ -25,7 +25,7 @@ const { reverse } = require("dns");
 const storage = multer.diskStorage({
   destination: function(req, file, cb) {
     // cb(null, './public/img/facultyMembers')
-    cb(null, path.join(__dirname, "../public", "img", "facultyMembers"));
+    cb(null, path.join(__dirname, "../public", "img", "users"));
   },
   filename: function(req, file, cb) {
     cb(
@@ -97,7 +97,6 @@ router.get("/facultyMember", (req, res, next) => {
           linkedin: req.user.linkedin
         };
         req.faculty = faculty;
-        // console.log(req.user);
         next();
       }
     })
@@ -324,7 +323,13 @@ router.get("/student", (req, res) => {
   const student = {
     id: req.user.id,
     name: req.user.name,
-    email: req.user.email
+    email: req.user.email,
+    phone: req.user.phone,
+    photo: req.user.photo,
+    bio: req.user.bio,
+    facebook: req.user.facebook,
+    twitter: req.user.twitter,
+    linkedin: req.user.linkedin
   };
   console.log(student);
   // Pass the user to the view
@@ -489,6 +494,7 @@ router.put("/student/password/:id", (req, res) => {
     });
   });
 });
+
 // ======== PROFILE FORM ========
 // Update Profile
 router.put("/facultyMember/profile/:id", (req, res) => {
@@ -517,7 +523,7 @@ router.put("/facultyMember/profile/:id", (req, res) => {
     }
 
     if (error != "") {
-      // ---- If error flash error message & redirect back to the page ----
+      // ---- If Error Flash Error Message & Redirect Back To The Page ----
       req.flash("error_msg", error);
       res.redirect("/dashboards/facultyMember");
     } else {
@@ -553,9 +559,9 @@ router.put("/facultyMember/profile/:id", (req, res) => {
         // Save to the database
         user.save().catch(err => {
           // Catch any errors
-          console.log(err.message);
-          // req.flash("error_msg", err.message);
-          // res.redirect("/dashboards/facultyMember");
+          // console.log(err.message);
+          req.flash("error_msg", err.message);
+          res.redirect("/dashboards/facultyMember");
           return;
         });
       });
@@ -568,9 +574,9 @@ router.put("/facultyMember/profile/:id", (req, res) => {
         // Save to the database
         member.save().catch(err => {
           // Catch any errors
-          console.log(err.message);
-          // req.flash("error_msg", err.message);
-          // res.redirect("/dashboards/facultyMember");
+          // console.log(err.message);
+          req.flash("error_msg", err.message);
+          res.redirect("/dashboards/facultyMember");
           return;
         });
       });
@@ -578,6 +584,95 @@ router.put("/facultyMember/profile/:id", (req, res) => {
       // ---- Flash Success Message & Redirect Back To The Page ----
       req.flash("success_msg", "Profile has been updated.");
       res.redirect("/dashboards/facultyMember");
+    }
+  });
+});
+
+router.put("/student/profile/:id", (req, res) => {
+  upload(req, res, function(err) {
+    let error = "";
+
+    // ---- Handle Uploading Photo Errors ----
+    if (err instanceof multer.MulterError) {
+      error = `Error uploading photo: ${err.message}`;
+    } else if (err) {
+      error = err; // Error: Only image files are allowed to upload
+      //see: "---- Init Upload ----" at "==== Upload Images ====" section
+    }
+
+    // ---- Handle Form Fields Errors ----
+    // Check if the there are any required form fields empty
+    if (
+      req.body.fullName === "" ||
+      req.body.phone === "" ||
+      req.body.bio === ""
+    ) {
+      error =
+        'One or more of the fields "Full Name, Phone, Bio" are empty. Please fill in the fields where missing.';
+    }
+
+    if (error != "") {
+      // ---- If Error Flash Error Message & Redirect Back To The Page ----
+      req.flash("error_msg", error);
+      res.redirect("/dashboards/students");
+    } else {
+      // ---- Update The Database Collections ----
+      // Update the "users" collection
+      User.findOne({ _id: req.params.id }).then(user => {
+        // ---- Fill in photo in different cases ----
+        let photo;
+        // In case of uploading a profile photo
+        if (req.file) {
+          photo = req.file.filename;
+        } else {
+          // In case of delete profile photo
+          if (req.body.deletePhoto) {
+            photo = "";
+          } else {
+            // In case of neither of above
+            photo = req.user.photo;
+          }
+        }
+        // ---- Update the user's profile info ----
+        // Basics
+        user.name = req.body.fullName;
+        user.phone = req.body.phone;
+        user.photo = photo;
+        // Bio
+        user.bio = req.body.bio;
+        // Social
+        user.facebook = req.body.facebook;
+        user.twitter = req.body.twitter;
+        user.linkedin = req.body.linkedin;
+
+        // Save to the database
+        user.save().catch(err => {
+          // Catch any errors
+          // console.log(err.message);
+          req.flash("error_msg", err.message);
+          res.redirect("/dashboards/facultyMember");
+          return;
+        });
+      });
+
+      // // Update the "students" collection
+      // FacultyMember.findOne({ userID: req.params.id }).then(member => {
+      //   // ---- Update the faculty member's profile info ----
+      //   member.academicRank = req.body.academicRank;
+      //   member.officeNumber = req.body.officeNumber;
+      //   // Save to the database
+      //   member.save().catch(err => {
+      //     // Catch any errors
+      //     // console.log(err.message);
+      //     req.flash("error_msg", err.message);
+      //     res.redirect("/dashboards/facultyMember");
+      //     return;
+      //   });
+      // });
+
+      // ---- Flash Success Message & Redirect Back To The Page ----
+      req.flash("success_msg", "Profile has been updated.");
+      res.redirect("/dashboards/student");
     }
   });
 });

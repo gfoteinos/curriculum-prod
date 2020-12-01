@@ -6,7 +6,7 @@
         <!-- AVATAR -->
         <div class="col-md-4 d-flex justify-content-center align-items-center">
           {{#if student.photo}}
-          <img src="/img/students/{{student.photo}}"
+          <img src="/img/users/{{student.photo}}"
             class="img-fluid avatar--medium avatar--rounded avatar--border-blue" alt="Student photo">
           {{else}}
           <i class="fas fa-user icon-user"></i>
@@ -106,119 +106,7 @@
           </div>
           <!-- Profile Settings-->
           <div class="tab-pane" id="profile" role="tabpanel" aria-labelledby="profile-list">
-            <div class="card card-manage-profile">
-              <div class="card-header">
-                <h3 class="mb-0">Profile</h3>
-                <small class="">Add Information About Yourself</small>
-              </div>
-              <div class="card-body">
-                <form>
-                  <!-- Name -->
-                  <div class="form-group mb-4">
-                    <label for="fullName">Full Name</label>
-                    <div class="input-group input-group--white mb-3">
-                      <div class="input-group-prepend">
-                        <span id="addonFullName" class="input-group-text">
-                          <i class="fas fa-user"></i>
-                        </span>
-                      </div>
-                      <input type="text" name="" id="fullName" class="form-control form-control-lg" placeholder=""
-                        maxlength="64" required="" aria-label="Full Name" aria-describedby="addonFullName" />
-                    </div>
-                  </div>
-                  <hr>
-                  <!-- Bio -->
-                  <div class="form-group mb-4">
-                    <h4>Bio <small><span class="text-danger">(Optional)</span></small></h4>
-                    <!-- Few Word About Yourself -->
-                    <div class="form-group">
-                      <small>Write a few words about youself in the text-area bellow.</small>
-                      <label for="bio" class="sr-only">Bio</label>
-                      <textarea id="bio" name="editor1" class="form-control">
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquid unde at fugiat explicabo temporibus, tempora animi sunt iusto quod beatae optio veritatis velit natus odit error! Possimus esse quisquam quibusdam eveniet autem! Minus dolore quisquam nemo similique doloribus perspiciatis tempore.
-                          </textarea>
-                    </div>
-                    <!-- Upload CV File -->
-                    <div class="form-group">
-                      <small>For more details not hesitate to upload your CV file bellow.</small>
-                      <div class="custom-file">
-                        <input type="file" id="myfile" class="custom-file-input">
-                        <label class="custom-file-label" for="myfile">Choose your CV file</label>
-                        <small class="form-text text-muted" id="fileHelp">Max 3mb size pdf file</small>
-                      </div>
-                    </div>
-                  </div>
-                  <hr>
-                  <!-- Social Media -->
-                  <div class="form-group ">
-                    <h4>Social Media <small><span class="text-danger">(Optional)</span></small></h4>
-                    <!-- Facebook -->
-                    <label for="facebook">Facebook Profile</label>
-                    <div class="input-group">
-                      <div class="input-group-prepend">
-                        <span id="addonFacebook" class="input-group-text">
-                          <span class="d-sm-none">
-                            <i class="fab fa-facebook-f"></i>
-                          </span>
-                          <span class="d-none d-sm-block">
-                            http://www.facebook.com/
-                          </span>
-                        </span>
-                      </div>
-                      <input type="text" name="" id="facebook" class="form-control form-control-lg" placeholder=""
-                        aria-label="Text input with checkbox" aria-describedby="addonFacebook" />
-                    </div>
-                    <small id="facebookHelp" class="form-text text-muted mb-3">
-                      Input your Facebook username (e.g. johndoe).
-                    </small>
-                    <!-- Twitter -->
-                    <label for="twitter">Twitter Profile</label>
-                    <div class="input-group">
-                      <div class="input-group-prepend">
-                        <span id="addonTwitter" class="input-group-text">
-                          <span class="d-sm-none">
-                            <i class="fab fa-twitter"></i>
-                          </span>
-                          <span class="d-none d-sm-block">
-                            http://twitter.com/
-                          </span>
-                        </span>
-                      </div>
-                      <input type="text" name="" id="twitter" class="form-control form-control-lg" placeholder=""
-                        aria-label="Text input with checkbox" aria-describedby="addonTwitter" />
-                    </div>
-                    <small id="twitterHelp" class="form-text text-muted mb-3">
-                      Add your Twitter username (e.g. johndoe).
-                    </small>
-                    <!-- Linkedin -->
-                    <label for="linkedin">Linkedin Profile</label>
-                    <div class="input-group">
-                      <div class="input-group-prepend">
-                        <span id="addonLinkedin" class="input-group-text">
-                          <span class="d-sm-none">
-                            <i class="fab fa-linkedin-in"></i>
-                          </span>
-                          <span class="d-none d-sm-block">
-                            http://www.linkedin.com/
-                          </span>
-                        </span>
-                      </div>
-                      <input type="text" name="" id="linkedin" class="form-control form-control-lg" placeholder=""
-                        aria-label="Text input with checkbox" aria-describedby="addonLinkedin" />
-                    </div>
-                    <small id="linkedinHelp" class="form-text text-muted mb-3">
-                      Input your LinkedIn resource id (e.g. in/johndoe).
-                    </small>
-                  </div>
-                  <!-- Save Button -->
-                  <div class="d-flex justify-content-end">
-                    <button type="button" class="btn btn-primary">
-                      Save
-                    </button>
-                  </div>
-                </form>
-              </div>
-            </div>
+            {{> _cardProfileStudent}}
           </div>
           <!-- Module Info -->
           <div class="tab-pane" id="modules" role="tabpanel" aria-labelledby="module-list">

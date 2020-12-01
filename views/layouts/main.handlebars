@@ -130,13 +130,24 @@
 
     // ======== CKEditor ========
     // -------- Profile Form - Faculty Member "Bio" Textarea --------
-    const bio = CKEDITOR.replace('bio', {
+    const facultyBio = CKEDITOR.replace('bio', {
       plugins: 'wysiwygarea, toolbar, basicstyles, link',
       extraPlugins: 'notification'
     });
 
-    bio.on('required', function (evt) {
-      bio.showNotification('This field is required.', 'warning');
+    facultyBio.on('required', function (evt) {
+      facultyBio.showNotification('This field is required.', 'warning');
+      evt.cancel();
+    });
+
+    // -------- Profile Form - Student "Bio" Textarea --------
+    const studentBio = CKEDITOR.replace('bio', {
+      plugins: 'wysiwygarea, toolbar, basicstyles, link',
+      extraPlugins: 'notification'
+    });
+
+    studentBio.on('required', function (evt) {
+      studentBio.showNotification('This field is required.', 'warning');
       evt.cancel();
     });
 
