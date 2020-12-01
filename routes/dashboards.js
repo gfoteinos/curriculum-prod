@@ -322,9 +322,11 @@ router.get("/facultyMember", (req, res, next) => {
 router.get("/student", (req, res) => {
   // Create a student object
   const student = {
+    id: req.user.id,
     name: req.user.name,
     email: req.user.email
   };
+  console.log(student);
   // Pass the user to the view
   res.render("dashboards/student", {
     student
@@ -334,10 +336,10 @@ router.get("/student", (req, res) => {
 // ======== ACCOUNT INFO FORM ========
 // Update Email
 router.put("/facultyMember/email/:id", (req, res) => {
-  // Check if the input email has already registered to another account
+  // Check If The Input Email Has Already Registered To Another Account
   User.findOne({ email: req.body.email }).then(user => {
-    // If true trigger an error message and stop
     if (user) {
+      // ---- Flash Error Message & Redirect Back To The Page ----
       req.flash(
         "error_msg",
         "Email has already registered. Please enter another email."
@@ -350,6 +352,7 @@ router.put("/facultyMember/email/:id", (req, res) => {
           // Update the email with the new one
           user.email = req.body.email;
           user.save().then(user => {
+            // ---- Flash Success Message & Redirect Back To The Page ----
             req.flash("success_msg", "Email has been updated.");
             res.redirect("/dashboards/facultyMember");
           });
@@ -359,15 +362,42 @@ router.put("/facultyMember/email/:id", (req, res) => {
   });
 });
 
+router.put("/student/email/:id", (req, res) => {
+  // Check If The Input Email Has Already Registered To Another Account
+  User.findOne({ email: req.body.email }).then(user => {
+    if (user) {
+      // ---- Flash Error Message & Redirect Back To The Page ----
+      req.flash(
+        "error_msg",
+        "Email has already registered. Please enter another email."
+      );
+      res.redirect("/dashboards/student");
+    } else {
+      // Find the user via id
+      User.findOne({ _id: req.params.id }).then(user => {
+        if (user) {
+          // Update The Email With The New One
+          user.email = req.body.email;
+          user.save().then(user => {
+            // ---- Flash Success Message & Redirect Back To The Page ----
+            req.flash("success_msg", "Email has been updated.");
+            res.redirect("/dashboards/student");
+          });
+        }
+      });
+    }
+  });
+});
+
 // Update Password
 router.put("/facultyMember/password/:id", (req, res) => {
-  // Fetch the current password from the database
   User.findOne({ _id: req.params.id }).then(user => {
+    // Compare UI password with the one in database
     bcrypt.compare(req.body.password, user.password, (err, isMatch) => {
       if (err) throw err;
-      // If match update password else trigger error message
+      // ---- If Match Update Password Else Flash Error Message ----
       if (isMatch) {
-        // -------- Update the password --------
+        // ======== Password Validation ========
         // If "new password & re-type password" doesn't much
         if (req.body.password1 != req.body.password2) {
           req.flash(
@@ -381,17 +411,18 @@ router.put("/facultyMember/password/:id", (req, res) => {
             req.flash("error_msg", "Password must be at least 6 characters.");
             res.redirect("/dashboards/facultyMember");
           } else {
+            // -------- Update The Password --------
             // Change password with the new one
             user.password = req.body.password1;
-            // Encrypt the new password
+            // Encrypt The New Password
             bcrypt.genSalt(10, (err, salt) => {
               bcrypt.hash(user.password, salt, (err, hash) => {
                 if (err) throw err;
                 user.password = hash;
-                // Save the new password to the database
+                // Save The New Password To The Database
                 user
                   .save()
-                  // Then redirect to the "faculty member" page
+                  // Redirect To The "Faculty Member" Page
                   .then(user => {
                     req.flash("success_msg", "Password has been updated.");
                     res.redirect("/dashboards/facultyMember");
@@ -401,7 +432,7 @@ router.put("/facultyMember/password/:id", (req, res) => {
           }
         }
       } else {
-        // Trigger error message and reload the page
+        // Flash Error Message And Reload The Page
         req.flash("error_msg", "Current password does not match.");
         res.redirect("/dashboards/facultyMember");
       }
@@ -409,6 +440,55 @@ router.put("/facultyMember/password/:id", (req, res) => {
   });
 });
 
+router.put("/student/password/:id", (req, res) => {
+  User.findOne({ _id: req.params.id }).then(user => {
+    // Compare UI password with the one in database
+    bcrypt.compare(req.body.password, user.password, (err, isMatch) => {
+      if (err) throw err;
+      // ---- If Match Update Password Else Flash Error Message ----
+      if (isMatch) {
+        // ======== Password Validation ========
+        // If "new password & re-type password" doesn't much
+        if (req.body.password1 != req.body.password2) {
+          req.flash(
+            "error_msg",
+            '"New password" and "Re-type new password" does not match.'
+          );
+          res.redirect("/dashboards/student");
+        } else {
+          // If new password is less than 6 characters
+          if (req.body.password1.length < 4) {
+            req.flash("error_msg", "Password must be at least 6 characters.");
+            res.redirect("/dashboards/student");
+          } else {
+            // -------- Update The Password --------
+            // Change password with the new one
+            user.password = req.body.password1;
+            // Encrypt The New Password
+            bcrypt.genSalt(10, (err, salt) => {
+              bcrypt.hash(user.password, salt, (err, hash) => {
+                if (err) throw err;
+                user.password = hash;
+                // Save The New Password To The Database
+                user
+                  .save()
+                  // Redirect To The "Student" Page
+                  .then(user => {
+                    req.flash("success_msg", "Password has been updated.");
+                    res.redirect("/dashboards/student");
+                  });
+              });
+            });
+          }
+        }
+      } else {
+        // Flash Error Message And Reload The Page
+        req.flash("error_msg", "Current password does not match.");
+        res.redirect("/dashboards/student");
+      }
+    });
+  });
+});
 // ======== PROFILE FORM ========
 // Update Profile
 router.put("/facultyMember/profile/:id", (req, res) => {
@@ -1272,7 +1352,10 @@ router.put("/facultyMember/exams/:id", (req, res) => {
             return;
           });
       } else {
-        req.flash("error_msg", "Something went wrong on updating exam. One or more field were not filled in. Please try again.");
+        req.flash(
+          "error_msg",
+          "Something went wrong on updating exam. One or more field were not filled in. Please try again."
+        );
         res.redirect("/dashboards/facultyMember");
       }
     });

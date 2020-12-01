@@ -5,42 +5,74 @@
       <div class="row">
         <!-- AVATAR -->
         <div class="col-md-4 d-flex justify-content-center align-items-center">
-          {{!-- <img src="img/Students/m-2.jpg" class="img-fluid avatar-medium avatar--rounded avatar--border-blue"
-            alt="Student photo"> --}}
+          {{#if student.photo}}
+          <img src="/img/students/{{student.photo}}"
+            class="img-fluid avatar--medium avatar--rounded avatar--border-blue" alt="Student photo">
+          {{else}}
           <i class="fas fa-user icon-user"></i>
+          {{/if}}
         </div>
         <!-- BODY -->
         <div class="col-md-8 pl-lg-0 d-flex align-items-center">
           <div class="card-body">
-          <h3 class="card-title text-md-left">{{student.name}}</h3>
+            <h3 class="card-title text-md-left">{{student.name}}</h3>
             <h4 class="card-subtitle text-md-left">Mathematics</h4>
+            <h5 class="card-details text-md-left">School of Mathematical Sciences</h5>
             <!-- Social Media -->
             <div class="d-flex justify-content-center justify-content-md-start card-social-media my-4">
+              <!-- ==== Disable/enable social media icons ==== -->
+              {{#if student.facebook}}
               <span class="mr-5">
-                <a href="#" class="text-light">
+                <a href="http://www.facebook.com/{{faculty.facebook}}" class="text-light">
                   <i class="fab fa-facebook-f" style="padding-right: .25rem;"></i>
                 </a>
               </span>
+              {{else}}
               <span class="mr-5">
-                <a href="#" class="text-light">
+                <i class="fab fa-facebook-f" style="padding-right: .25rem;"></i>
+              </span>
+              <script>
+                disableElement('.card-social-media .fa-facebook-f');
+              </script>
+              {{/if}}
+              {{#if student.twitter}}
+              <span class="mr-5">
+                <a href="http://twitter.com/{{faculty.twitter}}" class="text-light">
                   <i class="fab fa-twitter" style="padding-right: .25rem;"></i>
                 </a>
               </span>
+              {{else}}
+              <span class="mr-5">
+                <i class="fab fa-twitter" style="padding-right: .25rem;"></i>
+              </span>
+              <script>
+                disableElement('.card-social-media .fa-twitter');
+              </script>
+              {{/if}}
+              {{#if student.linkedin}}
               <span>
-                <a href="#" class="text-light">
+                <a href="http://www.linkedin.com/{{faculty.linkedin}}" class="text-light">
                   <i class="fab fa-linkedin-in" style="padding-right: .25rem;"></i>
                 </a>
               </span>
+              {{else}}
+              <span>
+                <i class="fab fa-linkedin-in" style="padding-right: .25rem;"></i>
+              </span>
+              <script>
+                disableElement('.card-social-media .fa-linkedin-in');
+              </script>
+              {{/if}}
             </div>
             <!-- Email - Tel -->
             <div class="d-flex justify-content-center justify-content-md-start">
               <small class="text-muted mr-5 card-email">
-                <i class="far fa-envelope " data-toggle="tooltip" data-placement="top" title="johndoeatmathdep.com"></i>
-                <span class="d-none d-sm-inline">{{student.email}}</span>
+                <i class="far fa-envelope " data-toggle="tooltip" data-placement="top" title="email"></i>
+                <span class="d-none d-lg-inline">{{student.email}}</span>
               </small>
               <small class="text-muted card-tel">
-                <i class="fas fa-phone" data-toggle="tooltip" data-placement="top" title="1234 555 555"></i>
-                <span class="d-none d-sm-inline">1234 555 555</span>
+                <i class="fas fa-phone" data-toggle="tooltip" data-placement="top" title="phone"></i>
+                <span class="d-none d-lg-inline">{{student.phone}}</span>
               </small>
             </div>
           </div>
@@ -54,7 +86,7 @@
 <section id="studentDashboard">
   <div class="container py-5 bg-white">
     <div class="row">
-      <!-- Navigation List -->
+      <!-- ---- NAVIGATION LIST ---- -->
       <div class="col-12 col-lg-4 mb-3">
         <div class="list-group" id="list-tab" role="tablist">
           <a class="list-group-item list-group-item-action active" id="account-list" data-toggle="list" href="#account"
@@ -65,97 +97,12 @@
             role="tab" aria-controls="modules">Modules</a>
         </div>
       </div>
-      <!-- WORK AREA-->
+      <!-- ---- WORK AREA ---- -->
       <div class="col-12 col-lg-8 pl-lg-0 mb-3">
         <div class="tab-content" id="nav-tabContent">
           <!-- Account Settings-->
           <div class="tab-pane active" id="account" role="tabpanel" aria-labelledby="account-list">
-            <div class="card card-manage-account">
-              <div class="card-header">
-                <h3 class="mb-0">Account Info</h3>
-                <small class="">
-                  Edit your account settings and change your password here
-                </small>
-              </div>
-              <div class="card-body">
-                <form>
-                  <!-- Email -->
-                  <div class="form-group mb-4">
-                    <label for="email">Email</label>
-                    <div class="input-group input-group--white">
-                      <div class="input-group-prepend">
-                        <span id="addonEmail" class="input-group-text">
-                          <i class="fas fa-envelope"></i>
-                        </span>
-                      </div>
-                      <input type="email" name="" id="email" class="form-control form-control-lg" placeholder=""
-                        maxlength="64" minlength="7" required="" aria-label="Email" aria-describedby="addonEmail" />
-                      <div class="input-group-append">
-                        <span class="input-group-text">
-                          <a href="#" class="" data-toggle="modal" data-target="#changeEmailModal">
-                            <i class="fas fa-pencil-alt"></i>
-                          </a>
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  <hr>
-                  <!-- Password -->
-                  <h4 class="mb-0">Password</h4>
-                  <small id="passwordHelpBlock" class="form-text text-muted mb-3">
-                    Your password must be 8-20 characters long, contain letters and numbers, and must not contain
-                    spaces, special characters, or emoji.
-                  </small>
-                  <!-- Current Password -->
-                  <div class="form-group">
-                    <label for="currentPassword">Current Password</label>
-                    <div class="input-group input-group--white">
-                      <div class="input-group-prepend">
-                        <span id="addonCurrentPassword" class="input-group-text">
-                          <i class="fas fa-lock"></i>
-                        </span>
-                      </div>
-                      <input type="password" name="" id="currentPassword" class="form-control form-control-lg"
-                        placeholder="" maxlength="64" minlength="6" required="" aria-label="Current Password"
-                        aria-describedby="addonCurrentPassword" />
-                    </div>
-                  </div>
-                  <!-- New Password -->
-                  <div class="form-group">
-                    <label for="newPassword">Enter New Password</label>
-                    <div class="input-group input-group--white">
-                      <div class="input-group-prepend">
-                        <span id="addonNewPassword" class="input-group-text">
-                          <i class="fas fa-lock"></i>
-                        </span>
-                      </div>
-                      <input type="password" name="" id="newPassword" class="form-control form-control-lg"
-                        placeholder="" maxlength="64" minlength="6" required="" aria-label="Enter New Password"
-                        aria-describedby="addonNewPassword" />
-                    </div>
-                  </div>
-                  <!-- Confirm New Password -->
-                  <div class="form-group">
-                    <label for="confirmPassword">Re-type New Password</label>
-                    <div class="input-group input-group--white">
-                      <div class="input-group-prepend">
-                        <span id="addonConfirmPassword" class="input-group-text">
-                          <i class="fas fa-lock"></i>
-                        </span>
-                      </div>
-                      <input type="password" name="" id="confirmPassword" class="form-control form-control-lg"
-                        placeholder="" maxlength="64" minlength="6" required="" aria-label="Re-type New Password"
-                        aria-describedby="addonConfirmPassword" />
-                    </div>
-                  </div>
-                  <div class="d-flex justify-content-end">
-                    <button type="button" class="btn btn-primary">
-                      Change Password
-                    </button>
-                  </div>
-                </form>
-              </div>
-            </div>
+           {{> _cardAccountStudent}}
           </div>
           <!-- Profile Settings-->
           <div class="tab-pane" id="profile" role="tabpanel" aria-labelledby="profile-list">
