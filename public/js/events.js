@@ -88,6 +88,8 @@ const UICtrl = (function() {
     tableCheckboxColumnLevel_cardModules: "#modulesTable .sort-level",
     tableCheckboxColumnCheckbox_cardModules:
       "#modulesTable thead input[type='checkbox']",
+    tableCheckboxColumnTitle_cardModulesSelection:
+      "#modulesSelectionTable .sort-title",
     tableCheckboxColumnTitle_tabModules: "#taughtModulesTable .sort-title",
     tableCheckboxColumnCourse_tabModules: "#taughtModulesTable .sort-course",
     tableCheckboxColumnLevel_tabModules: "#taughtModulesTable .sort-level",
@@ -291,11 +293,15 @@ const UICtrl = (function() {
         }
       });
     },
-    fillInEditExamModalForm: function(action, taughtModuleName, taughtModuleID) {
+    fillInEditExamModalForm: function(
+      action,
+      taughtModuleName,
+      taughtModuleID
+    ) {
       document
         .querySelector(UISelectors.form_modalEditExam)
         .setAttribute("action", action);
-        
+
       document
         .querySelector(UISelectors.inputTextTaughtModuleId_modalEditExam)
         .setAttribute("value", taughtModuleID);
@@ -828,195 +834,218 @@ const App = (function(UICtrl) {
   /* ========================
    * PRIVATE VAR & METHODS
    * ======================== */
-
   // ======== LOAD EVENT LISTENERS ========
   const loadEventListeners = function() {
     // Get UISelectors
     const UISelectors = UICtrl.getUISelectors();
 
-    // window.onload = () => {};
+    // // window.onload = () => {};
     // ---------------- TABLE EVENT LISTENERS ----------------
     // -------- Check/Unckeck All Table Rows --------
-    document
-      .querySelector(UISelectors.tableCheckboxColumnCheckbox_cardCourses)
-      .addEventListener("click", checkUncheckAll);
-    document
-      .querySelector(UISelectors.tableCheckboxColumnCheckbox_cardModules)
-      .addEventListener("click", checkUncheckAll);
-    document
-      .querySelector(UISelectors.tableCheckboxColumnCheckbox_tabModules)
-      .addEventListener("click", checkUncheckAll);
-    document
-      .querySelector(
-        UISelectors.tableCheckboxColumnCheckbox_modalAddTaughtModules
+    console.log(
+      document.querySelector(
+        UISelectors.tableCheckboxColumnCheckbox_cardCourses
       )
-      .addEventListener("click", checkUncheckAll);
-    document
-      .querySelector(UISelectors.tableCheckboxColumnCheckbox_tabCourseworks)
-      .addEventListener("click", checkUncheckAll);
-    document
-      .querySelector(UISelectors.tableCheckboxColumnCheckbox_tabExams)
-      .addEventListener("click", checkUncheckAll);
-
-    // -------- Check/Unckeck A Selected Table Row --------
-    document
-      .querySelector(UISelectors.tableCheckboxBody_cardCourses)
-      .addEventListener("click", checkUncheckRow);
-    document
-      .querySelector(UISelectors.tableCheckboxBody_cardModules)
-      .addEventListener("click", checkUncheckRow);
-    document
-      .querySelector(UISelectors.tableCheckboxBody_tabModules)
-      .addEventListener("click", checkUncheckRow);
-    document
-      .querySelector(UISelectors.tableCheckboxBody_modalAddTaughtModules)
-      .addEventListener("click", checkUncheckRow);
-    document
-      .querySelector(UISelectors.tableCheckboxBody_tabCourseworks)
-      .addEventListener("click", checkUncheckRow);
-    document
-      .querySelector(UISelectors.tableCheckboxBody_tabExams)
-      .addEventListener("click", checkUncheckRow);
-
-    // -------------------- Sort Table --------------------
-    document
-      .querySelector(UISelectors.tableCheckboxColumnTitle_cardCourses)
-      .addEventListener("click", sortTable);
-    document
-      .querySelector(UISelectors.tableCheckboxColumnLevel_cardCourses)
-      .addEventListener("click", sortTable);
-    document
-      .querySelector(UISelectors.tableCheckboxColumnTitle_cardModules)
-      .addEventListener("click", sortTable);
-    document
-      .querySelector(UISelectors.tableCheckboxColumnCourse_cardModules)
-      .addEventListener("click", sortTable);
-    document
-      .querySelector(UISelectors.tableCheckboxColumnLevel_cardModules)
-      .addEventListener("click", sortTable);
-    document
-      .querySelector(UISelectors.tableCheckboxColumnTitle_tabModules)
-      .addEventListener("click", sortTable);
-    document
-      .querySelector(UISelectors.tableCheckboxColumnCourse_tabModules)
-      .addEventListener("click", sortTable);
-    document
-      .querySelector(UISelectors.tableCheckboxColumnLevel_tabModules)
-      .addEventListener("click", sortTable);
-    document
-      .querySelector(UISelectors.tableCheckboxColumnTitle_modalAddTaughtModules)
-      .addEventListener("click", sortTable);
-    document
-      .querySelector(
-        UISelectors.tableCheckboxColumnCourse_modalAddTaughtModules
+    );
+    console.log(
+      document.querySelector(
+        UISelectors.tableCheckboxColumnTitle_cardModulesSelection
       )
-      .addEventListener("click", sortTable);
-    document
-      .querySelector(UISelectors.tableCheckboxColumnLevel_modalAddTaughtModules)
-      .addEventListener("click", sortTable);
-    document
-      .querySelector(UISelectors.tableCheckboxColumnModule_tabCourseworks)
-      .addEventListener("click", sortTable);
-    document
-      .querySelector(UISelectors.tableCheckboxColumnDueDate_tabCourseworks)
-      .addEventListener("click", sortTable);
-    document
-      .querySelector(UISelectors.tableDateColumnTitle_modalAddCourseworks)
-      .addEventListener("click", sortTable);
-    document
-      .querySelector(UISelectors.tableCheckboxColumnModules_tabExams)
-      .addEventListener("click", sortTable);
-    document
-      .querySelector(UISelectors.tableCheckboxColumnDate_tabExams)
-      .addEventListener("click", sortTable);
-    document
-      .querySelector(UISelectors.tableCheckboxColumnTime_tabExams)
-      .addEventListener("click", sortTable);
-    document
-      .querySelector(UISelectors.tableCheckboxColumnClassroom_tabExams)
-      .addEventListener("click", sortTable);
-
-    // ---------------- Disable Table Row/Rows ----------------
-    // "Dashboard" -> "Add Modules" modal -> ("Modules" table)
-    document
-      .querySelector(UISelectors.btnAddTaughtModules_tabModules)
-      .addEventListener("click", disableRows);
-
-    // "Dashboard" -> "Add Courseworks" modal -> ("Taught Modules" table)
-    document
-      .querySelector(UISelectors.btnAddCourseworks_tabCourseworks)
-      .addEventListener("click", disableRows);
-
-    // "Dashboard" -> "Add Courseworks" modal -> ("Taught Modules" table)
-    document
-      .querySelector(UISelectors.btnAddExams_tabExams)
-      .addEventListener("click", disableRows);
-
-    // -------------------- Edit Table Row --------------------
-    // "Courses" form -> "Courses" table -> ("Edit" Button)
-    document
-      .querySelector(UISelectors.tableCheckboxBody_cardCourses)
-      .addEventListener("click", editCourse);
-
-    // "Modules" form -> "Modules" table -> ("Edit" Button)
-    document
-      .querySelector(UISelectors.tableCheckboxBody_cardModules)
-      .addEventListener("click", editModule);
-
-    // "Exams" tab -> "Exams" table -> ("Edit" Button)
-    document
-      .querySelector(UISelectors.tableCheckboxBody_tabExams)
-      .addEventListener("click", editExam);
-
-    // --- Sort "Dashboard" -> "Courseworks Calendar" tab -> ("Courseworks" table) ---
-    document
-      .querySelector(UISelectors.tableCheckboxBody_tabCourseworks)
-      .addEventListener("click", editCoursework);
-
-    document
-      .querySelector(UISelectors.tableCheckboxBody_tabCourseworks)
-      .addEventListener("click", saveDateCoursework);
-
-    // ---------------- Delete Table Row/Rows ----------------
-    // -------- "Delete Courses" modal --------
-    // "No" Button
-    document
-      .querySelector(UISelectors.btnNo_modalDeleteCourses)
-      .addEventListener("click", cancelDeletion);
-
-    // "Yes" Button
-    document
-      .querySelector(UISelectors.btnYes_modalDeleteCourses)
-      .addEventListener("click", confirmDeletion);
-
-    // -------- "Delete Modules" modal --------
-    // "No" Button
-    document
-      .querySelector(UISelectors.btnNo_modalDeleteModules)
-      .addEventListener("click", cancelDeletion);
-
-    // "Yes" Button
-    document
-      .querySelector(UISelectors.btnYes_modalDeleteModules)
-      .addEventListener("click", confirmDeletion);
-
-    // -------- "Delete Taught Modules" modal --------
-    // "No" Button
-    document
-      .querySelector(UISelectors.btnNo_modalDeleteTaughtModules)
-      .addEventListener("click", cancelDeletion);
-
-    // "Yes" Button
-    document
-      .querySelector(UISelectors.btnYes_modalDeleteTaughtModules)
-      .addEventListener("click", confirmDeletion);
-
-    // // ---- Enable/Disable "Plus" button when date element has value  ----
-    // // "Dashboard" -> "Courseworks" tab -> ("Add Courseworks" modal)
+    );
+    if (
+      document.querySelector(
+        UISelectors.tableCheckboxColumnCheckbox_cardCourses
+      )
+    ) {
+      document
+        .querySelector(UISelectors.tableCheckboxColumnCheckbox_cardCourses)
+        .addEventListener("click", checkUncheckAll);
+    }
     // document
-    //   .querySelector(UISelectors.d_cct_ac_m_taughtModulesTable)
-    //   .addEventListener("change", enableDisableBtn);
+    //   .querySelector(UISelectors.tableCheckboxColumnCheckbox_cardCourses)
+    //   .addEventListener("click", checkUncheckAll);
+    // document
+    //   .querySelector(UISelectors.tableCheckboxColumnCheckbox_cardModules)
+    //   .addEventListener("click", checkUncheckAll);
+    // document
+    //   .querySelector(UISelectors.tableCheckboxColumnCheckbox_tabModules)
+    //   .addEventListener("click", checkUncheckAll);
+    // document
+    //   .querySelector(
+    //     UISelectors.tableCheckboxColumnCheckbox_modalAddTaughtModules
+    //   )
+    //   .addEventListener("click", checkUncheckAll);
+    // document
+    //   .querySelector(UISelectors.tableCheckboxColumnCheckbox_tabCourseworks)
+    //   .addEventListener("click", checkUncheckAll);
+    // document
+    //   .querySelector(UISelectors.tableCheckboxColumnCheckbox_tabExams)
+    //   .addEventListener("click", checkUncheckAll);
+
+    // // -------- Check/Unckeck A Selected Table Row --------
+    // document
+    //   .querySelector(UISelectors.tableCheckboxBody_cardCourses)
+    //   .addEventListener("click", checkUncheckRow);
+    // document
+    //   .querySelector(UISelectors.tableCheckboxBody_cardModules)
+    //   .addEventListener("click", checkUncheckRow);
+    // document
+    //   .querySelector(UISelectors.tableCheckboxBody_tabModules)
+    //   .addEventListener("click", checkUncheckRow);
+    // document
+    //   .querySelector(UISelectors.tableCheckboxBody_modalAddTaughtModules)
+    //   .addEventListener("click", checkUncheckRow);
+    // document
+    //   .querySelector(UISelectors.tableCheckboxBody_tabCourseworks)
+    //   .addEventListener("click", checkUncheckRow);
+    // document
+    //   .querySelector(UISelectors.tableCheckboxBody_tabExams)
+    //   .addEventListener("click", checkUncheckRow);
+
+    // // -------------------- Sort Table --------------------
+    // document
+    //   .querySelector(UISelectors.tableCheckboxColumnTitle_cardCourses)
+    //   .addEventListener("click", sortTable);
+    // document
+    //   .querySelector(UISelectors.tableCheckboxColumnLevel_cardCourses)
+    //   .addEventListener("click", sortTable);
+    // document
+    //   .querySelector(UISelectors.tableCheckboxColumnTitle_cardModules)
+    //   .addEventListener("click", sortTable);
+    // document
+    //   .querySelector(UISelectors.tableCheckboxColumnCourse_cardModules)
+    //   .addEventListener("click", sortTable);
+    // document
+    //   .querySelector(UISelectors.tableCheckboxColumnLevel_cardModules)
+    //   .addEventListener("click", sortTable);
+    document
+      .querySelector(UISelectors.tableCheckboxColumnTitle_cardModulesSelection)
+      .addEventListener("click", sortTable);
+    // document
+    //   .querySelector(UISelectors.tableCheckboxColumnTitle_tabModules)
+    //   .addEventListener("click", sortTable);
+    // document
+    //   .querySelector(UISelectors.tableCheckboxColumnCourse_tabModules)
+    //   .addEventListener("click", sortTable);
+    // document
+    //   .querySelector(UISelectors.tableCheckboxColumnLevel_tabModules)
+    //   .addEventListener("click", sortTable);
+    // document
+    //   .querySelector(UISelectors.tableCheckboxColumnTitle_modalAddTaughtModules)
+    //   .addEventListener("click", sortTable);
+    // document
+    //   .querySelector(
+    //     UISelectors.tableCheckboxColumnCourse_modalAddTaughtModules
+    //   )
+    //   .addEventListener("click", sortTable);
+    // document
+    //   .querySelector(UISelectors.tableCheckboxColumnLevel_modalAddTaughtModules)
+    //   .addEventListener("click", sortTable);
+    // document
+    //   .querySelector(UISelectors.tableCheckboxColumnModule_tabCourseworks)
+    //   .addEventListener("click", sortTable);
+    // document
+    //   .querySelector(UISelectors.tableCheckboxColumnDueDate_tabCourseworks)
+    //   .addEventListener("click", sortTable);
+    // document
+    //   .querySelector(UISelectors.tableDateColumnTitle_modalAddCourseworks)
+    //   .addEventListener("click", sortTable);
+    // document
+    //   .querySelector(UISelectors.tableCheckboxColumnModules_tabExams)
+    //   .addEventListener("click", sortTable);
+    // document
+    //   .querySelector(UISelectors.tableCheckboxColumnDate_tabExams)
+    //   .addEventListener("click", sortTable);
+    // document
+    //   .querySelector(UISelectors.tableCheckboxColumnTime_tabExams)
+    //   .addEventListener("click", sortTable);
+    // document
+    //   .querySelector(UISelectors.tableCheckboxColumnClassroom_tabExams)
+    //   .addEventListener("click", sortTable);
+
+    // // ---------------- Disable Table Row/Rows ----------------
+    // // "Dashboard" -> "Add Modules" modal -> ("Modules" table)
+    // document
+    //   .querySelector(UISelectors.btnAddTaughtModules_tabModules)
+    //   .addEventListener("click", disableRows);
+
+    // // "Dashboard" -> "Add Courseworks" modal -> ("Taught Modules" table)
+    // document
+    //   .querySelector(UISelectors.btnAddCourseworks_tabCourseworks)
+    //   .addEventListener("click", disableRows);
+
+    // // "Dashboard" -> "Add Courseworks" modal -> ("Taught Modules" table)
+    // document
+    //   .querySelector(UISelectors.btnAddExams_tabExams)
+    //   .addEventListener("click", disableRows);
+
+    // // -------------------- Edit Table Row --------------------
+    // // "Courses" form -> "Courses" table -> ("Edit" Button)
+    // document
+    //   .querySelector(UISelectors.tableCheckboxBody_cardCourses)
+    //   .addEventListener("click", editCourse);
+
+    // // "Modules" form -> "Modules" table -> ("Edit" Button)
+    // document
+    //   .querySelector(UISelectors.tableCheckboxBody_cardModules)
+    //   .addEventListener("click", editModule);
+
+    // // "Exams" tab -> "Exams" table -> ("Edit" Button)
+    // document
+    //   .querySelector(UISelectors.tableCheckboxBody_tabExams)
+    //   .addEventListener("click", editExam);
+
+    // // --- Sort "Dashboard" -> "Courseworks Calendar" tab -> ("Courseworks" table) ---
+    // document
+    //   .querySelector(UISelectors.tableCheckboxBody_tabCourseworks)
+    //   .addEventListener("click", editCoursework);
+
+    // document
+    //   .querySelector(UISelectors.tableCheckboxBody_tabCourseworks)
+    //   .addEventListener("click", saveDateCoursework);
+
+    // // ---------------- Delete Table Row/Rows ----------------
+    // // -------- "Delete Courses" modal --------
+    // // "No" Button
+    // document
+    //   .querySelector(UISelectors.btnNo_modalDeleteCourses)
+    //   .addEventListener("click", cancelDeletion);
+
+    // // "Yes" Button
+    // document
+    //   .querySelector(UISelectors.btnYes_modalDeleteCourses)
+    //   .addEventListener("click", confirmDeletion);
+
+    // // -------- "Delete Modules" modal --------
+    // // "No" Button
+    // document
+    //   .querySelector(UISelectors.btnNo_modalDeleteModules)
+    //   .addEventListener("click", cancelDeletion);
+
+    // // "Yes" Button
+    // document
+    //   .querySelector(UISelectors.btnYes_modalDeleteModules)
+    //   .addEventListener("click", confirmDeletion);
+
+    // // -------- "Delete Taught Modules" modal --------
+    // // "No" Button
+    // document
+    //   .querySelector(UISelectors.btnNo_modalDeleteTaughtModules)
+    //   .addEventListener("click", cancelDeletion);
+
+    // // "Yes" Button
+    // document
+    //   .querySelector(UISelectors.btnYes_modalDeleteTaughtModules)
+    //   .addEventListener("click", confirmDeletion);
+
+    // // // ---- Enable/Disable "Plus" button when date element has value  ----
+    // // // "Dashboard" -> "Courseworks" tab -> ("Add Courseworks" modal)
+    // // document
+    // //   .querySelector(UISelectors.d_cct_ac_m_taughtModulesTable)
+    // //   .addEventListener("change", enableDisableBtn);
   };
+
+  document.addEventListener("DOMContentLoaded", loadEventListeners);
 
   // ======================== EVENTS ========================
   // ---------------- TABLE EVENT LISTENERS ----------------
@@ -1323,7 +1352,9 @@ const App = (function(UICtrl) {
       taughtModuleID = e.target.parentElement.getAttribute("data-id");
 
       // ---- Set Form Action ----
-      facultyID = e.target.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.getAttribute("data-id");
+      facultyID = e.target.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.getAttribute(
+        "data-id"
+      );
       const action = `/dashboards/facultyMember/exams/${facultyID}?_method=PUT`;
 
       // -------- FILL IN THE "EDIT MODULE" MODAL FORM --------
@@ -1489,7 +1520,7 @@ const App = (function(UICtrl) {
     init: function() {
       console.log("Run...");
       // Load event listeners
-      loadEventListeners();
+      // loadEventListeners();
     }
   };
 })(UICtrl);

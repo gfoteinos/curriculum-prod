@@ -6,8 +6,8 @@
         <!-- AVATAR -->
         <div class="col-md-4 d-flex justify-content-center align-items-center">
           {{#if student.photo}}
-          <img src="/img/users/{{student.photo}}"
-            class="img-fluid avatar--medium avatar--rounded avatar--border-blue" alt="Student photo">
+          <img src="/img/users/{{student.photo}}" class="img-fluid avatar--medium avatar--rounded avatar--border-blue"
+            alt="Student photo">
           {{else}}
           <i class="fas fa-user icon-user"></i>
           {{/if}}
@@ -16,7 +16,7 @@
         <div class="col-md-8 pl-lg-0 d-flex align-items-center">
           <div class="card-body">
             <h3 class="card-title text-md-left">{{student.name}}</h3>
-            <h4 class="card-subtitle text-md-left">Mathematics</h4>
+            <h4 class="card-subtitle text-md-left mb-3">Student</h4>
             <h5 class="card-details text-md-left">School of Mathematical Sciences</h5>
             <!-- Social Media -->
             <div class="d-flex justify-content-center justify-content-md-start card-social-media my-4">
@@ -95,6 +95,8 @@
             role="tab" aria-controls="profile">Profile</a>
           <a class="list-group-item list-group-item-action" id="module-list" data-toggle="list" href="#modules"
             role="tab" aria-controls="modules">Modules</a>
+          <a class="list-group-item list-group-item-action" id="module-list" data-toggle="list" href="#overview"
+            role="tab" aria-controls="modules">Overview</a>
         </div>
       </div>
       <!-- ---- WORK AREA ---- -->
@@ -102,7 +104,7 @@
         <div class="tab-content" id="nav-tabContent">
           <!-- Account Settings-->
           <div class="tab-pane active" id="account" role="tabpanel" aria-labelledby="account-list">
-           {{> _cardAccountStudent}}
+            {{> _cardAccountStudent}}
           </div>
           <!-- Profile Settings-->
           <div class="tab-pane" id="profile" role="tabpanel" aria-labelledby="profile-list">
@@ -110,382 +112,11 @@
           </div>
           <!-- Module Info -->
           <div class="tab-pane" id="modules" role="tabpanel" aria-labelledby="module-list">
-            <!-- MODULE PROGRESS -->
-            <section id="moduleProgress" class="mb-5">
-              <div class="card shadow">
-                <div class="card-body">
-                  <h3 class="card-title">Progress</h3>
-                  <div class="progress mb-3" style="height: 1.75rem;">
-                    <div class="progress-bar" role="progressbar" style="width: 40%" aria-valuenow="40" aria-valuemin="0"
-                      aria-valuemax="100">
-                      <h5 class="d-none d-sm-block mb-0">4 of 10</h5>
-                    </div>
-                    <div class="progress-bar bg-danger" role="progressbar" style="width: 10%" aria-valuenow="10"
-                      aria-valuemin="0" aria-valuemax="100">
-                      <h5 class="d-none d-sm-block mb-0">1 of 2</h5>
-                    </div>
-                    <div class="progress-bar bg-info" role="progressbar" style="width: 30%" aria-valuenow="30"
-                      aria-valuemin="0" aria-valuemax="100">
-                      <h5 class="d-none d-sm-block mb-0">3</h5>
-                    </div>
-                  </div>
-                  <div class="d-flex flex-column flex-sm-row progress-callout pl-2">
-                    <span class="progress-callout_text border-primary mb-2 mb-sm-0">Module Pass <span
-                        class="progress-callout_number d-sm-none">4 of 10</span></span>
-                    <span class="progress-callout_text border-danger mb-2 mb-sm-0">Module Fail <span
-                        class="progress-callout_number d-sm-none">1 of 2</span></span>
-                    <span class="progress-callout_text border-info">Module On Going <span
-                        class="progress-callout_number d-sm-none">3</span></span>
-                  </div>
-                </div>
-              </div>
-            </section>
-            <!-- MODULE DETAILS -->
-            <section id="moduleDetails">
-              <!-- Courseworks -->
-              <div class="card shadow mb-5">
-                <div class="card-body">
-                  <h3 class="card-title">Courseworks</h3>
-                  <div class="table-responsive">
-                    <table class="table">
-                      <caption class="h5 py-0 sr-only">Courseworks</caption>
-                      <thead>
-                        <tr>
-                          <th scope="col">#</th>
-                          <th scope="col">Module</th>
-                          <th scope="col">Due Date</th>
-                          <th scope="col">Grades</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <th scope="row">1</th>
-                          <td>Geometry</td>
-                          <td>3/4/2019</td>
-                          <td>35%</td>
-                        </tr>
-                        <tr>
-                          <th scope="row">2</th>
-                          <td>Complex analysis</td>
-                          <td>16/5/2019</td>
-                          <td>65%</td>
-                        </tr>
-                        <tr>
-                          <th scope="row">3</th>
-                          <td>Metric spaces</td>
-                          <td>16/5/2019</td>
-                          <td>89%</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-              <!-- Exams -->
-              <div class="card shadow mb-5">
-                <div class="card-body">
-                  <h3 class="card-title">Exams</h3>
-                  <div class="table-responsive">
-                    <table class="table">
-                      <caption class="h5 py-0 sr-only">Exams</caption>
-                      <thead>
-                        <tr>
-                          <th scope="col">#</th>
-                          <th scope="col">Module</th>
-                          <th scope="col">Date</th>
-                          <th scope="col">Class</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <th scope="row">1</th>
-                          <td>Geometry</td>
-                          <td>16/6/2019 10:00 am</td>
-                          <td>3B12</td>
-                        </tr>
-                        <tr>
-                          <th scope="row">2</th>
-                          <td>Complex analysis</td>
-                          <td>20/6/2019 12:00 pm</td>
-                          <td>4A07</td>
-                        </tr>
-                        <tr>
-                          <th scope="row">3</th>
-                          <td>Metric spaces</td>
-                          <td>27/6/2019 14:00 pm</td>
-                          <td>3B12</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-              <!-- Module Grades -->
-              <div class="card shadow mb-5">
-                <div class="card-body">
-                  <h3 class="card-title">Module Marks</h3>
-                  <div class="table-responsive">
-                    <table class="table">
-                      <caption class="h5 py-0 sr-only">Exams</caption>
-                      <thead>
-                        <tr>
-                          <th scope="col">#</th>
-                          <th scope="col">Module</th>
-                          <th scope="col">Semester</th>
-                          <th scope="col">Grades</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <th scope="row">1</th>
-                          <td>Statistics</td>
-                          <td>Spring</td>
-                          <td>55%</td>
-                        </tr>
-                        <tr>
-                          <th scope="row">2</th>
-                          <td>Algebra</td>
-                          <td>Spring</td>
-                          <td>72%</td>
-                        </tr>
-                        <tr>
-                          <th scope="row">3</th>
-                          <td>Analysis</td>
-                          <td>Spring</td>
-                          <td>65%</td>
-                        </tr>
-                        <tr>
-                          <th scope="row">4</th>
-                          <td>Probability and statistics</td>
-                          <td>Spring</td>
-                          <td>72%</td>
-                        </tr>
-                        <tr>
-                          <th scope="row">5</th>
-                          <td>Multivariate calculus and mathematical models</td>
-                          <td>Autumn</td>
-                          <td class="text-danger font-weight-bold">35%</td>
-                        </tr>
-                        <tr>
-                          <th scope="row">6</th>
-                          <td>Geometry</td>
-                          <td>Spring</td>
-                          <td></td>
-                        </tr>
-                        <tr>
-                          <th scope="row">7</th>
-                          <td>Complex analysis</td>
-                          <td>Spring</td>
-                          <td></td>
-                        </tr>
-                        <tr>
-                          <th scope="row">8</th>
-                          <td>Metric spaces</td>
-                          <td>Spring</td>
-                          <td></td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-            </section>
-            <!-- MODULE SELECTION -->
-            <section id="moduleSelection">
-              <div class="card shadow">
-                <div class="card-body">
-                  <h3 class="card-title">Modules Selection</h3>
-                  <div class="accordion" id="moduleSelection-accordion">
-                    <!-- Spring Semester -->
-                    <div id="SpringSemesterSelection" class="card-text mb-2">
-                      <a class="btn btn-block border" data-toggle="collapse" href="#collapseSpring" role="button"
-                        aria-expanded="true" aria-controls="collapseSpring">
-                        <i class="far fa-arrow-alt-circle-down"></i> Spring Semester
-                      </a>
-                    </div>
-                    <div id="collapseSpring" class="collapse" aria-labelledby="SpringSemesterSelection"
-                      data-parent="#moduleSelection-accordion">
-                      <div class="card-body">
-                        <div class="table-responsive">
-                          <table class="table">
-                            <caption class="h5 py-0">Add Modules</caption>
-                            <thead>
-                              <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Modules</th>
-                                <th scope="col">Tutors</th>
-                                <th scope="col">
-                                  <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input" id="addModuleAll">
-                                    <label class="custom-control-label" for="addModuleAll"></label>
-                                  </div>
-                                </th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              <tr class="text-muted">
-                                <th scope="row">1</th>
-                                <td>Statistics</td>
-                                <td>Henry Warren</td>
-                                <td>
-                                  <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input" id="addStatistics" disabled>
-                                    <label class="custom-control-label" for="addStatistics"></label>
-                                  </div>
-                                </td>
-                              </tr>
-                              <tr class="text-muted">
-                                <th scope="row">2</th>
-                                <td>Algebra</td>
-                                <td>Kathryn Johnson</td>
-                                <td>
-                                  <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input" id="addAlgebra" disabled>
-                                    <label class="custom-control-label" for="addAlgebra"></label>
-                                  </div>
-                                </td>
-                              </tr>
-                              <tr class="text-muted">
-                                <th scope="row">3</th>
-                                <td>Analysis</td>
-                                <td>Richard Tucker </td>
-                                <td>
-                                  <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input" id="addAnalysis" disabled>
-                                    <label class="custom-control-label" for="addAnalysis"></label>
-                                  </div>
-                                </td>
-                              </tr>
-                              <tr class="text-muted">
-                                <th scope="row">4</th>
-                                <td>Probability and statistics</td>
-                                <td>Lauren Patterson</td>
-                                <td>
-                                  <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input" id="addProbabilityStatistics"
-                                      disabled>
-                                    <label class="custom-control-label" for="addProbabilityStatistics"></label>
-                                  </div>
-                                </td>
-                              </tr>
-                              <tr>
-                                <th scope="row">5</th>
-                                <td>Geometry and dynamics</td>
-                                <td>Adam Rodriguez</td>
-                                <td>
-                                  <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input" id="addGeometryDynamics">
-                                    <label class="custom-control-label" for="addGeometryDynamics"></label>
-                                  </div>
-                                </td>
-                              </tr>
-                            </tbody>
-                          </table>
-                        </div>
-                        <div class="d-flex justify-content-end mt-3">
-                          <button type="button" class="btn btn-primary mr-2" data-dismiss="modal">
-                            Save Selection
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                    <!-- Autumn Semester -->
-                    <div id="autumnSemesterSelection" class="card-text">
-                      <a class="btn btn-block border" data-toggle="collapse" href="#collapseAutumn" role="button"
-                        aria-expanded="false" aria-controls="collapseAutumn">
-                        <i class="far fa-arrow-alt-circle-down"></i> Autumn Semester
-                      </a>
-                    </div>
-                    <div id="collapseAutumn" class="collapse" aria-labelledby="autumnSemesterSelection"
-                      data-parent="#moduleSelection-accordion">
-                      <div class="card-body">
-                        <div class="table-responsive">
-                          <table class="table">
-                            <caption class="h5 py-0">Add Modules</caption>
-                            <thead>
-                              <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Modules</th>
-                                <th scope="col">Tutors</th>
-                                <th scope="col">
-                                  <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input" id="addModuleAll">
-                                    <label class="custom-control-label" for="addModuleAll"></label>
-                                  </div>
-                                </th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              <tr class="text-muted">
-                                <th scope="row">1</th>
-                                <td>Multivariate calculus and mathematical models</td>
-                                <td>Laura Dixon</td>
-                                <td>
-                                  <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input" id="addMCMM" disabled>
-                                    <label class="custom-control-label" for="addMCMM"></label>
-                                  </div>
-                                </td>
-                              </tr>
-                              <tr class="text-muted">
-                                <th scope="row">2</th>
-                                <td>Geometry</td>
-                                <td>Henry Duncan</td>
-                                <td>
-                                  <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input" id="addGeometry" disabled>
-                                    <label class="custom-control-label" for="addGeometry"></label>
-                                  </div>
-                                </td>
-                              </tr>
-                              <tr class="text-muted">
-                                <th scope="row">3</th>
-                                <td class="text-muted">Complex analysis</td>
-                                <td>Megan Payne</td>
-                                <td>
-                                  <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input" id="addComplexAnalysis"
-                                      disabled>
-                                    <label class="custom-control-label" for="addComplexAnalysis"></label>
-                                  </div>
-                                </td>
-                              </tr>
-                              <tr class="text-muted">
-                                <th scope="row">4</th>
-                                <td class="text-muted">Metric spaces</td>
-                                <td>Julie Lawrence</td>
-                                <td>
-                                  <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input" id="addMetricSpaces" disabled>
-                                    <label class="custom-control-label" for="addMetricSpaces"></label>
-                                  </div>
-                                </td>
-                              </tr>
-                              <tr>
-                                <th scope="row">5</th>
-                                <td>Differential equations</td>
-                                <td>Diana Dean</td>
-                                <td>
-                                  <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input" id="addDifferentialEquations">
-                                    <label class="custom-control-label" for="addDifferentialEquations"></label>
-                                  </div>
-                                </td>
-                              </tr>
-                            </tbody>
-                          </table>
-                        </div>
-                        <div class="d-flex justify-content-end mt-3">
-                          <button type="button" class="btn btn-primary mr-2" data-dismiss="modal">
-                            Save Selection
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </section>
+            {{> _cardModulesStudent}}
+          </div>
+          <!-- Overview Info -->
+          <div class="tab-pane" id="overview" role="tabpanel" aria-labelledby="module-list">
+            {{> _cardOverviewStudent}}
           </div>
         </div>
       </div>
