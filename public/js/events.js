@@ -88,6 +88,7 @@ const UICtrl = (function() {
     tableCheckboxColumnLevel_cardModules: "#modulesTable .sort-level",
     tableCheckboxColumnCheckbox_cardModules:
       "#modulesTable thead input[type='checkbox']",
+    // tableCheckboxColumnTitle_cardModulesSelection: "#modulesSelectionTable .sort-title",
     tableCheckboxColumnTitle_tabModules: "#taughtModulesTable .sort-title",
     tableCheckboxColumnCourse_tabModules: "#taughtModulesTable .sort-course",
     tableCheckboxColumnLevel_tabModules: "#taughtModulesTable .sort-level",
@@ -291,11 +292,15 @@ const UICtrl = (function() {
         }
       });
     },
-    fillInEditExamModalForm: function(action, taughtModuleName, taughtModuleID) {
+    fillInEditExamModalForm: function(
+      action,
+      taughtModuleName,
+      taughtModuleID
+    ) {
       document
         .querySelector(UISelectors.form_modalEditExam)
         .setAttribute("action", action);
-        
+
       document
         .querySelector(UISelectors.inputTextTaughtModuleId_modalEditExam)
         .setAttribute("value", taughtModuleID);
@@ -828,7 +833,6 @@ const App = (function(UICtrl) {
   /* ========================
    * PRIVATE VAR & METHODS
    * ======================== */
-
   // ======== LOAD EVENT LISTENERS ========
   const loadEventListeners = function() {
     // Get UISelectors
@@ -894,6 +898,9 @@ const App = (function(UICtrl) {
     document
       .querySelector(UISelectors.tableCheckboxColumnLevel_cardModules)
       .addEventListener("click", sortTable);
+    // document
+    //   .querySelector(UISelectors.tableCheckboxColumnTitle_cardModulesSelection)
+    //   .addEventListener("click", sortTable);
     document
       .querySelector(UISelectors.tableCheckboxColumnTitle_tabModules)
       .addEventListener("click", sortTable);
@@ -1017,6 +1024,8 @@ const App = (function(UICtrl) {
     //   .querySelector(UISelectors.d_cct_ac_m_taughtModulesTable)
     //   .addEventListener("change", enableDisableBtn);
   };
+
+  document.addEventListener('DOMContentLoaded',loadEventListeners);
 
   // ======================== EVENTS ========================
   // ---------------- TABLE EVENT LISTENERS ----------------
@@ -1323,7 +1332,9 @@ const App = (function(UICtrl) {
       taughtModuleID = e.target.parentElement.getAttribute("data-id");
 
       // ---- Set Form Action ----
-      facultyID = e.target.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.getAttribute("data-id");
+      facultyID = e.target.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.getAttribute(
+        "data-id"
+      );
       const action = `/dashboards/facultyMember/exams/${facultyID}?_method=PUT`;
 
       // -------- FILL IN THE "EDIT MODULE" MODAL FORM --------
@@ -1489,7 +1500,7 @@ const App = (function(UICtrl) {
     init: function() {
       console.log("Run...");
       // Load event listeners
-      loadEventListeners();
+      // loadEventListeners();
     }
   };
 })(UICtrl);

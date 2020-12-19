@@ -21,11 +21,10 @@
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700&display=swap" rel="stylesheet" />
 
+  
+
   <!-- Custom CSS -->
   <link rel="stylesheet" href="/css/style.css" />
-
-  <!-- Munipulate The DOM -->
-  <script type="text/javascript" src="/js/events.js"></script>
 
   <title>University</title>
 
@@ -48,6 +47,8 @@
 
 
   <!-- ======== SCRIPTS ======== -->
+<!-- Munipulate The DOM -->
+  <script type="text/javascript" src="/js/events.js"></script>
   <!-- jQuery -->
   <script src="https://code.jquery.com/jquery-3.4.1.min.js"
     integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
@@ -66,7 +67,8 @@
   <script src="https://cdn.ckeditor.com/4.13.1/standard/ckeditor.js"></script>
 
   <!-- Custom JavaScript -->
-  {{!-- <script src="app.js"></script> --}}
+  {{!--
+  <script src="app.js"></script> --}}
   <script>
     // Get the current year for the copyright
     $("#year").text(new Date().getFullYear());
@@ -123,32 +125,30 @@
       }
     });
 
+
     // ======== ALERT TIMEOUT ========
     setTimeout(function () {
       document.querySelector('.alert').remove();
     }, 5000);
 
-    // ======== CKEditor ========
+
+
+    // 
+    /* =================================
+    *             CKEditor 
+    *  =================================
+    */
+    // --------------------- REPLACES ---------------------
     // -------- Profile Form - Faculty Member "Bio" Textarea --------
-    const facultyBio = CKEDITOR.replace('bio', {
+    const facultyBio = CKEDITOR.replace('facultyBio', {
       plugins: 'wysiwygarea, toolbar, basicstyles, link',
       extraPlugins: 'notification'
-    });
-
-    facultyBio.on('required', function (evt) {
-      facultyBio.showNotification('This field is required.', 'warning');
-      evt.cancel();
     });
 
     // -------- Profile Form - Student "Bio" Textarea --------
-    const studentBio = CKEDITOR.replace('bio', {
+    const studentBio = CKEDITOR.replace('studentBio', {
       plugins: 'wysiwygarea, toolbar, basicstyles, link',
       extraPlugins: 'notification'
-    });
-
-    studentBio.on('required', function (evt) {
-      studentBio.showNotification('This field is required.', 'warning');
-      evt.cancel();
     });
 
     // -------- "Edit Course" Form - "Description" Textarea --------
@@ -157,21 +157,10 @@
       extraPlugins: 'notification'
     });
 
-    editCourseDescription.on('required', function (evt) {
-      editCourseDescription.showNotification('This field is required.', 'warning');
-      evt.cancel();
-    });
-
-
     // -------- "Create Course" Form - "Description" Textarea --------
-    const courseDescription = CKEDITOR.replace('createCourseDescription', {
+    const courseDescription = CKEDITOR.replace('bio', {
       plugins: 'wysiwygarea, toolbar, basicstyles, link',
       extraPlugins: 'notification'
-    });
-
-    courseDescription.on('required', function (evt) {
-      courseDescription.showNotification('This field is required.', 'warning');
-      evt.cancel();
     });
 
     // -------- "Edit Module" Form - "Description" Textarea --------
@@ -180,15 +169,36 @@
       extraPlugins: 'notification'
     });
 
-    editModuleDescription.on('required', function (evt) {
-      editModuleDescription.showNotification('This field is required.', 'warning');
-      evt.cancel();
-    });
-
     // -------- "Create Module" Form - "Description" Textarea --------
     const moduleDescription = CKEDITOR.replace('createModuleDescription', {
       plugins: 'wysiwygarea, toolbar, basicstyles, link',
       extraPlugins: 'notification'
+    });
+
+    // SHOW NOTIFICATION IN CASE OF EMPTY TEXT AREA ON SUBMIT FORM
+    facultyBio.on('required', function (evt) {
+      facultyBio.showNotification('This field is required.', 'warning');
+      evt.cancel();
+    });
+
+    studentBio.on('required', function (evt) {
+      studentBio.showNotification('This field is required.', 'warning');
+      evt.cancel();
+    });
+
+    editCourseDescription.on('required', function (evt) {
+      editCourseDescription.showNotification('This field is required.', 'warning');
+      evt.cancel();
+    });
+
+    courseDescription.on('required', function (evt) {
+      courseDescription.showNotification('This field is required.', 'warning');
+      evt.cancel();
+    });
+
+    editModuleDescription.on('required', function (evt) {
+      editModuleDescription.showNotification('This field is required.', 'warning');
+      evt.cancel();
     });
 
     moduleDescription.on('required', function (evt) {
@@ -197,7 +207,6 @@
     });
 
   </script>
-
 </body>
 
 </html>

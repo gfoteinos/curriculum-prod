@@ -76,9 +76,74 @@ const Module = mongoose.model("modules");
 /* ========================
  * ROUTES
  * ======================== */
+// Functions - Middlewares
+const getModules = (req, res, next) => {
+  // -------- Get All "Modules" --------
+  Module.find({})
+    .populate("courseID")
+    .sort({ name: "asc" })
+    .then(modules => {
+      // -------- Create A "Modules" List --------
+      let listModules = [];
+      if (modules) {
+        // Fill in "Module" list
+        let counter = 1;
+        modules.forEach(module => {
+          listModules.push({
+            aa: counter,
+            id: module._id,
+            name: module.name,
+            course: module.courseID.name,
+            degree: module.courseID.degree,
+            color: module.color,
+            description: module.description
+          });
+          counter++;
+        });
+      }
+      req.listModules = listModules;
+      next();
+    })
+    .catch(err => {
+      console.log(err.message);
+      return;
+    });
+};
+
+const getTaughtModules = (req, res, next) => {
+  FacultyMember.find({})
+    .populate("taughtModules.moduleID")
+    .populate("userID")
+    .then(facultyMembers => {
+      // ==== Fills In A Table Of "Taught Modules" && "Faculty Member" ==== 
+      let taughtModules = [];
+      if(facultyMembers) {
+        let counter = 1;
+        facultyMembers.forEach(member => {
+          member.taughtModules.forEach(taughtModule => {
+            taughtModules.push({
+              aa: counter,
+              id: taughtModule.moduleID.id,
+              moduleName: taughtModule.moduleID.name,
+              facultyName: member.userID.name
+            });
+            counter++;
+          });
+        });
+      }
+      req.taughtModules = taughtModules;
+      next();
+    })
+    .catch(err => {
+      console.log(err.message);
+      return;
+    });
+};
+
 // ======== LOAD "FACULTY MEMBER" DASHBOARD ========
 // Create A "Faculty Member" Object
 router.get("/facultyMember", (req, res, next) => {
+  console.log(req.user);
   FacultyMember.findOne({ userID: req.user.id })
     .then(member => {
       if (member) {
@@ -317,8 +382,11 @@ router.get("/facultyMember", (req, res, next) => {
   });
 });
 
+// router.use(getModules);
+router.use(getTaughtModules);
 // ======== LOAD "STUDENT" DASHBOARD ========
 router.get("/student", (req, res) => {
+  // console.log(req.user);
   // Create a student object
   const student = {
     id: req.user.id,
@@ -331,10 +399,12 @@ router.get("/student", (req, res) => {
     twitter: req.user.twitter,
     linkedin: req.user.linkedin
   };
-  console.log(student);
-  // Pass the user to the view
+  const taughtModules = req.taughtModules;
+  console.log(taughtModules);
+  // Pass the "Student" && "Taught Modules" to the view
   res.render("dashboards/student", {
-    student
+    student,
+    taughtModules
   });
 });
 
