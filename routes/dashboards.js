@@ -815,13 +815,17 @@ router.post("/facultyMember/courses/", (req, res) => {
 
 // Edit Course
 router.put("/facultyMember/courses/:id", (req, res) => {
+  console.log(req.body.description);
   // Get all courses
   Course.find({})
     .then(courses => {
       // ======== ERROR HANDLING ========
       // Initialize the error
       let error = "";
-
+      if(req.body.description === "") {
+        error = "One or more of the form's fields are empty. Please fill in the form fields where missing.";
+      }
+      
       // ---- Course already exist ----
       courses.forEach(course => {
         // Convert object_id to string
@@ -1319,7 +1323,7 @@ router.put("/facultyMember/courseworks/:id", (req, res) => {
   FacultyMember.findOne({ userID: req.params.id })
     .populate("taughtModules.moduleID")
     .then(member => {
-      let addCourseworks = false;
+      let updateCoursework = false;
       if (member) {
         // ---- Get the data from UI form ----
         const uiTaughtModuleID = req.body.uiTaughtModuleID;
@@ -1335,12 +1339,12 @@ router.put("/facultyMember/courseworks/:id", (req, res) => {
               date: uiCourseworkDate
             };
             taughtModule.coursework = newCoursework;
-            addCourseworks = true;
+            updateCoursework = true;
           }
         });
       }
 
-      if (addCourseworks) {
+      if (updateCoursework) {
         // Save to the database
         member
           .save()

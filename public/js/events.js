@@ -1,46 +1,46 @@
-// Click "Profile" link on "dashboard/faculty-or-student" url
-const profileClick = function() {
-  window.onload = function() {
-    document.getElementById("profile-list").click();
-  };
-};
+// // Click "Profile" link on "dashboard/faculty-or-student" url
+// const profileClick = function() {
+//   window.onload = function() {
+//     document.getElementById("profile-list").click();
+//   };
+// };
 
-// Click "Dashboard" link on on "dashboard/faculty-or-student" url
-const dashboardClick = function() {
-  window.onload = function() {
-    document.getElementById("dashboard-list").click();
-  };
-};
+// // Click "Dashboard" link on on "dashboard/faculty-or-student" url
+// const dashboardClick = function() {
+//   window.onload = function() {
+//     document.getElementById("dashboard-list").click();
+//   };
+// };
 
-// Click "Courseworks Calendar" link on on "dashboard/faculty" url
-const courseworksCalendarClick = function() {
-  window.onload = function() {
-    document.getElementById("dashboard-list").click();
-    document.getElementById("courseworksCalendarLink").click();
-  };
-};
+// // Click "Courseworks Calendar" link on on "dashboard/faculty" url
+// const courseworksCalendarClick = function() {
+//   window.onload = function() {
+//     document.getElementById("dashboard-list").click();
+//     document.getElementById("courseworksCalendarLink").click();
+//   };
+// };
 
-// Click "Exams Calendar" link on on "dashboard/faculty" url
-const examsCalendarClick = function() {
-  window.onload = function() {
-    document.getElementById("dashboard-list").click();
-    document.getElementById("examsCalendarLink").click();
-  };
-};
+// // Click "Exams Calendar" link on on "dashboard/faculty" url
+// const examsCalendarClick = function() {
+//   window.onload = function() {
+//     document.getElementById("dashboard-list").click();
+//     document.getElementById("examsCalendarLink").click();
+//   };
+// };
 
-// Click "Courses" link on on "dashboard/faculty-or-student" url
-const coursesClick = function() {
-  window.onload = function() {
-    document.getElementById("course-list").click();
-  };
-};
+// // Click "Courses" link on on "dashboard/faculty-or-student" url
+// const coursesClick = function() {
+//   window.onload = function() {
+//     document.getElementById("course-list").click();
+//   };
+// };
 
-// Click "Modules" link on on "dashboard/faculty-or-student" url
-const modulesClick = function() {
-  window.onload = function() {
-    document.getElementById("module-list").click();
-  };
-};
+// // Click "Modules" link on on "dashboard/faculty-or-student" url
+// const modulesClick = function() {
+//   window.onload = function() {
+//     document.getElementById("module-list").click();
+//   };
+// };
 
 const disableElement = function(className) {
   const element = document.querySelector(className);
@@ -54,6 +54,14 @@ const UICtrl = (function() {
    * ======================== */
   // ======== GATHER UI SELECTORS ========
   const UISelectors = {
+
+    messageCardCourses: "#cardCourseMessage",
+    messageCardModules: "#cardModuleMessage",
+    messageCardProfile: "#cardProfileMessage",
+    messageTabCourseworks: "#tabCoursesworksMessage",
+    messageTabExams: "#tabExamsMessage",
+    messageTabModules: "#tabModulesMessage",
+    
     // -------- COURSES FORM --------
     form_cardCourses: "#formCourses",
     form_cardModules: "#modulesForm",
@@ -61,6 +69,13 @@ const UICtrl = (function() {
     form_modalEditModule: "#editModuleModal form",
     form_modalEditExam: "#editExamModal form",
     form_tabCourseworks: "#courseworksForm",
+
+    tabListProfile: "#profile-list",
+    tabListDashboard: "#dashboard-list",
+    tabListCourses: "#course-list",
+    tabListModules: "#module-list",
+    tabCourseworks: "#courseworksCalendarLink",
+    tabExams: "#examsCalendarLink",
 
     tableCheckbox_cardCourses: "#coursesTable",
     tableCheckbox_cardModules: "#modulesTable",
@@ -837,6 +852,9 @@ const App = (function(UICtrl) {
   const loadEventListeners = function() {
     // Get UISelectors
     const UISelectors = UICtrl.getUISelectors();
+    // Sample code
+    // document
+    //   .querySelector(".alert-success").addEventListener("click", viewCoursesTab);
 
     // window.onload = () => {};
     // ---------------- TABLE EVENT LISTENERS ----------------
@@ -1023,11 +1041,49 @@ const App = (function(UICtrl) {
     // document
     //   .querySelector(UISelectors.d_cct_ac_m_taughtModulesTable)
     //   .addEventListener("change", enableDisableBtn);
+    
+    if(document.querySelector(UISelectors.messageCardProfile)) {
+      document.querySelector(UISelectors.tabListProfile).click();
+    };
+
+    if(document.querySelector(UISelectors.messageTabModules)) {
+      document.querySelector(UISelectors.tabListDashboard).click();
+    };
+
+    if(document.querySelector(UISelectors.messageTabCourseworks)) {
+      document.querySelector(UISelectors.tabListDashboard).click();
+      document.querySelector(UISelectors.tabCourseworks).click();
+    };
+
+    if(document.querySelector(UISelectors.messageTabExams)) {
+      document.querySelector(UISelectors.tabListDashboard).click();
+      document.querySelector(UISelectors.tabExams).click();
+    };
+
+    if(document.querySelector(UISelectors.messageCardCourses)) {
+      document.querySelector(UISelectors.tabListCourses).click();
+    };
+
+    if(document.querySelector(UISelectors.messageCardModules)) {
+      document.querySelector(UISelectors.tabListModules).click();
+    };
+
   };
 
-  document.addEventListener('DOMContentLoaded',loadEventListeners);
+  document.addEventListener("DOMContentLoaded", loadEventListeners);
 
   // ======================== EVENTS ========================
+  // Sample code
+  // const viewCoursesTab = function() {
+
+  //   // window.onload = function() {
+  //   //   document.getElementById("course-list").click();
+  //   // };
+  //   // // console.log(e.target);
+  //   // // document.getElementById("course-list").click();
+  // }
+
+
   // ---------------- TABLE EVENT LISTENERS ----------------
   // Check/Unckeck All Table Rows
   const checkUncheckAll = function(e) {

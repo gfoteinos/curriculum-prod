@@ -3,50 +3,50 @@
 {{!-- ---- When Click "Save Changes" At "Edit Course" Form ---- --}}
 {{!-- In case of course already exist --}}
 {{#equal error_msg 'Fail to update. There is another "Course" with the same "Title" and "Level". Click the edit button again to retry.' }}
-<div class="alert alert-danger mt-3 mb-0 mx-4">{{error_msg}}</div>
+<div id="cardCourseMessage" class="alert alert-danger mt-3 mb-0 mx-4">{{error_msg}}</div>
 <script>coursesClick()</script>
 {{/equal}}
 
 {{!-- In case of no changes made --}}
 {{#equal error_msg 'Fail to update. There are not any changes. To edit a "Course" click the edit button again to retry.' }}
-<div class="alert alert-danger mt-3 mb-0 mx-4">{{error_msg}}</div>
+<div id="cardCourseMessage" class="alert alert-danger mt-3 mb-0 mx-4">{{error_msg}}</div>
 <script>coursesClick()</script>
 {{/equal}}
 
 {{!-- In case of success --}}
 {{#equal success_msg 'Course has been updated.' }}
-<div class="alert alert-success mt-3 mb-0 mx-4">{{success_msg}}</div>
+<div id="cardCourseMessage" class="alert alert-success mt-3 mb-0 mx-4">{{success_msg}}</div>
 <script>coursesClick()</script>
 {{/equal}}
 
 {{!-- ---- When Click "Create Course" At "Courses" Form ---- --}}
 {{!-- In case of form fields error --}}
 {{#equal error_msg "One or more of the form's fields are empty. Please fill in the form fields where missing." }}
-<div class="alert alert-danger mt-3 mb-0 mx-4">{{error_msg}}</div>
-<script>coursesClick()</script>
+<div id="cardCourseMessage" class="alert alert-danger mt-3 mb-0 mx-4">{{error_msg}}</div>
+{{!-- <script>coursesClick()</script> --}}
 {{/equal}}
 
 {{!-- In case of course already exist --}}
 {{#equal error_msg "Course already exist." }}
-<div class="alert alert-danger mt-3 mb-0 mx-4">{{error_msg}}</div>
-<script>coursesClick()</script>
+<div id="cardCourseMessage" class="alert alert-danger mt-3 mb-0 mx-4">{{error_msg}}</div>
+{{!-- <script>coursesClick()</script> --}}
 {{/equal}}
 
 {{!-- In case of course name is missing --}}
 {{#equal error_msg '"Course name" is missing. Please enter course name."' }}
-<div class="alert alert-danger mt-3 mb-0 mx-4">{{error_msg}}</div>
-<script>coursesClick()</script>
+<div id="cardCourseMessage" class="alert alert-danger mt-3 mb-0 mx-4">{{error_msg}}</div>
+{{!-- <script>coursesClick()</script> --}}
 {{/equal}}
 
 {{!-- In case of success --}}
 {{#equal success_msg 'New course added.' }}
-<div class="alert alert-success mt-3 mb-0 mx-4">{{success_msg}}</div>
-<script>coursesClick()</script>
+<div id="cardCourseMessage" class="alert alert-success mt-3 mb-0 mx-4">{{success_msg}}</div>
+{{!-- <script>coursesClick()</script> --}}
 {{/equal}}
 
 {{!-- ---- When Click "Delete" At "Courses" Form ---- --}}
 {{!-- In case of success --}}
 {{#equal success_msg 'Courses deleted successfully.' }}
-<div class="alert alert-success mt-3 mb-0 mx-4">{{success_msg}}</div>
-<script>coursesClick()</script>
+<div id="cardCourseMessage" class="alert alert-success mt-3 mb-0 mx-4">{{success_msg}}</div>
+{{!-- <script>coursesClick()</script> --}}
 {{/equal}}

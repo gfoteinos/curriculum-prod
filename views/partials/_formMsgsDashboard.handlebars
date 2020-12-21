@@ -5,31 +5,31 @@
 
 {{!-- In case of success adding "Taught Module" --}}
 {{#equal success_msg 'Taught Modules have been added successfully.' }}
-<div class="alert alert-success mt-3 mb-0 mx-4">{{success_msg}}</div>
-<script>dashboardClick()</script>
+<div id="tabModulesMessage" class="alert alert-success mt-3 mb-0 mx-4">{{success_msg}}</div>
+{{!-- <script>dashboardClick()</script> --}}
 {{/equal}}
 
 {{!-- In case of success deleting "Taught Module" --}}
 {{#equal success_msg 'Taught Modules have been deleted successfully.' }}
-<div class="alert alert-success mt-3 mb-0 mx-4">{{success_msg}}</div>
-<script>dashboardClick()</script>
+<div id="tabModulesMessage" class="alert alert-success mt-3 mb-0 mx-4">{{success_msg}}</div>
+{{!-- <script>dashboardClick()</script> --}}
 {{/equal}}
 
 {{!-- ======== COURSEWORKS CALENDAR MANAGEMENT TAB ======== --}}
 {{!-- ---- When Click "Add Courseworks" ---- --}}
 {{!-- In case of success adding "Coursework" --}}
 {{#equal success_msg 'Courseworks have been added successfully.' }}
-<div class="alert alert-success mt-3 mb-0 mx-4">{{success_msg}}</div>
+<div id="tabCoursesworksMessage" class="alert alert-success mt-3 mb-0 mx-4">{{success_msg}}</div>
 <script>courseworksCalendarClick()</script>
 {{/equal}}
 {{!-- In case of there was not any Coursework selected to add --}}
 {{#equal error_msg 'It was not selected any "coursework" to add.' }}
-<div class="alert alert-danger mt-3 mb-0 mx-4">{{error_msg}}</div>
+<div id="tabCoursesworksMessage" class="alert alert-danger mt-3 mb-0 mx-4">{{error_msg}}</div>
 <script>courseworksCalendarClick()</script>
 {{/equal}}
 {{!-- In case of success deleting "Courseworks" --}}
 {{#equal success_msg 'Courseworks have been deleted successfully.' }}
-<div class="alert alert-success mt-3 mb-0 mx-4">{{success_msg}}</div>
+<div id="tabCoursesworksMessage" class="alert alert-success mt-3 mb-0 mx-4">{{success_msg}}</div>
 <script>courseworksCalendarClick()</script>
 {{/equal}}
 
@@ -37,26 +37,26 @@
 {{!-- ---- When Click "Add Exams" ---- --}}
 {{!-- In case of success adding "Exams" --}}
 {{#equal success_msg 'Exams have been added successfully.' }}
-<div class="alert alert-success mt-3 mb-0 mx-4">{{success_msg}}</div>
+<div id="tabExamsMessage" class="alert alert-success mt-3 mb-0 mx-4">{{success_msg}}</div>
 <script>examsCalendarClick()</script>
 {{/equal}}
 {{!-- In case of there was not any "exam" selected to add --}}
 {{#equal error_msg 'It was not selected any exam to add.' }}
-<div class="alert alert-danger mt-3 mb-0 mx-4">{{error_msg}}</div>
+<div id="tabExamsMessage" class="alert alert-danger mt-3 mb-0 mx-4">{{error_msg}}</div>
 <script>examsCalendarClick()</script>
 {{/equal}}
 {{!-- In case of success updating "Exams" --}}
 {{#equal success_msg 'Exam has been updated successfully.' }}
-<div class="alert alert-success mt-3 mb-0 mx-4">{{success_msg}}</div>
+<div id="tabExamsMessage" class="alert alert-success mt-3 mb-0 mx-4">{{success_msg}}</div>
 <script>examsCalendarClick()</script>
 {{/equal}}
 {{!-- In case of there was not updated an exam successfuly --}}
 {{#equal error_msg 'Something went wrong on updating exam. One or more field were not filled in. Please try again.' }}
-<div class="alert alert-danger mt-3 mb-0 mx-4">{{error_msg}}</div>
+<div id="tabExamsMessage" class="alert alert-danger mt-3 mb-0 mx-4">{{error_msg}}</div>
 <script>examsCalendarClick()</script>
 {{/equal}}
 {{!-- In case of success deleting "Exams" --}}
 {{#equal success_msg 'Exams have been deleted successfully.' }}
-<div class="alert alert-success mt-3 mb-0 mx-4">{{success_msg}}</div>
+<div id="tabExamsMessage" class="alert alert-success mt-3 mb-0 mx-4">{{success_msg}}</div>
 <script>examsCalendarClick()</script>
 {{/equal}}

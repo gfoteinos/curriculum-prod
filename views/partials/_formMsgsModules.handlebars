@@ -3,45 +3,45 @@
 {{!-- ---- When Click "Save Changes" At "Edit Module" Form ---- --}}
 {{!-- In case of module already exist --}}
 {{#equal error_msg 'Fail to update. There is another "Module" with the same "Title" and "Course". Click the edit button again to retry.' }}
-<div class="alert alert-danger mt-3 mb-0 mx-4">{{error_msg}}</div>
-<script>modulesClick()</script>
+<div id="cardModuleMessage" class="alert alert-danger mt-3 mb-0 mx-4">{{error_msg}}</div>
+{{!-- <script>modulesClick()</script> --}}
 {{/equal}}
 
 {{!-- In case of no changes made --}}
 {{#equal error_msg 'Fail to update. There are not any changes. To edit a "Module" click the edit button again to retry.' }}
-<div class="alert alert-danger mt-3 mb-0 mx-4">{{error_msg}}</div>
-<script>modulesClick()</script>
+<div id="cardModuleMessage" class="alert alert-danger mt-3 mb-0 mx-4">{{error_msg}}</div>
+{{!-- <script>modulesClick()</script> --}}
 {{/equal}}
 
 {{!-- In case of success --}}
 {{#equal success_msg 'Module has been updated.' }}
-<div class="alert alert-success mt-3 mb-0 mx-4">{{success_msg}}</div>
-<script>modulesClick()</script>
+<div id="cardModuleMessage" class="alert alert-success mt-3 mb-0 mx-4">{{success_msg}}</div>
+{{!-- <script>modulesClick()</script> --}}
 {{/equal}}
 
 {{!-- ---- When Click "Create Module" At "Modules" Form ---- --}}
 {{!---- In case of form fields error ----}}
 {{#equal error_msg '"Module Name" or "Course Name" are missing. Please fill in the form fields where missing.' }}
-<div class="alert alert-danger mt-3 mb-0 mx-4">{{error_msg}}</div>
-<script>modulesClick()</script>
+<div id="cardModuleMessage" class="alert alert-danger mt-3 mb-0 mx-4">{{error_msg}}</div>
+{{!-- <script>modulesClick()</script> --}}
 {{/equal}}
 
 {{!---- In case of module already exist ----}}
 {{#equal error_msg "Module already exist." }}
-<div class="alert alert-danger mt-3 mb-0 mx-4">{{error_msg}}</div>
-<script>modulesClick()</script>
+<div id="cardModuleMessage" class="alert alert-danger mt-3 mb-0 mx-4">{{error_msg}}</div>
+{{!-- <script>modulesClick()</script> --}}
 {{/equal}}
 
 {{!---- In case of success ----}}
 {{#equal success_msg 'New module added.' }}
-<div class="alert alert-success mt-3 mb-0 mx-4">{{success_msg}}</div>
+<div id="cardModuleMessage" class="alert alert-success mt-3 mb-0 mx-4">{{success_msg}}</div>
 {{!-- Load Profile Form --}}
-<script>modulesClick()</script>
+{{!-- <script>modulesClick()</script> --}}
 {{/equal}}
 
 {{!-- ---- When Click "Delete" At "Modules" Form ---- --}}
 {{!-- In case of success --}}
 {{#equal success_msg 'Modules deleted successfully.' }}
-<div class="alert alert-success mt-3 mb-0 mx-4">{{success_msg}}</div>
-<script>modulesClick()</script>
+<div id="cardModuleMessage" class="alert alert-success mt-3 mb-0 mx-4">{{success_msg}}</div>
+{{!-- <script>modulesClick()</script> --}}
 {{/equal}}
