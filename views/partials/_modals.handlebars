@@ -106,7 +106,7 @@
       <div class="modal-footer">
         <button id="cancelDeleteTaughtModulesModalBtn" type="button" class="btn btn-secondary"
           data-dismiss="modal">No</button>
-        <button id="deleteTaughtModulesModalBtn" type="button" class="btn btn-primary">Yes</button>
+        <button id="deleteTaughtModulesModalBtn" type="button" class="btn btn-success">Yes</button>
       </div>
     </div>
   </div>
@@ -150,14 +150,16 @@
                   <td class="title">
                     {{moduleName}}
                   </td>
-                  <td>
-                    <span class="d-none">{{courseworkDate}}</span>
-                    <span id="dcctacmtm-span-{{taughtModuleID}}">
-                      <input type="date" id="dcctacmtmDate-{{taughtModuleID}}" class="form-control" name="date"
-                        data-id="{{taughtModuleID}}">
-                      <label for="dcctacmtmDate-{{taughtModuleID}}" class="sr-only">Coursework Date</label>
-                    </span>
-                  </td>
+                  <div class="form-group">
+                    <td>
+                      <span class="d-none">{{courseworkDate}}</span>
+                      <span id="dcctacmtm-span-{{taughtModuleID}}">
+                        <label for="dcctacmtmDate-{{taughtModuleID}}" class="sr-only">Coursework Date</label>
+                        <input type="date" id="dcctacmtmDate-{{taughtModuleID}}" class="form-control" name="date"
+                          data-id="{{taughtModuleID}}">
+                      </span>
+                    </td>
+                  </div>
                   <input id="dcctacmtm-{{taughtModuleID}}" name="taughtModuleID" type="hidden"
                     value="{{taughtModuleID}}">
                 </tr>
@@ -355,8 +357,7 @@
                         AB12D</small>
                     </span>
                   </td>
-                  <input id="editExamTaughtModuleId" name="taughtModuleID" type="hidden"
-                    value="{{taughtModuleID}}">
+                  <input id="editExamTaughtModuleId" name="taughtModuleID" type="hidden" value="{{taughtModuleID}}">
                 </tr>
               </tbody>
             </table>
@@ -470,7 +471,7 @@
         </button>
       </div>
       <div class="modal-body">
-        <form action="/dashboards/facultyMember/courses/" method="post">
+        <form action="/dashboards/facultyMember/courses/" method="post" class="">
           <!-- ---- Course Name ---- -->
           <h2></h2>
           <div class="form-group">
@@ -483,6 +484,9 @@
               </div>
               <input type="text" name="name" id="createCourseName" class="form-control form-control-lg" maxlength="64"
                 required>
+              {{!-- <div class="invalid-feedback">
+                Please provide a valid Course Name.
+              </div> --}}
             </div>
           </div>
           <!-- ---- Academic Degree & Color ---- -->
@@ -497,10 +501,13 @@
                   </span>
                 </div>
                 <select name="degree" id="createCourseLevel" class="custom-select custom-select-lg" required>
-                  <option disabled="" selected="">Choose ...</option>
+                  <option disabled selected value="">Choose ...</option>
                   <option value="Bachelor">Bachelor</option>
                   <option value="Master">Master</option>
                 </select>
+                {{!-- <div class="invalid-feedback">
+                  Please provide a valid Course Name.
+                </div> --}}
               </div>
             </div>
             <div class="form-group col-md-6">
@@ -519,11 +526,12 @@
           <!-- ---- Description ---- -->
           <div class="form-group">
             <label for="bio">Description</label>
-            {{!-- <small>Write a few words about youself</small> --}}
             <textarea id="bio" name="description" class="form-control" required>
                       </textarea>
           </div>
-
+          {{!-- <div class="invalid-feedback">
+            Please provide a valid Course Name.
+          </div> --}}
           <!-- ---- Create Button ---- -->
           <div class="d-flex justify-content-end">
             <button type="submit" id="saveCourseBtn" class="btn btn-success">
@@ -558,7 +566,7 @@
       <div class="modal-footer">
         <button id="cancelDeleteCoursesModalBtn" type="button" class="btn btn-secondary"
           data-dismiss="modal">No</button>
-        <button id="deleteCoursesModalBtn" type="button" class="btn btn-primary">Yes</button>
+        <button id="deleteCoursesModalBtn" type="button" class="btn btn-success">Yes</button>
       </div>
     </div>
   </div>
@@ -687,7 +695,7 @@
                   </span>
                 </div>
                 <select name="courseID" id="createModuleCourseName" class="custom-select custom-select-lg" required>
-                  <option disabled selected="">Choose ...</option>
+                  <option disabled selected value="">Choose ...</option>
                   {{#each listCourses}}
                   <option value="{{id}}">{{name}}-{{degree}}</option>
                   {{/each}}
@@ -748,7 +756,7 @@
       <div class="modal-footer">
         <button id="cancelDeleteModulesModalBtn" type="button" class="btn btn-secondary"
           data-dismiss="modal">No</button>
-        <button id="deleteModulesModalBtn" type="button" class="btn btn-primary">Yes</button>
+        <button id="deleteModulesModalBtn" type="button" class="btn btn-success">Yes</button>
       </div>
     </div>
   </div>

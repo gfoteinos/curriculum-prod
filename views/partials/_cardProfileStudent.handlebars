@@ -6,8 +6,7 @@
   {{> _formMsgsProfile }}
   <div class="card-body">
     <!-- ======== Profile Settings ======== -->
-    <form action="/dashboards/student/profile/{{student.id}}?_method=PUT" method="post"
-      enctype="multipart/form-data">
+    <form action="/dashboards/student/profile/{{student.id}}?_method=PUT" method="post" enctype="multipart/form-data">
       <input type="hidden" name="_method" value="PUT">
 
       <!-- ==== BASICS ==== -->
@@ -42,10 +41,10 @@
           </small>
         </div>
       </div>
-      
+
       <!-- ==== PROFILE PHOTO ==== -->
       {{#if student.photo}}
-      <!-- Delete Profile Photo-->
+      <!-- View Profile Photo && Delete Profile Photo Chekcbox -->
       <hr class="hr--y-wide">
       <div class="form-group">
         <div class="d-flex flex-row justify-content-center">
@@ -64,7 +63,7 @@
         </div>
       </div>
       {{else}}
-      <!-- Upload Profile Photo -->
+      <!-- View Upload Profile Photo -->
       <div class="form-group">
         <label for="photo">Photo</label>
         <small><span class="text-danger">(Optional)</span></small>
@@ -80,14 +79,15 @@
       <hr class="hr--y-wide">
 
       <!-- ==== BIO ==== -->
-      <h4 id="bio-label">Bio</h4>
+      <h4>Bio</h4>
       <div class="form-group">
-        <small>Write a few words about youself</small>
+        <label for="studentBio">Write a few words about youself</label>
+        {{!-- <small>Write a few words about youself</small> --}}
         <textarea id="studentBio" name="bio" class="form-control" aria-labelledby="bio-label" required>
                       {{student.bio}} 
                     </textarea>
       </div>
-      
+
       <hr class="hr--y-wide">
 
       <!-- ==== SOCIAL MEDIA ==== -->

@@ -123,3 +123,21 @@
     </div>
   </div>
 </section>
+
+<!-- ======== SCRIPTS ======== -->
+<!-- Munipulate The DOM -->
+<script type="text/javascript" src="/js/studentEvents.js"></script>
+
+<script>
+  // 
+  /* =================================
+  *             CKEditor 
+  *  =================================
+  */
+  // --------------------- REPLACES ---------------------
+  // -------- Profile Form - Student "Bio" Textarea --------
+  const studentBio = CKEDITOR.replace('studentBio', {
+    plugins: 'wysiwygarea, toolbar, basicstyles, link',
+    extraPlugins: 'notification'
+  });
+</script>

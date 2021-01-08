@@ -82,7 +82,7 @@
 
       <!-- ==== PROFILE PHOTO ==== -->
       {{#if faculty.photo}}
-      <!-- Delete Profile Photo-->
+      <!-- View Profile Photo && Delete Profile Photo Chekcbox -->
       <hr class="hr--y-wide">
       <div class="form-group">
         <div class="d-flex flex-row justify-content-center">
@@ -101,7 +101,7 @@
         </div>
       </div>
       {{else}}
-      <!-- Upload Profile Photo -->
+      <!-- View Upload Profile Photo -->
       <div class="form-group">
         <label for="photo">Photo</label>
         <small><span class="text-danger">(Optional)</span></small>
@@ -115,12 +115,12 @@
       {{/if}}
 
       <hr class="hr--y-wide">
-
+      <h4>Bio</h4>
       <!-- ==== BIO ==== -->
-      <h4 id="bio-label">Bio</h4>
       <div class="form-group">
-        <small>Write a few words about youself</small>
-        <textarea id="facultyBio" name="bio" class="form-control" aria-labelledby="bio-label" required>
+        <label for="facultyBio">Write a few words about youself</label>
+        {{!-- <small>Write a few words about youself</small> --}}
+        <textarea id="facultyBio" name="bio" class="form-control" required>
                       {{faculty.bio}} 
                     </textarea>
       </div>

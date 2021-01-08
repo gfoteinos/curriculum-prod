@@ -47,13 +47,16 @@ const disableElement = function(className) {
   element.classList.add("icon--disabled");
 };
 
-// ======== UI CONTROLER ========
+/* ================================================
+ * UI CONTROLER
+ * ================================================ */
 const UICtrl = (function() {
   /* ========================
    * PRIVATE VAR & METHODS
    * ======================== */
   // ======== GATHER UI SELECTORS ========
   const UISelectors = {
+    // cardCourseInfo_btnSave: "#saveCourseBtn",
 
     messageCardCourses: "#cardCourseMessage",
     messageCardModules: "#cardModuleMessage",
@@ -61,7 +64,7 @@ const UICtrl = (function() {
     messageTabCourseworks: "#tabCoursesworksMessage",
     messageTabExams: "#tabExamsMessage",
     messageTabModules: "#tabModulesMessage",
-    
+
     // -------- COURSES FORM --------
     form_cardCourses: "#formCourses",
     form_cardModules: "#modulesForm",
@@ -144,6 +147,7 @@ const UICtrl = (function() {
     inputTextClassroom_modalEditExam: "#editExamClassroom",
     inputTextTaughtModuleId_modalEditExam: "#editExamTaughtModuleId",
 
+    btnsSubmit: "button[type='submit']",
     btnAddTaughtModules_tabModules: "#triggerModalAddTaughtModuleBtn",
     btnAddCourseworks_tabCourseworks: "#d-cct-f-triggerModalAddCourseworksBtn",
     btnAddExams_tabExams: "#d-ect-f-triggerModalAddExamsBtn",
@@ -165,7 +169,6 @@ const UICtrl = (function() {
     btnYes_modalDeleteModules: "#deleteModulesModalBtn",
     btnYes_modalDeleteTaughtModules: "#deleteTaughtModulesModalBtn",
 
-    // btnSave_cardCourseInfo: "#saveCourseBtn",
     btnIconSave_tabCourseworks: "#d-cct-courseworksTable tbody .btn-success",
     btnIconAdd_modalAddCourseworks: "#addCourseworksBtn",
     btnIconAdd_modalAddExams: "#addExamsBtn",
@@ -625,6 +628,28 @@ const UICtrl = (function() {
         position.firstElementChild.remove();
       }, 5000);
     },
+    showValidation: function(position, message) {
+      // console.log(position);
+      // console.log(position.nextElementSibling);
+      // console.log(position.querySelector(".invalid-field"));
+      // console.log(position.nextElementSibling.classList());
+      // if (
+      //   !position.querySelector(".invalid-field") ||
+      //   (position.querySelector("textarea") &&
+      //     !position.querySelector(".invalid-field"))
+      // ) {
+
+      // }
+
+      // --- Built & Insert An Feedback Message ----
+      const div = document.createElement("div");
+      div.className = "form-text error-feedback";
+      div.innerHTML = `${message}`;
+      position.insertAdjacentElement("beforeend", div);
+    },
+    hideValidation: function(position) {
+      console.log(position);
+    },
     updateData: async function(data, path) {
       const options = {
         method: "PUT",
@@ -843,12 +868,14 @@ const UICtrl = (function() {
   };
 })();
 
-// ======== APPLICATION CONTROLER ========
+/* ================================================
+ * APPLICATION CONTROLER
+ * ================================================ */
 const App = (function(UICtrl) {
   /* ========================
    * PRIVATE VAR & METHODS
    * ======================== */
-  // ======== LOAD EVENT LISTENERS ========
+  
   const loadEventListeners = function() {
     // Get UISelectors
     const UISelectors = UICtrl.getUISelectors();
@@ -1041,38 +1068,120 @@ const App = (function(UICtrl) {
     // document
     //   .querySelector(UISelectors.d_cct_ac_m_taughtModulesTable)
     //   .addEventListener("change", enableDisableBtn);
-    
-    if(document.querySelector(UISelectors.messageCardProfile)) {
+
+    // -------------------- ALERT MESSAGES --------------------
+    if (document.querySelector(UISelectors.messageCardProfile)) {
       document.querySelector(UISelectors.tabListProfile).click();
-    };
+    }
 
-    if(document.querySelector(UISelectors.messageTabModules)) {
+    if (document.querySelector(UISelectors.messageTabModules)) {
       document.querySelector(UISelectors.tabListDashboard).click();
-    };
+    }
 
-    if(document.querySelector(UISelectors.messageTabCourseworks)) {
+    if (document.querySelector(UISelectors.messageTabCourseworks)) {
       document.querySelector(UISelectors.tabListDashboard).click();
       document.querySelector(UISelectors.tabCourseworks).click();
-    };
+    }
 
-    if(document.querySelector(UISelectors.messageTabExams)) {
+    if (document.querySelector(UISelectors.messageTabExams)) {
       document.querySelector(UISelectors.tabListDashboard).click();
       document.querySelector(UISelectors.tabExams).click();
-    };
+    }
 
-    if(document.querySelector(UISelectors.messageCardCourses)) {
+    if (document.querySelector(UISelectors.messageCardCourses)) {
       document.querySelector(UISelectors.tabListCourses).click();
-    };
+    }
 
-    if(document.querySelector(UISelectors.messageCardModules)) {
+    if (document.querySelector(UISelectors.messageCardModules)) {
       document.querySelector(UISelectors.tabListModules).click();
-    };
+    }
 
+    // ------------------- FORM VALIDATIONS --------------------
+    const formSubmitButtons = document.querySelectorAll(UISelectors.btnsSubmit);
+    console.log(document.querySelectorAll(UISelectors.btnsSubmit));
+    formSubmitButtons.forEach(button => {
+      button.addEventListener("click", formValidation);
+    });
   };
 
+  // Load event listeners when the DOM content is loaded 
   document.addEventListener("DOMContentLoaded", loadEventListeners);
 
-  // ======================== EVENTS ========================
+  /* ------------------------------------------------
+   * EVENTS
+   * ------------------------------------------------ */
+  const formValidation = function(e) {
+    // Get The Form Element
+    const form = e.target.closest("form");
+
+    // Get The Defaults Browser Invalid Fields && Fields Feedback Messages
+    const invalidFieldsExceptCKEditor = form.querySelectorAll(":invalid");
+    const invalidFeedback = form.querySelectorAll(".error-feedback");
+    
+    // Reset Feedback Messages
+    for (let i = 0; i < invalidFeedback.length; i++) {
+      // Remove any feedback messages if exist
+      invalidFeedback[i].parentNode.removeChild(invalidFeedback[i]);
+    }
+
+    // ======== GET ALL INVALID FIELDS ========
+    const textareas = form.querySelectorAll("textarea");
+    const allInvalidFields = [];
+    for (let i = 0; i < invalidFieldsExceptCKEditor.length; i++) {
+      allInvalidFields[i] = invalidFieldsExceptCKEditor[i];
+    }
+
+    let j = allInvalidFields.length;
+    for (let i = 0; i < textareas.length; i++) {
+      let textareaID = textareas[i].getAttribute("id");
+      if (CKEDITOR.instances[textareaID]) {
+        let ckeditorText = CKEDITOR.instances[textareaID].getData();
+        if (ckeditorText === "") {
+          allInvalidFields[j] = textareas[i];
+          j += 1;
+        }
+      }
+    }
+
+    // Cancel Submition In Case Of Invalid Fields
+    if (allInvalidFields.length > 0) {
+      // console.log(allInvalidFields);
+      e.preventDefault();
+    }
+
+    // ======== SHOW VALIDATION MESSAGE ========
+    for (let i = 0; i < allInvalidFields.length; i++) {
+      let invalidFieldID = allInvalidFields[i].getAttribute("id");
+      let label = form.querySelector(`label[for='${invalidFieldID}']`);
+      let labelText = label.textContent;
+      let position = allInvalidFields[i].closest(".form-group");
+      let message = "";
+      let invalidFieldTagName = allInvalidFields[i].tagName;
+      let invalidFieldType = allInvalidFields[i].type;
+
+      if (invalidFieldTagName === "INPUT" && invalidFieldType === "time") {
+        message = `Please provide a valid &ldquo;${labelText}&rdquo;`;
+        if (allInvalidFields[i].closest("td")) {
+          position = allInvalidFields[i].closest("td");
+        }
+      } else if (invalidFieldTagName === "INPUT") {
+        message = `Please provide a valid &ldquo;${labelText}&rdquo;`;
+      } else if (invalidFieldTagName === "SELECT") {
+        message = `Please select a valid &ldquo;${labelText}&rdquo;`;
+      } else if (
+        invalidFieldTagName === "TEXTAREA" &&
+        labelText !== "Write a few words about youself"
+      ) {
+        message = `Please provide a small &ldquo;${labelText}&rdquo;`;
+      } else {
+        message = `Please provide a small &ldquo;Bio&rdquo;`;
+      }
+
+      // Show the validation message
+      UICtrl.showValidation(position, message);
+    }
+  };
+
   // Sample code
   // const viewCoursesTab = function() {
 
@@ -1083,8 +1192,7 @@ const App = (function(UICtrl) {
   //   // // document.getElementById("course-list").click();
   // }
 
-
-  // ---------------- TABLE EVENT LISTENERS ----------------
+  // ---------------- TABLE EVENTS  ----------------
   // Check/Unckeck All Table Rows
   const checkUncheckAll = function(e) {
     // -------- Gather All Necessary Elements --------
@@ -1561,5 +1669,7 @@ const App = (function(UICtrl) {
   };
 })(UICtrl);
 
-// ======== INITIALIZE APP ========
+/* ================================================
+ * INITIALIZE APP
+ * ================================================ */
 App.init();

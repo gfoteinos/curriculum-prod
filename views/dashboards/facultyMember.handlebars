@@ -7,8 +7,8 @@
         <!-- Avatar -->
         <div class="col-md-4 d-flex justify-content-center align-items-center">
           {{#if faculty.photo}}
-          <img src="/img/users/{{faculty.photo}}"
-            class="img-fluid avatar--medium avatar--rounded avatar--border-blue" alt="Faculty member photo">
+          <img src="/img/users/{{faculty.photo}}" class="img-fluid avatar--medium avatar--rounded avatar--border-blue"
+            alt="Faculty member photo">
           {{else}}
           <i class="fas fa-user icon-user"></i>
           {{/if}}
@@ -141,5 +141,80 @@
   </div>
 </section>
 
+<!-- ======== SCRIPTS ======== -->
+<!-- Munipulate The DOM -->
+<script type="text/javascript" src="/js/facultyEvents.js"></script>
+
+{{!--
 <!-- Client Events -->
-<script>App.init()</script>
+<script>App.init()</script> --}}
+
+
+<script>
+  // 
+  /* =================================
+  *             CKEditor 
+  *  =================================
+  */
+  // --------------------- REPLACES ---------------------
+  // -------- Profile Form - Faculty Member "Bio" Textarea --------
+  const facultyBio = CKEDITOR.replace('facultyBio', {
+    plugins: 'wysiwygarea, toolbar, basicstyles, link',
+    extraPlugins: 'notification'
+  });
+
+  // -------- "Edit Course" Form - "Description" Textarea --------
+  const editCourseDescription = CKEDITOR.replace('editCourseDescription', {
+    plugins: 'wysiwygarea, toolbar, basicstyles, link',
+    extraPlugins: 'notification'
+  });
+
+  // -------- "Create Course" Form - "Description" Textarea --------
+  const courseDescription = CKEDITOR.replace('bio', {
+    plugins: 'wysiwygarea, toolbar, basicstyles, link',
+    extraPlugins: 'notification'
+  });
+
+  // -------- "Edit Module" Form - "Description" Textarea --------
+  const editModuleDescription = CKEDITOR.replace('editModuleDescription', {
+    plugins: 'wysiwygarea, toolbar, basicstyles, link',
+    extraPlugins: 'notification'
+  });
+
+  // -------- "Create Module" Form - "Description" Textarea --------
+  const moduleDescription = CKEDITOR.replace('createModuleDescription', {
+    plugins: 'wysiwygarea, toolbar, basicstyles, link',
+    extraPlugins: 'notification'
+  });
+
+  /**
+    // ---- SHOW NOTIFICATION IN CASE OF EMPTY TEXT AREA ON SUBMIT FORM ----
+    facultyBio.on('required', function (evt) {
+      facultyBio.showNotification('This field is required.', 'warning');
+      evt.cancel();
+    });
+    studentBio.on('required', function (evt) {
+      studentBio.showNotification('This field is required.', 'warning');
+      evt.cancel();
+    });
+
+    editCourseDescription.on('required', function (evt) {
+      editCourseDescription.showNotification('This field is required.', 'warning');
+      evt.cancel();
+    });
+    courseDescription.on('required', function (evt) {
+      courseDescription.showNotification('This field is required.', 'warning');
+      evt.cancel();
+    });
+
+    editModuleDescription.on('required', function (evt) {
+      editModuleDescription.showNotification('This field is required.', 'warning');
+      evt.cancel();
+    });
+
+    moduleDescription.on('required', function (evt) {
+      moduleDescription.showNotification('This field is required.', 'warning');
+      evt.cancel();
+    });
+  */
+</script>
