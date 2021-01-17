@@ -16,26 +16,40 @@ const FacultyMemberSchema = new Schema({
   officeNumber: {
     type: String
   },
-  taughtModules: [{
-    moduleID: {
-      // Relation with the 'modules' collection
-    type: Schema.Types.ObjectId,
-    ref: "modules"
-    },
-    coursework: {
-      date: {
-        type: Date
-      }
-    },
-    exam: {
-      date: {
-        type: Date
+  taughtModules: [
+    {
+      moduleID: {
+        // Relation with the 'modules' collection
+        type: Schema.Types.ObjectId,
+        ref: "modules"
       },
-      classroom: {
-        type: String
-      }
+      coursework: {
+        date: {
+          type: Date
+        }
+      },
+      exam: {
+        date: {
+          type: Date
+        },
+        classroom: {
+          type: String
+        }
+      },
+      grades: [
+        {
+          studentID: {
+            // Relation with the 'users' collection
+            type: Schema.Types.ObjectId,
+            ref: "users"
+          },
+          mark: {
+            type: String
+          }
+        }
+      ]
     }
-  }]
+  ]
 });
 
 // ==== Create A Model & Connect It To The Schema ====

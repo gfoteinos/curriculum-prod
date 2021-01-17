@@ -1,0 +1,67 @@
+<!-- Add Taught Module -->
+<div id="addModules" class="modal fade modal--default" role="dialog">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header d-flex align-items-center">
+        <div class="flex-column">
+          <h3 class="mb-0">Module Selection</h3>
+          <small>Below are listed all taught modules</small>
+        </div>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form action="/dashboards/student/taughtModules/{{student.id}}" method="post">
+          <div class="table-responsive">
+            <table id="allTaughtModules" class="table">
+              <caption class="h5 py-0">Taught Modules</caption>
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col" class="column--sort">
+                    Title
+                    <i class="fas fa-angle-down"></i>
+                  </th>
+                  <th scope="col" class="column--sort">
+                    Tutors
+                    <i class="fas fa-angle-down"></i>
+                  </th>
+                  <th scope="col">
+                    <div class="custom-control custom-checkbox check-column">
+                      <input type="checkbox" class="custom-control-input" id="checkAll">
+                      <label class="custom-control-label" for="checkAll"></label>
+                    </div>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {{#each taughtModules}}
+                <tr>
+                  <th scope="row">{{aa}}</th>
+                  <td class="title">
+                    {{moduleName}}
+                  </td>
+                  <td>{{facultyName}}</td>
+                  <td>
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" id="moduleID-{{taughtModuleID}}" class="custom-control-input check-row"
+                        name="moduleIDs" value="{{taughtModuleID}}">
+                      <label class="custom-control-label" for="moduleID-{{taughtModuleID}}"></label>
+                    </div>
+                  </td>
+                </tr>
+                {{/each}}
+              </tbody>
+            </table>
+          </div>
+          <div class="d-flex justify-content-end mt-3">
+            <button type="submit" class="btn btn-success mr-2 btn--switch" disabled>
+              <i class="fas fa-plus"></i>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

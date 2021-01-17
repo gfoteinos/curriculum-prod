@@ -10,8 +10,8 @@ const StudentSchema = new Schema({
     ref: "users",
     required: true
   },
-  modules: [{
-    moduleID: {
+  taughtModules: [{
+    taughtModuleID: {
       // Relation with the 'modules' collection
     type: Schema.Types.ObjectId,
     ref: "modules"

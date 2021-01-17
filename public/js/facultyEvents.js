@@ -560,6 +560,8 @@ const UICtrl = (function() {
           if (checkbox.disabled === false) {
             checkbox.checked = true;
             triggerButton.disabled = false;
+            console.log(triggerButton.disabled);
+            console.log(triggerButton);
           }
         });
       } else {
@@ -567,6 +569,8 @@ const UICtrl = (function() {
         checkboxes.forEach(function(checkbox) {
           checkbox.checked = false;
           triggerButton.disabled = true;
+          console.log(triggerButton.disabled);
+          console.log(triggerButton);
         });
       }
     },
@@ -875,7 +879,7 @@ const App = (function(UICtrl) {
   /* ========================
    * PRIVATE VAR & METHODS
    * ======================== */
-  
+
   const loadEventListeners = function() {
     // Get UISelectors
     const UISelectors = UICtrl.getUISelectors();
@@ -989,7 +993,7 @@ const App = (function(UICtrl) {
       .addEventListener("click", sortTable);
 
     // ---------------- Disable Table Row/Rows ----------------
-    // "Dashboard" -> "Add Modules" modal -> ("Modules" table)
+    // "Dashboard" -> "Add Taught Modules" modal -> ("Modules" table)
     document
       .querySelector(UISelectors.btnAddTaughtModules_tabModules)
       .addEventListener("click", disableRows);
@@ -999,7 +1003,7 @@ const App = (function(UICtrl) {
       .querySelector(UISelectors.btnAddCourseworks_tabCourseworks)
       .addEventListener("click", disableRows);
 
-    // "Dashboard" -> "Add Courseworks" modal -> ("Taught Modules" table)
+    // "Dashboard" -> "Add Exams" modal -> ("Exams" table)
     document
       .querySelector(UISelectors.btnAddExams_tabExams)
       .addEventListener("click", disableRows);
@@ -1104,7 +1108,7 @@ const App = (function(UICtrl) {
     });
   };
 
-  // Load event listeners when the DOM content is loaded 
+  // Load event listeners when the DOM content is loaded
   document.addEventListener("DOMContentLoaded", loadEventListeners);
 
   /* ------------------------------------------------
@@ -1117,7 +1121,7 @@ const App = (function(UICtrl) {
     // Get The Defaults Browser Invalid Fields && Fields Feedback Messages
     const invalidFieldsExceptCKEditor = form.querySelectorAll(":invalid");
     const invalidFeedback = form.querySelectorAll(".error-feedback");
-    
+
     // Reset Feedback Messages
     for (let i = 0; i < invalidFeedback.length; i++) {
       // Remove any feedback messages if exist
@@ -1210,10 +1214,10 @@ const App = (function(UICtrl) {
     // Gather all buttons which are on the form's bottom
     const buttons = document.querySelector(`#${tableID}`).parentElement
       .nextElementSibling.children;
-
+    // console.log(buttons);
     // Get the trigger(enable/disable) button
     const triggerButton = UICtrl.getTriggerBtn(buttons);
-
+    // console.log(triggerButton);
     // -------- Check/Uncheck Checkboxes --------
     UICtrl.checkUncheckCheckboxes(checkAllCheckbox, checkboxes, triggerButton);
   };

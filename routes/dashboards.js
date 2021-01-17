@@ -14,13 +14,13 @@ const router = express.Router();
 const multer = require("multer"); // Used for uploading files
 const { reverse } = require("dns");
 
+/* ================================================
+ * UPLOAD IMAGES
+ * ================================================ */
 /**
  * On that version the "multer" works perfect for uploading images to heroku
  */
 
-/* ========================
- * UPLOAD IMAGES
- * ======================== */
 // ---- Set Storage Engine ----
 const storage = multer.diskStorage({
   destination: function(req, file, cb) {
@@ -61,22 +61,31 @@ const upload = multer({
   }
 }).single("photo");
 
-/* ========================
+/* ================================================
  * LOAD MODELS
- * ======================== */
+ * ================================================ */
 require("../models/User");
 require("../models/FacultyMember");
+require("../models/Student");
 require("../models/Course");
 require("../models/Module");
 const User = mongoose.model("users");
 const FacultyMember = mongoose.model("facultyMembers");
+const Student = mongoose.model("students");
 const Course = mongoose.model("courses");
 const Module = mongoose.model("modules");
 
-/* ========================
+/* ================================================
  * ROUTES
- * ======================== */
-// Functions - Middlewares
+ * ================================================ */
+
+/* ------------------------------------------------
+ * FUNCTIONS - MIDDLEWARES
+ * ------------------------------------------------ */
+// const addStudentInTaughtModules = (studentID) => {
+//   console.log(`StudentID ${studentID}`);
+// };
+
 const getModules = (req, res, next) => {
   // -------- Get All "Modules" --------
   Module.find({})
@@ -115,15 +124,15 @@ const getTaughtModules = (req, res, next) => {
     .populate("taughtModules.moduleID")
     .populate("userID")
     .then(facultyMembers => {
-      // ==== Fills In A Table Of "Taught Modules" && "Faculty Member" ==== 
+      // ==== Fills In A Table Of "Taught Modules" && "Faculty Member" ====
       let taughtModules = [];
-      if(facultyMembers) {
+      if (facultyMembers) {
         let counter = 1;
         facultyMembers.forEach(member => {
           member.taughtModules.forEach(taughtModule => {
             taughtModules.push({
               aa: counter,
-              id: taughtModule.moduleID.id,
+              taughtModuleID: taughtModule.id,
               moduleName: taughtModule.moduleID.name,
               facultyName: member.userID.name
             });
@@ -140,8 +149,43 @@ const getTaughtModules = (req, res, next) => {
     });
 };
 
-// ======== LOAD "FACULTY MEMBER" DASHBOARD ========
-// Create A "Faculty Member" Object
+const getStudentTaughtModules = (req, res, next) => {
+  Student.findOne({ userID: req.user.id })
+    .then(student => {
+      let studentModules = [];
+      if (student) {
+        /* FILL THE "STUDENT MODULES" TABLE
+         * ----------------------------------------------- */
+        student.taughtModules.forEach(module => {
+          req.taughtModules.forEach(taughtModule => {
+            let moduleID = module.taughtModuleID.toString();
+            if (moduleID === taughtModule.taughtModuleID) {
+              studentModules.push(taughtModule);
+            }
+          });
+        });
+        /* REARRANGE THE TABLE
+         * ----------------------------------------------- */
+        studentModules.forEach((module, index) => {
+          module.aa = index + 1;
+        });
+      }
+
+      /* RETURN THE "STUDENT MODULES" TABLE
+       * ----------------------------------------------- */
+      req.studentModules = studentModules;
+      next();
+    })
+    .catch(err => {
+      console.log(`On function 'getStudentTaughtModules': ${err.message}`);
+      return;
+    });
+};
+
+/* ------------------------------------------------
+ * LOAD "FACULTY MEMBER" DASHBOARD
+ * ------------------------------------------------ */
+// ---------------- Create A "Faculty Member" Object ----------------
 router.get("/facultyMember", (req, res, next) => {
   console.log(req.user);
   FacultyMember.findOne({ userID: req.user.id })
@@ -171,7 +215,7 @@ router.get("/facultyMember", (req, res, next) => {
     });
 });
 
-// Create A List Of All "Courses"
+// ---------------- Create A List Of All "Courses" ----------------
 router.get("/facultyMember", (req, res, next) => {
   // -------- Get All "Courses" --------
   Course.find({})
@@ -203,7 +247,7 @@ router.get("/facultyMember", (req, res, next) => {
     });
 });
 
-// Create A List Of All "Modules"
+// ---------------- Create A List Of All "Modules" ----------------
 router.get("/facultyMember", (req, res, next) => {
   // -------- Get All "Modules" --------
   Module.find({})
@@ -237,7 +281,7 @@ router.get("/facultyMember", (req, res, next) => {
     });
 });
 
-// Create A List Of "Taught Modules"
+// ---------------- Create A List Of "Taught Modules" ----------------
 router.get("/facultyMember", (req, res, next) => {
   // -------- Get All "Taught Modules" --------
   FacultyMember.findOne({ userID: req.user.id })
@@ -365,7 +409,7 @@ router.get("/facultyMember", (req, res, next) => {
     });
 });
 
-// Pass Data Sets To The View
+// ---------------- Pass Data Sets To The View ----------------
 router.get("/facultyMember", (req, res, next) => {
   // Prepare the data to be send
   const faculty = req.faculty;
@@ -382,12 +426,15 @@ router.get("/facultyMember", (req, res, next) => {
   });
 });
 
+/* ------------------------------------------------
+ * LOAD "STUDENT" DASHBOARD
+ * ------------------------------------------------ */
 // router.use(getModules);
 router.use(getTaughtModules);
-// ======== LOAD "STUDENT" DASHBOARD ========
+router.use(getStudentTaughtModules);
 router.get("/student", (req, res) => {
-  // console.log(req.user);
-  // Create a student object
+  /* CREATE A STUDENT OBJECT
+   * ----------------------------------------------- */
   const student = {
     id: req.user.id,
     name: req.user.name,
@@ -399,17 +446,24 @@ router.get("/student", (req, res) => {
     twitter: req.user.twitter,
     linkedin: req.user.linkedin
   };
+
+  /* PASS THE DATA TO THE VIEW
+   * ----------------------------------------------- */
   const taughtModules = req.taughtModules;
-  console.log(taughtModules);
-  // Pass the "Student" && "Taught Modules" to the view
+  const studentModules = req.studentModules;
+  // console.log(taughtModules);
+  // console.log(studentModules);
   res.render("dashboards/student", {
     student,
-    taughtModules
+    taughtModules,
+    studentModules
   });
 });
 
-// ======== ACCOUNT INFO FORM ========
-// Update Email
+/* ------------------------------------------------
+ * FORM ACCOUNT INFO
+ * ------------------------------------------------ */
+// ---------------- Update Email ----------------
 router.put("/facultyMember/email/:id", (req, res) => {
   // Check If The Input Email Has Already Registered To Another Account
   User.findOne({ email: req.body.email }).then(user => {
@@ -464,7 +518,7 @@ router.put("/student/email/:id", (req, res) => {
   });
 });
 
-// Update Password
+// ---------------- Update Password ----------------
 router.put("/facultyMember/password/:id", (req, res) => {
   User.findOne({ _id: req.params.id }).then(user => {
     // Compare UI password with the one in database
@@ -565,8 +619,10 @@ router.put("/student/password/:id", (req, res) => {
   });
 });
 
-// ======== PROFILE FORM ========
-// Update Profile
+/* ------------------------------------------------
+ * FORM PROFILE
+ * ------------------------------------------------ */
+// ---------------- Update Profile ----------------
 router.put("/facultyMember/profile/:id", (req, res) => {
   upload(req, res, function(err) {
     let error = "";
@@ -747,8 +803,10 @@ router.put("/student/profile/:id", (req, res) => {
   });
 });
 
-// ======== COURSES FORM ========
-// Create Course
+/* ------------------------------------------------
+ * FORM COURSES
+ * ------------------------------------------------ */
+// ---------------- Create Course ----------------
 router.post("/facultyMember/courses/", (req, res) => {
   // Get Rid Of Spaces Before & After The End Of "Course Title"
   let bodyNameArray = req.body.name.match(/\S.*\S/g);
@@ -813,7 +871,7 @@ router.post("/facultyMember/courses/", (req, res) => {
   }
 });
 
-// Edit Course
+// ---------------- Edit Course ----------------
 router.put("/facultyMember/courses/:id", (req, res) => {
   console.log(req.body.description);
   // Get all courses
@@ -822,10 +880,11 @@ router.put("/facultyMember/courses/:id", (req, res) => {
       // ======== ERROR HANDLING ========
       // Initialize the error
       let error = "";
-      if(req.body.description === "") {
-        error = "One or more of the form's fields are empty. Please fill in the form fields where missing.";
+      if (req.body.description === "") {
+        error =
+          "One or more of the form's fields are empty. Please fill in the form fields where missing.";
       }
-      
+
       // ---- Course already exist ----
       courses.forEach(course => {
         // Convert object_id to string
@@ -890,7 +949,7 @@ router.put("/facultyMember/courses/:id", (req, res) => {
     });
 });
 
-// Delete Course
+// ---------------- Delete Course ----------------
 router.delete("/facultyMember/courses/", (req, res) => {
   // Get the selected course ids
   let uiCourseIdsToDelete = req.body.coursesID;
@@ -988,8 +1047,10 @@ router.delete("/facultyMember/courses/", (req, res) => {
   res.redirect("/dashboards/facultyMember");
 });
 
-// ======== MODULES FORM ========
-// Create Module
+/* ------------------------------------------------
+ * FORM MODULES
+ * ------------------------------------------------ */
+// ---------------- Create Module ----------------
 router.post("/facultyMember/modules/", (req, res) => {
   // ---- Get Rid Of Spaces Before & After The End Of "Module Name" ----
   let bodyNameArray = req.body.name.match(/\S.*\S/g);
@@ -1039,7 +1100,7 @@ router.post("/facultyMember/modules/", (req, res) => {
   }
 });
 
-// Edit Module
+// ---------------- Edit Module ----------------
 router.put("/facultyMember/modules/:id", (req, res) => {
   // Get all Modules
   Module.find({})
@@ -1115,7 +1176,7 @@ router.put("/facultyMember/modules/:id", (req, res) => {
     });
 });
 
-// Delete Module
+// ---------------- Delete Module ----------------
 router.delete("/facultyMember/modules/", (req, res) => {
   // ======== Delete Modules ========
   // Get the selected module ids
@@ -1173,8 +1234,10 @@ router.delete("/facultyMember/modules/", (req, res) => {
   res.redirect("/dashboards/facultyMember");
 });
 
-// ======== DASHBOARD FORM ========
-// Update "facultymember" collection - Add Taught Modules
+/* ------------------------------------------------
+ * FORM DASHBOARD
+ * ------------------------------------------------ */
+// -------- Update "Facultymember" Collection - Add Taught Modules --------
 router.post("/facultyMember/taughtModules/:id", (req, res) => {
   FacultyMember.findOne({ userID: req.params.id })
     .populate("taughtModules.moduleID")
@@ -1215,7 +1278,86 @@ router.post("/facultyMember/taughtModules/:id", (req, res) => {
     });
 });
 
-// Update "facultymember" collection - Delete Taught Modules
+// -------- Update "Student" Collection - Add Taught Modules --------
+router.post("/student/taughtModules/:id", (req, res) => {
+  const taughtModules = req.taughtModules;
+  /* GATHER UI DATA
+   * ----------------------------------------------- */
+  let uiModuleIDs = req.body.moduleIDs;
+
+  /* PREPARE UI DATA FOR PROCESSING
+   * ----------------------------------------------- */
+  if (typeof uiModuleIDs === "string") {
+    //  ---- Convert to an array of one object ----
+    let idArray = [];
+    idArray.push(uiModuleIDs);
+    uiModuleIDs = idArray;
+  }
+
+  /* ADD ONE OR MORE MODULES TO "STUDENTS" COLLECTION
+   * ----------------------------------------------- */
+  Student.findOne({ userID: req.params.id })
+    .then(student => {
+      if (student) {
+        // ---- Update "taughtModule" Table In "students" Collection ----
+        uiModuleIDs.forEach(id => {
+          const module = {
+            taughtModuleID: id
+          };
+          student.taughtModules.push(module);
+        });
+
+        // // empty modules
+        // student.taughtModules.splice(0, student.taughtModules.length);
+        // // console.log(taughtModules);
+
+        // ------------ Save Changes In Database ------------
+        student.save();
+      }
+    })
+    .then(() => {
+      /* ADD "GRADES" INTO "FACULTYMEMBERS" COLLECTION
+       * ----------------------------------------------- */
+      FacultyMember.find({}).then(members => {
+        if (members) {
+          // ---- Update "grades" Table In "facultymMembers" Collection ----
+          uiModuleIDs.forEach(uiID => {
+            members.forEach(member => {
+              member.taughtModules.forEach(taughtModule => {
+                if (uiID === taughtModule.id) {
+                  const grade = {
+                    studentID: req.params.id,
+                    mark: ""
+                  };
+                  taughtModule.grades.push(grade);
+                }
+              });
+              // ------------ Save Changes In Database ------------
+              member.save().catch(err => {
+                console.log(err.message);
+                // req.flash("error_msg", err.message);
+                // res.redirect("/dashboards/student");
+                return;
+              });
+            });
+          });
+        }
+      });
+    })
+    .then(() => {
+      // ======== Flash Success Message & Redirect Back To The Page ========
+      req.flash("success_msg", "Modules have been added successfully.");
+      res.redirect("/dashboards/student");
+    })
+    .catch(err => {
+      console.log(err.message);
+      req.flash("error_msg", err.message);
+      res.redirect("/dashboards/student");
+      return;
+    });
+});
+
+// -------- Update "Facultymember" Collection - Delete Taught Modules --------
 router.delete("/facultyMember/taughtModules/:id", (req, res) => {
   // Get the selected module ids
   let uiModuleIdsToDelete = req.body.modulesID;
@@ -1260,7 +1402,7 @@ router.delete("/facultyMember/taughtModules/:id", (req, res) => {
   res.redirect("/dashboards/facultyMember");
 });
 
-// Update "facultymember collection" - Add Courseworks
+// -------- Update "Facultymember Collection" - Add Courseworks --------
 router.post("/facultyMember/courseworks/:id", (req, res) => {
   FacultyMember.findOne({ userID: req.params.id })
     .populate("taughtModules.moduleID")
@@ -1318,7 +1460,7 @@ router.post("/facultyMember/courseworks/:id", (req, res) => {
     });
 });
 
-// Update "facultymember collection" - Update Courseworks
+// -------- Update "Facultymember Collection" - Update Courseworks --------
 router.put("/facultyMember/courseworks/:id", (req, res) => {
   FacultyMember.findOne({ userID: req.params.id })
     .populate("taughtModules.moduleID")
@@ -1363,7 +1505,7 @@ router.put("/facultyMember/courseworks/:id", (req, res) => {
     });
 });
 
-// Update "facultymember" collection - Delete Courseworks
+// -------- UPDATE "FACULTYMEMBER" COLLECTION - DELETE COURSEWORKS --------
 router.delete("/facultyMember/courseworks/:id", (req, res) => {
   // Get the selected module ids
   let uiTaughtModuleIdsToDelete = req.body.taughtModulesID;
@@ -1403,7 +1545,7 @@ router.delete("/facultyMember/courseworks/:id", (req, res) => {
   res.redirect("/dashboards/facultyMember");
 });
 
-// Update "facultymember collection" - Add Exams
+// -------- Update "Facultymember Collection" - Add Exams --------
 router.post("/facultyMember/exams/:id", (req, res) => {
   // res.send("Add Exams");
   FacultyMember.findOne({ userID: req.params.id })
@@ -1473,7 +1615,7 @@ router.post("/facultyMember/exams/:id", (req, res) => {
     });
 });
 
-// Update "facultymember collection" - Update Exams
+// -------- Update "Facultymember Collection" - Update Exams --------
 router.put("/facultyMember/exams/:id", (req, res) => {
   FacultyMember.findOne({ userID: req.params.id })
     .populate("taughtModules.moduleID")
@@ -1530,7 +1672,7 @@ router.put("/facultyMember/exams/:id", (req, res) => {
     });
 });
 
-// Update "facultymember" collection - Delete Exams
+// -------- Update "Facultymember" Collection - Delete Exams --------
 router.delete("/facultyMember/exams/:id", (req, res) => {
   // Get "taught module" ids
   let uiTaughtModuleIDs = req.body.taughtModulesID;
@@ -1574,7 +1716,7 @@ router.delete("/facultyMember/exams/:id", (req, res) => {
 
 // console.log(`db.id: ${typeof(courseID)} - req.param.id: ${typeof(req.params.id)}, db.name: ${typeof(course.name)} - req.body.name: ${typeof(req.body.name)}, db.degree: ${typeof(course.name)} - req.body.degree: ${typeof(req.body.degree)}`);
 
-/* ========================
+/* ================================================
  * EXPORT MODULE
- * ======================== */
+ * ================================================ */
 module.exports = router;

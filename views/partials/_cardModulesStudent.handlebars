@@ -1,34 +1,36 @@
 <!-- MODULE SELECTION -->
 <div class="card">
   <div class="card-header bg-white">
-    <h3 class="mb-0">Modules Selection</h3>
-    <small>Add a module in your module list</small>
+    <h3 class="mb-0">Modules</h3>
+    <small>Below are listed the selected modules</small>
   </div>
+  {{> _msgsStudentCardModulesSelection }}
   <div class="card-body">
-    <form action="">
+    <form action="/dashboards/student/taughtModules/{{student.id}}" method="post">
       <div class="table-responsive">
-        <table id="modulesSelectionTable" class="table">
+        <table id="selectedModules" class="table">
           <caption class="h5 py-0">Modules</caption>
           <thead>
             <tr>
               <th scope="col">#</th>
-              <th scope="col" class="sort-title">
+              <th scope="col" class="column--sort">
                 Title
                 <i class="fas fa-angle-down"></i>
               </th>
-              <th scope="col">
+              <th scope="col" class="column--sort">
                 Tutors
-                <i class="fas fa-angle-down"></i></th>
+                <i class="fas fa-angle-down"></i>
+              </th>
               <th scope="col">
-                <div class="custom-control custom-checkbox checkThemAll">
-                  <input type="checkbox" class="custom-control-input" id="checkAll">
-                  <label class="custom-control-label" for="checkAll"></label>
+                <div class="custom-control custom-checkbox check-column">
+                  <input type="checkbox" class="custom-control-input" id="checkAll-{{student.id}}">
+                  <label class="custom-control-label" for="checkAll-{{student.id}}"></label>
                 </div>
               </th>
             </tr>
           </thead>
           <tbody>
-            {{#each taughtModules}}
+            {{#each studentModules}}
             <tr>
               <th scope="row">{{aa}}</th>
               <td class="title">
@@ -37,9 +39,9 @@
               <td>{{facultyName}}</td>
               <td>
                 <div class="custom-control custom-checkbox">
-                  <input type="checkbox" id="moduleID-{{id}}" class="custom-control-input" name="modulesID"
-                    value="{{id}}">
-                  <label class="custom-control-label" for="moduleID-{{id}}"></label>
+                  <input type="checkbox" id="selectedModule-{{taughtModuleID}}" class="custom-control-input check-row" name="moduleIDs"
+                    value="{{taughtModuleID}}">
+                  <label class="custom-control-label" for="selectedModule-{{taughtModuleID}}"></label>
                 </div>
               </td>
             </tr>
@@ -48,8 +50,14 @@
         </table>
       </div>
       <div class="d-flex justify-content-end mt-3">
-        <button type="submit" class="btn btn-success mr-2">
+        <!-- Add Modules Button -->
+        <button type="button" id="triggerModuleSelectionModal" class="btn btn-success mr-2 triggerModal" data-toggle="modal"
+          data-target="#addModules">
           Add Modules
+        </button>
+        <!-- Delete Taught Module Button -->
+        <button type="submit" id="deleteTaughtModulesBtn" class="btn btn-danger btn--switch" disabled>
+          Delete
         </button>
       </div>
     </form>
