@@ -6,7 +6,8 @@
   </div>
   {{> _msgsStudentCardModulesSelection }}
   <div class="card-body">
-    <form action="/dashboards/student/taughtModules/{{student.id}}" method="post">
+    <form action="/dashboards/student/taughtModules/{{student.id}}/?_method=DELETE" method="post">
+      <input type="hidden" name="_method" value="DELETE">
       <div class="table-responsive">
         <table id="selectedModules" class="table">
           <caption class="h5 py-0">Modules</caption>
@@ -39,8 +40,8 @@
               <td>{{facultyName}}</td>
               <td>
                 <div class="custom-control custom-checkbox">
-                  <input type="checkbox" id="selectedModule-{{taughtModuleID}}" class="custom-control-input check-row" name="moduleIDs"
-                    value="{{taughtModuleID}}">
+                  <input type="checkbox" id="selectedModule-{{taughtModuleID}}" class="custom-control-input check-row"
+                    name="moduleIDs" value="{{taughtModuleID}}">
                   <label class="custom-control-label" for="selectedModule-{{taughtModuleID}}"></label>
                 </div>
               </td>
@@ -51,8 +52,8 @@
       </div>
       <div class="d-flex justify-content-end mt-3">
         <!-- Add Modules Button -->
-        <button type="button" id="triggerModuleSelectionModal" class="btn btn-success mr-2 triggerModal" data-toggle="modal"
-          data-target="#addModules">
+        <button type="button" id="triggerModuleSelectionModal" class="btn btn-success mr-2 triggerModal"
+          data-toggle="modal" data-target="#addModules">
           Add Modules
         </button>
         <!-- Delete Taught Module Button -->

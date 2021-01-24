@@ -1280,18 +1280,17 @@ router.post("/facultyMember/taughtModules/:id", (req, res) => {
 
 // -------- Update "Student" Collection - Add Taught Modules --------
 router.post("/student/taughtModules/:id", (req, res) => {
-  const taughtModules = req.taughtModules;
   /* GATHER UI DATA
    * ----------------------------------------------- */
-  let uiModuleIDs = req.body.moduleIDs;
+  let uiTaughtModuleIds = req.body.moduleIDs;
 
   /* PREPARE UI DATA FOR PROCESSING
    * ----------------------------------------------- */
-  if (typeof uiModuleIDs === "string") {
+  if (typeof uiTaughtModuleIds === "string") {
     //  ---- Convert to an array of one object ----
     let idArray = [];
-    idArray.push(uiModuleIDs);
-    uiModuleIDs = idArray;
+    idArray.push(uiTaughtModuleIds);
+    uiTaughtModuleIds = idArray;
   }
 
   /* ADD ONE OR MORE MODULES TO "STUDENTS" COLLECTION
@@ -1300,19 +1299,25 @@ router.post("/student/taughtModules/:id", (req, res) => {
     .then(student => {
       if (student) {
         // ---- Update "taughtModule" Table In "students" Collection ----
-        uiModuleIDs.forEach(id => {
+        uiTaughtModuleIds.forEach(id => {
           const module = {
             taughtModuleID: id
           };
           student.taughtModules.push(module);
         });
 
-        // // empty modules
-        // student.taughtModules.splice(0, student.taughtModules.length);
-        // // console.log(taughtModules);
-
         // ------------ Save Changes In Database ------------
-        student.save();
+        student.save().catch(err => {
+          console.log(
+            `router.post("/student/taughtModules/:id") ${err.message}`
+          );
+          req.flash(
+            "error_msg",
+            `Adding modules into "students" collection error: ${err.message}`
+          );
+          res.redirect("/dashboards/student");
+          return;
+        });
       }
     })
     .then(() => {
@@ -1320,11 +1325,11 @@ router.post("/student/taughtModules/:id", (req, res) => {
        * ----------------------------------------------- */
       FacultyMember.find({}).then(members => {
         if (members) {
-          // ---- Update "grades" Table In "facultymMembers" Collection ----
-          uiModuleIDs.forEach(uiID => {
-            members.forEach(member => {
+          // ---- Update "grades" Table In "facultymembers" Collection ----
+          members.forEach(member => {
+            uiTaughtModuleIds.forEach(uiID => {
               member.taughtModules.forEach(taughtModule => {
-                if (uiID === taughtModule.id) {
+                if (taughtModule.id === uiID) {
                   const grade = {
                     studentID: req.params.id,
                     mark: ""
@@ -1332,13 +1337,18 @@ router.post("/student/taughtModules/:id", (req, res) => {
                   taughtModule.grades.push(grade);
                 }
               });
-              // ------------ Save Changes In Database ------------
-              member.save().catch(err => {
-                console.log(err.message);
-                // req.flash("error_msg", err.message);
-                // res.redirect("/dashboards/student");
-                return;
-              });
+            });
+            // ------------ Save Changes In Database ------------
+            member.save().catch(err => {
+              console.log(
+                `router.post("/student/taughtModules/:id") ${err.message}`
+              );
+              req.flash(
+                "error_msg",
+                `Adding grades into "facultymembers" collection error: ${err.message}`
+              );
+              res.redirect("/dashboards/student");
+              return;
             });
           });
         }
@@ -1348,12 +1358,6 @@ router.post("/student/taughtModules/:id", (req, res) => {
       // ======== Flash Success Message & Redirect Back To The Page ========
       req.flash("success_msg", "Modules have been added successfully.");
       res.redirect("/dashboards/student");
-    })
-    .catch(err => {
-      console.log(err.message);
-      req.flash("error_msg", err.message);
-      res.redirect("/dashboards/student");
-      return;
     });
 });
 
@@ -1400,6 +1404,90 @@ router.delete("/facultyMember/taughtModules/:id", (req, res) => {
   // ======== Flash Success Message & Redirect Back To The Page ========
   req.flash("success_msg", "Taught Modules have been deleted successfully.");
   res.redirect("/dashboards/facultyMember");
+});
+
+// -------- Update "Facultymember" Collection - Delete Taught Modules --------
+router.delete("/student/taughtModules/:id", (req, res) => {
+  /* GATHER UI DATA
+   * ----------------------------------------------- */
+  let uiTaughtModuleIds = req.body.moduleIDs;
+
+  /* PREPARE UI DATA FOR PROCESSING
+   * ----------------------------------------------- */
+  if (typeof uiTaughtModuleIds === "string") {
+    //  ---- Convert To An Array Of One Object ----
+    let idArray = [];
+    idArray.push(uiTaughtModuleIds);
+    uiTaughtModuleIds = idArray;
+  }
+
+  /* DELETE ONE OR MORE "TAUGHT MODULES" FROM "students" COLLECTION
+   * --------------------------------------------------------------- */
+  Student.findOne({ userID: req.params.id })
+    .then(student => {
+      if (student) {
+        uiTaughtModuleIds.forEach(uiID => {
+          student.taughtModules.forEach(taughtModule => {
+            let dbModuleID = taughtModule.taughtModuleID.toString();
+            if (dbModuleID === uiID) {
+              taughtModule.remove();
+            }
+          });
+        });
+      }
+      student.save().catch(err => {
+        // Catch Any Errors
+        console.log(
+          `router.delete("/student/taughtModules/:id") ${err.message}`
+        );
+        req.flash(
+          "error_msg",
+          `Deleting modules into "students" collection error: ${err.message}`
+        );
+        res.redirect("/dashboards/student");
+        return;
+      });
+    })
+    .then(() => {
+      /* DELETE "grades" FROM "facultymembers" COLLECTION
+       * ----------------------------------------------------------- */
+      FacultyMember.find({}).then(members => {
+        if (members) {
+          // -- Update "taughtModules" Table In "facultymembers" Collection
+          members.forEach(member => {
+            uiTaughtModuleIds.forEach(uiID => {
+              member.taughtModules.forEach(taughtModule => {
+                if (taughtModule.id === uiID) {
+                  taughtModule.grades.forEach(grade => {
+                    let dbGradeStudentID = grade.studentID.toString();
+                    if(dbGradeStudentID === req.params.id) {
+                      grade.remove();
+                    }
+                  });
+                }
+              });
+            });
+            // ------------ Save Changes In Database ------------
+            member.save().catch(err => {
+              console.log(
+                `router.post("/student/taughtModules/:id") ${err.message}`
+              );
+              req.flash(
+                "error_msg",
+                `Deleting modules into "facultymembers" collection error: ${err.message}`
+              );
+              res.redirect("/dashboards/student");
+              return;
+            });
+          });
+        }
+      });
+    })
+    .then(() => {
+      // ---- Flash Success Message & Redirect Back To The Page ----
+      req.flash("success_msg", "Modules have been deleted successfully.");
+      res.redirect("/dashboards/student");
+    });
 });
 
 // -------- Update "Facultymember Collection" - Add Courseworks --------
