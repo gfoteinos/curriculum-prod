@@ -60,3 +60,10 @@
 <div id="tabExamsMessage" class="alert alert-success mt-3 mb-0 mx-4">{{success_msg}}</div>
 <script>examsCalendarClick()</script>
 {{/equal}}
+
+{{!-- ======== MODULE GRADES MANAGEMENT TAB ======== --}}
+{{!-- In case of success saving "Module Grades" --}}
+{{#equal success_msg 'Grades have been saved successfully.' }}
+<div id="tabModulesGradesMessage" class="alert alert-success mt-3 mb-0 mx-4">{{success_msg}}</div>
+{{!-- <script>dashboardClick()</script> --}}
+{{/equal}}

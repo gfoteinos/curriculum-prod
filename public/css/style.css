@@ -30,6 +30,7 @@ body {
   font-size: 1rem;
 }
 
+
 /* ================================
  * FORMS
  * ================================
@@ -37,12 +38,11 @@ body {
 
 /* -------- FORM VALIDATION -------- */
 .error-feedback {
-	width: 100%;
-	margin-top: .25rem;
-  font-size: .875em;
-	color: #dc3545;
+  width: 100%;
+  margin-top: 0.25rem;
+  font-size: 0.875em;
+  color: #dc3545;
 }
-
 
 form label {
   margin-bottom: 0.25rem;
@@ -63,12 +63,17 @@ form label {
   font-size: 100px;
 }
 
+/* ==== WIDTH ==== */
 .short-width {
   max-width: 10rem;
 }
 
 .very-short-width {
   max-width: 3rem;
+}
+
+.input-number-width {
+  max-width: 4.65rem;
 }
 
 /* TABLES */
@@ -136,7 +141,6 @@ caption {
   text-align: left;
 }
 
-
 /* Drop caps */
 .card--drop-caps {
   margin: 0 0 0 -0.1em;
@@ -147,7 +151,6 @@ caption {
   float: left;
   margin: 0.5rem 0 0 -0.75rem;
 }
-
 
 /* Bootstrap Cards  */
 /* Home-Page */
@@ -379,7 +382,6 @@ caption {
   color: #f8f9fa; */
   color: rgba(255, 255, 255, 0.75);
 }
-
 
 /* ================ MEDIA QUERIES ================ */
 

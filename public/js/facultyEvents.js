@@ -5,6 +5,8 @@
 //   };
 // };
 
+// const { put } = require("../../routes/dashboards");
+
 // // Click "Dashboard" link on on "dashboard/faculty-or-student" url
 // const dashboardClick = function() {
 //   window.onload = function() {
@@ -64,6 +66,7 @@ const UICtrl = (function() {
     messageTabCourseworks: "#tabCoursesworksMessage",
     messageTabExams: "#tabExamsMessage",
     messageTabModules: "#tabModulesMessage",
+    messageTabModulesGrades: "#tabModulesGradesMessage",
 
     // -------- COURSES FORM --------
     form_cardCourses: "#formCourses",
@@ -79,6 +82,7 @@ const UICtrl = (function() {
     tabListModules: "#module-list",
     tabCourseworks: "#courseworksCalendarLink",
     tabExams: "#examsCalendarLink",
+    tabModuleGrades: "#moduleGradesLink",
 
     tableCheckbox_cardCourses: "#coursesTable",
     tableCheckbox_cardModules: "#modulesTable",
@@ -96,6 +100,8 @@ const UICtrl = (function() {
     tableCheckboxBody_tabExams: "#d-ect-examsTable tbody",
     tableCheckboxBody_modalAddTaughtModules: "#modulesTableModal tbody",
     // tableDateBody_modalAddCourseworks: "#d_cct_ac_m_taughtModulesTable tbody",
+    tableEditBody_tabModulesGrades: "#taughtModulesGradeTable tbody",
+    tableBody_modalAddGrades: "#editTaughtModulesGradesTable tbody",
 
     tableCheckboxColumnTitle_cardCourses: "#coursesTable .sort-title",
     tableCheckboxColumnLevel_cardCourses: "#coursesTable .sort-level",
@@ -134,6 +140,14 @@ const UICtrl = (function() {
     tableCheckboxColumnClassroom_tabExams: "#d-ect-examsTable .sort-classroom",
     tableCheckboxColumnCheckbox_tabExams:
       "#d-ect-examsTable thead input[type='checkbox']",
+    tableEditColumnTitle_tabModulesGrades:
+      "#taughtModulesGradeTable .sort-title",
+    tableEditColumnCourse_tabModulesGrades:
+      "#taughtModulesGradeTable .sort-course",
+    tableEditColumnLevel_tabModulesGrades:
+      "#taughtModulesGradeTable .sort-level",
+    tableColumnName_modalAddGrades:
+      "#moduleGrades .sort-title",
 
     inputTextName_modalEditCourse: "#editCourseName",
     inputSelectDegree_modalEditCourse: "#editCourseLevel",
@@ -148,6 +162,7 @@ const UICtrl = (function() {
     inputTextTaughtModuleId_modalEditExam: "#editExamTaughtModuleId",
 
     btnsSubmit: "button[type='submit']",
+    btnSubmitGrades: "#moduleGrades button[type='submit']",
     btnAddTaughtModules_tabModules: "#triggerModalAddTaughtModuleBtn",
     btnAddCourseworks_tabCourseworks: "#d-cct-f-triggerModalAddCourseworksBtn",
     btnAddExams_tabExams: "#d-ect-f-triggerModalAddExamsBtn",
@@ -663,6 +678,19 @@ const UICtrl = (function() {
         body: JSON.stringify(data)
       };
       const response = await fetch(path, options);
+      console.log("response");
+      console.log(response);
+      return response.json();
+    },
+    getTheData: async function(data, path) {
+      const options = {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+      };
+      const response = await fetch(path, options);
       return response.json();
     },
     OnOffButton: function(elements, button) {
@@ -991,6 +1019,18 @@ const App = (function(UICtrl) {
     document
       .querySelector(UISelectors.tableCheckboxColumnClassroom_tabExams)
       .addEventListener("click", sortTable);
+    document
+      .querySelector(UISelectors.tableEditColumnTitle_tabModulesGrades)
+      .addEventListener("click", sortTable);
+    document
+      .querySelector(UISelectors.tableEditColumnCourse_tabModulesGrades)
+      .addEventListener("click", sortTable);
+    document
+      .querySelector(UISelectors.tableEditColumnLevel_tabModulesGrades)
+      .addEventListener("click", sortTable);
+    document
+      .querySelector(UISelectors.tableColumnName_modalAddGrades)
+      .addEventListener("click", sortTable);
 
     // ---------------- Disable Table Row/Rows ----------------
     // "Dashboard" -> "Add Taught Modules" modal -> ("Modules" table)
@@ -1023,6 +1063,11 @@ const App = (function(UICtrl) {
     document
       .querySelector(UISelectors.tableCheckboxBody_tabExams)
       .addEventListener("click", editExam);
+
+    // "Modules Grades" tab -> "Taught Modules" table -> ("Edit" Button)
+    document
+      .querySelector(UISelectors.tableEditBody_tabModulesGrades)
+      .addEventListener("click", editModuleGrades);
 
     // --- Sort "Dashboard" -> "Courseworks Calendar" tab -> ("Courseworks" table) ---
     document
@@ -1092,6 +1137,11 @@ const App = (function(UICtrl) {
       document.querySelector(UISelectors.tabExams).click();
     }
 
+    if (document.querySelector(UISelectors.messageTabModulesGrades)) {
+      document.querySelector(UISelectors.tabListDashboard).click();
+      document.querySelector(UISelectors.tabModuleGrades).click();
+    }
+
     if (document.querySelector(UISelectors.messageCardCourses)) {
       document.querySelector(UISelectors.tabListCourses).click();
     }
@@ -1102,10 +1152,16 @@ const App = (function(UICtrl) {
 
     // ------------------- FORM VALIDATIONS --------------------
     const formSubmitButtons = document.querySelectorAll(UISelectors.btnsSubmit);
-    console.log(document.querySelectorAll(UISelectors.btnsSubmit));
+    // console.log(document.querySelectorAll(UISelectors.btnsSubmit));
     formSubmitButtons.forEach(button => {
       button.addEventListener("click", formValidation);
     });
+
+    const gradesFormSubmitButton = document.querySelector(
+      UISelectors.btnSubmitGrades
+    );
+    // console.log(gradesFormSubmitButton);
+    gradesFormSubmitButton.addEventListener("click", numberValuesFormValidation);
   };
 
   // Load event listeners when the DOM content is loaded
@@ -1121,7 +1177,7 @@ const App = (function(UICtrl) {
     // Get The Defaults Browser Invalid Fields && Fields Feedback Messages
     const invalidFieldsExceptCKEditor = form.querySelectorAll(":invalid");
     const invalidFeedback = form.querySelectorAll(".error-feedback");
-
+    
     // Reset Feedback Messages
     for (let i = 0; i < invalidFeedback.length; i++) {
       // Remove any feedback messages if exist
@@ -1149,7 +1205,6 @@ const App = (function(UICtrl) {
 
     // Cancel Submition In Case Of Invalid Fields
     if (allInvalidFields.length > 0) {
-      // console.log(allInvalidFields);
       e.preventDefault();
     }
 
@@ -1159,15 +1214,20 @@ const App = (function(UICtrl) {
       let label = form.querySelector(`label[for='${invalidFieldID}']`);
       let labelText = label.textContent;
       let position = allInvalidFields[i].closest(".form-group");
+      if (allInvalidFields[i].closest("td")) {
+        position = allInvalidFields[i].closest("td");
+      }
       let message = "";
       let invalidFieldTagName = allInvalidFields[i].tagName;
       let invalidFieldType = allInvalidFields[i].type;
 
       if (invalidFieldTagName === "INPUT" && invalidFieldType === "time") {
         message = `Please provide a valid &ldquo;${labelText}&rdquo;`;
-        if (allInvalidFields[i].closest("td")) {
-          position = allInvalidFields[i].closest("td");
-        }
+      } else if (
+        invalidFieldTagName === "INPUT" &&
+        invalidFieldType === "number"
+      ) {
+        message = `Please enter a number from 0 to 100`;
       } else if (invalidFieldTagName === "INPUT") {
         message = `Please provide a valid &ldquo;${labelText}&rdquo;`;
       } else if (invalidFieldTagName === "SELECT") {
@@ -1183,6 +1243,30 @@ const App = (function(UICtrl) {
 
       // Show the validation message
       UICtrl.showValidation(position, message);
+    }
+  };
+
+  const numberValuesFormValidation = function(e) {
+    /* GET UI DOM ELEMENTS
+     * ----------------------------------------------- */
+    const form = e.target.closest("form");
+    const uiNumbers = form.querySelectorAll("input[type='number']");
+
+    /* CHECK GRADES VALIDATION
+     * ----------------------------------------------- */
+    let preventDefaultCounter = 0;
+    uiNumbers.forEach(input => {
+      if (input.value === "") {
+        preventDefaultCounter += 1;
+      }
+      // Remove leading zeros from number
+      input.value= input.value.replace(/^0+/, '')
+    });
+
+
+
+    if (preventDefaultCounter === uiNumbers.length) {
+      e.preventDefault();
     }
   };
 
@@ -1510,6 +1594,103 @@ const App = (function(UICtrl) {
     }
   };
 
+  const editModuleGrades = function(e) {
+    if (e.target.classList.contains("gradesEdit")) {
+
+      /* GATHER INFO FROM UI
+       * ----------------------------------------------- */
+      const form = document.querySelector("#moduleGrades");
+      const tableBody = document.querySelector(
+        "#editTaughtModulesGradesTable tbody"
+      );
+      uiTaughtModuleID = e.target.parentElement.getAttribute(
+        "data-taughtModuleID"
+      );
+
+      /* RESET UI
+       * ----------------------------------------------- */
+      // Reset "Grades" Table
+      while (tableBody.rows.length > 0) {
+        tableBody.deleteRow(tableBody.rows.length - 1);
+      }
+
+      // Reset UI "hidden" Elements
+      for (const child of form.children) {
+        if (child.type === "hidden") {
+          child.remove();
+        }
+      }
+
+      /* GET DATA FROM THE SERVER & CREATE "GRADES" TABLE
+       * ----------------------------------------------- */
+      // Initialize Needed Variables
+      const path = `/dashboards/facultyMember/taughtModules/grades/${uiTaughtModuleID}`;
+
+      getData();
+
+      async function getData() {
+        // Fetch Data From The Database
+        const response = await fetch(path);
+        const grades = await response.json();
+
+        // Set The Action Into The "form" Element
+        form.setAttribute("action", path);
+
+        /* BUILD DOM ELEMENTS FOR DATA TO BE SAVED
+         * ----------------------------------------------- */
+        // Create The Hidden Element
+        let uiTaughtModuleID = document.createElement("input");
+        uiTaughtModuleID.setAttribute("type", "hidden");
+        uiTaughtModuleID.setAttribute("name", "taughtModuleID");
+        uiTaughtModuleID.value = `${grades[0].taughtModuleID}`;
+        form.append(uiTaughtModuleID);
+
+        for (i = 1; i <= grades.length - 1; i++) {
+          /* Create A Table Row For Every Grade
+           * ----------------------------------------------- */
+          let tr = document.createElement("tr");
+
+          // Create Number Column
+          let rowNumber = document.createElement("th");
+          rowNumber.setAttribute("scope", "row");
+          rowNumber.textContent = i;
+
+          // Create Name Column
+          let name = document.createElement("td");
+          name.classList.add("title");
+          name.textContent = grades[i].studentName;
+
+          // Create Mark Column
+          let mark = document.createElement("td");
+          let label = document.createElement("label");
+          label.setAttribute("for", `mark-${grades[i].studentID}`);
+          label.textContent = "Grade";
+          label.classList.add("sr-only");
+          let input = document.createElement("input");
+          input.setAttribute("type", "number");
+          input.setAttribute("id", `mark-${grades[i].studentID}`);
+          input.setAttribute("name", `grade`);
+          input.setAttribute("min", "0");
+          input.setAttribute("max", "100");
+          input.setAttribute("step", "0.1");
+          input.classList.add("form-control", "input-number-width");
+          input.value = grades[i].mark;
+          let uiStudentID = document.createElement("input");
+          uiStudentID.setAttribute("type", "hidden");
+          uiStudentID.setAttribute("name", "studentID");
+          uiStudentID.value = `${grades[i].studentID}`;
+          mark.append(label, input, uiStudentID);
+
+          // Add Columns To The Row
+          tr.append(rowNumber, name, mark);
+
+          // Add Row To The Table
+          tableBody.append(tr);
+        }
+      }
+    }
+  };
+
   const saveDateCoursework = function(e) {
     if (e.target.classList.contains("courseworkDateSave")) {
       // ---- GATHER THE ELEMENTS NEEDED ----
@@ -1548,6 +1729,8 @@ const App = (function(UICtrl) {
 
         // Update data & show update message
         UICtrl.updateData(data, path).then(alert => {
+          console.log("alert");
+          console.log(alert);
           const position = document.querySelector(
             UISelectors.dashboardMessages
           );

@@ -187,7 +187,6 @@ const getStudentTaughtModules = (req, res, next) => {
  * ------------------------------------------------ */
 // ---------------- Create A "Faculty Member" Object ----------------
 router.get("/facultyMember", (req, res, next) => {
-  console.log(req.user);
   FacultyMember.findOne({ userID: req.user.id })
     .then(member => {
       if (member) {
@@ -411,11 +410,15 @@ router.get("/facultyMember", (req, res, next) => {
 
 // ---------------- Pass Data Sets To The View ----------------
 router.get("/facultyMember", (req, res, next) => {
+  // console.log(req.user);
   // Prepare the data to be send
   const faculty = req.faculty;
   const listCourses = req.listCourses;
   const listModules = req.listModules;
   const listTaughtModules = req.listTaughtModules;
+  // console.log("Taught Modules:");
+  // console.log(listTaughtModules);
+  // console.log(faculty);
 
   // Pass the data to the view
   res.render("dashboards/facultyMember", {
@@ -1460,7 +1463,7 @@ router.delete("/student/taughtModules/:id", (req, res) => {
                 if (taughtModule.id === uiID) {
                   taughtModule.grades.forEach(grade => {
                     let dbGradeStudentID = grade.studentID.toString();
-                    if(dbGradeStudentID === req.params.id) {
+                    if (dbGradeStudentID === req.params.id) {
                       grade.remove();
                     }
                   });
@@ -1490,7 +1493,7 @@ router.delete("/student/taughtModules/:id", (req, res) => {
     });
 });
 
-// -------- Update "Facultymember Collection" - Add Courseworks --------
+// -------- Update "facultymember Collection" - Add Courseworks --------
 router.post("/facultyMember/courseworks/:id", (req, res) => {
   FacultyMember.findOne({ userID: req.params.id })
     .populate("taughtModules.moduleID")
@@ -1548,7 +1551,7 @@ router.post("/facultyMember/courseworks/:id", (req, res) => {
     });
 });
 
-// -------- Update "Facultymember Collection" - Update Courseworks --------
+// -------- Update "facultymember Collection" - Update Courseworks --------
 router.put("/facultyMember/courseworks/:id", (req, res) => {
   FacultyMember.findOne({ userID: req.params.id })
     .populate("taughtModules.moduleID")
@@ -1593,7 +1596,7 @@ router.put("/facultyMember/courseworks/:id", (req, res) => {
     });
 });
 
-// -------- UPDATE "FACULTYMEMBER" COLLECTION - DELETE COURSEWORKS --------
+// -------- UPDATE "facultymember" COLLECTION - DELETE COURSEWORKS --------
 router.delete("/facultyMember/courseworks/:id", (req, res) => {
   // Get the selected module ids
   let uiTaughtModuleIdsToDelete = req.body.taughtModulesID;
@@ -1633,7 +1636,7 @@ router.delete("/facultyMember/courseworks/:id", (req, res) => {
   res.redirect("/dashboards/facultyMember");
 });
 
-// -------- Update "Facultymember Collection" - Add Exams --------
+// -------- Update "facultymember Collection" - Add Exams --------
 router.post("/facultyMember/exams/:id", (req, res) => {
   // res.send("Add Exams");
   FacultyMember.findOne({ userID: req.params.id })
@@ -1703,7 +1706,7 @@ router.post("/facultyMember/exams/:id", (req, res) => {
     });
 });
 
-// -------- Update "Facultymember Collection" - Update Exams --------
+// -------- Update "facultymember Collection" - Update Exams --------
 router.put("/facultyMember/exams/:id", (req, res) => {
   FacultyMember.findOne({ userID: req.params.id })
     .populate("taughtModules.moduleID")
@@ -1760,7 +1763,7 @@ router.put("/facultyMember/exams/:id", (req, res) => {
     });
 });
 
-// -------- Update "Facultymember" Collection - Delete Exams --------
+// -------- Update "facultymember" Collection - Delete Exams --------
 router.delete("/facultyMember/exams/:id", (req, res) => {
   // Get "taught module" ids
   let uiTaughtModuleIDs = req.body.taughtModulesID;
@@ -1800,6 +1803,106 @@ router.delete("/facultyMember/exams/:id", (req, res) => {
   // ======== Flash Success Message & Redirect Back To The Page ========
   req.flash("success_msg", "Exams have been deleted successfully.");
   res.redirect("/dashboards/facultyMember");
+});
+
+// -------- Get Taught Module "Grades" --------
+router.get("/facultyMember/taughtModules/grades/:id", (req, res) => {
+  FacultyMember.find({})
+    .populate("taughtModules.grades.studentID")
+    .then(members => {
+      if (members) {
+        /* GET GRADES FROM THE TAUGHT MODULE
+         * ----------------------------------------------- */
+        let data = [];
+        members.forEach(member => {
+          member.taughtModules.forEach(taughtModule => {
+            if (taughtModule.id === req.params.id) {
+              let dbTaughtModule = {};
+              dbTaughtModule = {
+                taughtModuleID: taughtModule.id
+              };
+              data.push(dbTaughtModule);
+              let gradesTable;
+              let row = {};
+              gradesTable = taughtModule.grades;
+              gradesTable.forEach(grade => {
+                row = {
+                  studentID: grade.studentID.id,
+                  studentName: grade.studentID.name,
+                  mark: grade.mark
+                };
+                data.push(row);
+              });
+            }
+          });
+        });
+
+        /* RETURN DATA TO THE CLIENT
+         * ----------------------------------------------- */
+        res.json(data);
+      }
+    })
+    .catch(err => {
+      // Catch any errors
+      console.log(err.message);
+      return;
+    });
+});
+
+router.post("/facultyMember/taughtModules/grades/:id", (req, res) => {
+  /* GATHER UI DATA
+   * ----------------------------------------------- */
+  const ui = req.body;
+
+  /* PREPARE UI DATA FOR PROCESSING
+   * ----------------------------------------------- */
+  const uiData = [];
+  ui.studentID.forEach((id, index) => {
+    const data = {
+      studentID: id,
+      grade: ui.grade[index]
+    };
+    uiData.push(data);
+  });
+
+  /* UPDATE "GRADES" INTO "FACULTYMEMBERS" COLLECTION
+   * ----------------------------------------------- */
+  FacultyMember.find({})
+    .then(members => {
+      if (members) {
+        members.forEach(member => {
+          member.taughtModules.forEach(taughtModule => {
+            if (taughtModule.id === ui.taughtModuleID) {
+              taughtModule.grades.forEach(grade => {
+                uiData.forEach(item => {
+                  if (item.studentID === grade.studentID.toString()) {
+                    grade.mark = item.grade;
+                  }
+                });
+              });
+            }
+          });
+
+          // ------------ Save Changes In Database ------------
+          member.save().catch(err => {
+            console.log(
+              `router.post("/dashboards/facultyMember/taughtModules/grades/:id") ${err.message}`
+            );
+            req.flash(
+              "error_msg",
+              `Adding grades into "facultymembers" collection error: ${err.message}`
+            );
+            res.redirect("/dashboards/facultyMember");
+            return;
+          });
+        });
+      }
+    })
+    .then(() => {
+      // ======== Flash Success Message & Redirect Back To The Page ========
+      req.flash("success_msg", "Grades have been saved successfully.");
+      res.redirect("/dashboards/facultyMember");
+    });
 });
 
 // console.log(`db.id: ${typeof(courseID)} - req.param.id: ${typeof(req.params.id)}, db.name: ${typeof(course.name)} - req.body.name: ${typeof(req.body.name)}, db.degree: ${typeof(course.name)} - req.body.degree: ${typeof(req.body.degree)}`);
