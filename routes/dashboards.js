@@ -127,19 +127,33 @@ const getTaughtModules = (req, res, next) => {
       // ==== Fills In A Table Of "Taught Modules" && "Faculty Member" ====
       let taughtModules = [];
       if (facultyMembers) {
-        let counter = 1;
+        let taughtModuleCounter = 1;
         facultyMembers.forEach(member => {
           member.taughtModules.forEach(taughtModule => {
             taughtModules.push({
-              aa: counter,
+              aa: taughtModuleCounter,
               taughtModuleID: taughtModule.id,
               moduleName: taughtModule.moduleID.name,
-              facultyName: member.userID.name
+              facultyName: member.userID.name,
+              courseworkDate: taughtModule.coursework.date,
+              examDate: taughtModule.exam.date,
+              examClass: taughtModule.exam.classroom
             });
-            counter++;
+            taughtModuleCounter++;
           });
         });
       }
+
+      // Clear undefined values form courseworks & exams
+      taughtModules.forEach(module => {
+        if (module.courseworkDate === undefined) {
+          delete module.courseworkDate;
+        }
+        if (module.examDate === undefined) {
+          delete module.examDate;
+          delete module.examClass;
+        }
+      });
       req.taughtModules = taughtModules;
       next();
     })
@@ -149,35 +163,163 @@ const getTaughtModules = (req, res, next) => {
     });
 };
 
-const getStudentTaughtModules = (req, res, next) => {
+const getStudentOverview = (req, res, next) => {
   Student.findOne({ userID: req.user.id })
     .then(student => {
+      // Initialize variables
       let studentModules = [];
+      let courseworks = [];
+      let exams = [];
+      let grades = [];
+      let passModulesCounter = 0;
+      let failModulesCounter = 0;
+      let ongoingModulesCounter = 0;
+      let progress = {};
+
       if (student) {
-        /* FILL THE "STUDENT MODULES" TABLE
-         * ----------------------------------------------- */
+        let courseworkCounter = 1;
+        let examCounter = 1;
+        let gradesCounter = 1;
         student.taughtModules.forEach(module => {
+          /* FILL IN THE DATA TO VIEW IN UI
+           * ----------------------------------------------- */
           req.taughtModules.forEach(taughtModule => {
             let moduleID = module.taughtModuleID.toString();
             if (moduleID === taughtModule.taughtModuleID) {
+              // Fill in the "studentModules" table
               studentModules.push(taughtModule);
+
+              // Fill in the "grades" table
+              if (module.mark === undefined) {
+                module.mark = "on going";
+              }
+              grades.push({
+                aa: gradesCounter,
+                moduleName: taughtModule.moduleName,
+                facultyName: taughtModule.facultyName,
+                mark: module.mark
+              });
+              gradesCounter++;
+
+              // Fill in the "courseworks" table
+              if (taughtModule.courseworkDate !== undefined) {
+                courseworks.push({
+                  aa: courseworkCounter,
+                  moduleName: taughtModule.moduleName,
+                  courseworkDate: taughtModule.courseworkDate
+                });
+                courseworkCounter++;
+              }
+
+              // Fill in the "exams" table
+              if (taughtModule.examDate !== undefined) {
+                exams.push({
+                  aa: examCounter,
+                  moduleName: taughtModule.moduleName,
+                  examDate: taughtModule.examDate,
+                  examClass: taughtModule.examClass
+                });
+                examCounter++;
+              }
             }
           });
+
+          /* CALCULATE THE PROGRESS VARIABLES
+           * ----------------------------------------------- */
+          let mark = module.mark;
+          mark = parseInt(mark);
+          if (mark >= 50) {
+            passModulesCounter += 1;
+          } else if (mark < 50) {
+            failModulesCounter += 1;
+          } else {
+            ongoingModulesCounter += 1;
+          }
         });
+
+        /* CONVERT DATE VALUES TO ENGLISH UK SHORT FORMAT
+         * ----------------------------------------------- */
+        courseworks.forEach(coursework => {
+          if (coursework) {
+            const options = {
+              day: "numeric",
+              month: "numeric",
+              year: "numeric"
+            };
+            let tempDate = new Date(coursework.courseworkDate).toLocaleString(
+              "en-GB",
+              options
+            );
+            tempDate = tempDate.split("/");
+            tempDate.forEach((item, index) => {
+              if (item.length === 1) {
+                item = `0${item}`;
+                tempDate[index] = item;
+              }
+            });
+            courseworkDateUKFormat = `${tempDate[1]}/${tempDate[0]}/${tempDate[2]}`;
+            coursework.courseworkDate = courseworkDateUKFormat;
+          }
+        });
+        exams.forEach(exam => {
+          if (exam) {
+            // Convert date value to English UK short format
+            const options = {
+              day: "numeric",
+              month: "numeric",
+              year: "numeric"
+            };
+            let tempDate = new Date(exam.examDate).toLocaleString(
+              "en-GB",
+              options
+            );
+            tempDate = tempDate.split("/");
+            tempDate.forEach((item, index) => {
+              if (item.length === 1) {
+                item = `0${item}`;
+                tempDate[index] = item;
+              }
+            });
+            examDateUKFormat = `${tempDate[1]}/${tempDate[0]}/${tempDate[2]}`;
+            exam.examDate = examDateUKFormat;
+          }
+        });
+
         /* REARRANGE THE TABLE
          * ----------------------------------------------- */
         studentModules.forEach((module, index) => {
           module.aa = index + 1;
         });
+
+        /* FILL IN THE PROGRESS OBJECT
+         * ----------------------------------------------- */
+        const modulesNumber =
+          passModulesCounter + failModulesCounter + ongoingModulesCounter;
+        passWidth = (passModulesCounter / modulesNumber) * 100;
+        failWidth = (failModulesCounter / modulesNumber) * 100;
+        ongoingWidth = (ongoingModulesCounter / modulesNumber) * 100;
+        progress = {
+          total: modulesNumber,
+          pass: passModulesCounter,
+          passWidth: passWidth,
+          fail: failModulesCounter,
+          failWidth: failWidth,
+          ongoing: ongoingModulesCounter,
+          ongoingWidth: ongoingWidth
+        };
       }
 
-      /* RETURN THE "STUDENT MODULES" TABLE
+      /* RETURN THE DATA
        * ----------------------------------------------- */
+      req.progress = progress;
       req.studentModules = studentModules;
+      req.studentCourseworks = courseworks;
+      req.studentExams = exams;
+      req.studentGrades = grades;
       next();
     })
     .catch(err => {
-      console.log(`On function 'getStudentTaughtModules': ${err.message}`);
+      console.log(`On function 'getStudentOverview': ${err.message}`);
       return;
     });
 };
@@ -434,7 +576,7 @@ router.get("/facultyMember", (req, res, next) => {
  * ------------------------------------------------ */
 // router.use(getModules);
 router.use(getTaughtModules);
-router.use(getStudentTaughtModules);
+router.use(getStudentOverview);
 router.get("/student", (req, res) => {
   /* CREATE A STUDENT OBJECT
    * ----------------------------------------------- */
@@ -453,13 +595,19 @@ router.get("/student", (req, res) => {
   /* PASS THE DATA TO THE VIEW
    * ----------------------------------------------- */
   const taughtModules = req.taughtModules;
-  const studentModules = req.studentModules;
-  // console.log(taughtModules);
-  // console.log(studentModules);
+  const studentSelectedModules = req.studentModules;
+  const progress = req.progress;
+  const studentCourseworks = req.studentCourseworks;
+  const studentExams = req.studentExams;
+  const studentGrades = req.studentGrades;
   res.render("dashboards/student", {
     student,
     taughtModules,
-    studentModules
+    studentSelectedModules,
+    progress,
+    studentCourseworks,
+    studentExams,
+    studentGrades
   });
 });
 
@@ -954,39 +1102,41 @@ router.put("/facultyMember/courses/:id", (req, res) => {
 
 // ---------------- Delete Course ----------------
 router.delete("/facultyMember/courses/", (req, res) => {
-  // Get the selected course ids
-  let uiCourseIdsToDelete = req.body.coursesID;
+  /* GATHER NECESSARY UI DATA
+   * ----------------------------------------------- */
+  let uiCourseIds = req.body.coursesID;
 
+  /* PREPARE UI DATA FOR PROCESSING
+   * ----------------------------------------------- */
   /* In case of only one "course" is selected to delete, the "id" is a string.
-   *  In order to delete the "course" it needs to be converted to an array of
-   *  one object.
+   * In order to delete the "course" it needs to be converted to an array of
+   * one object.
    */
-  //  ---- Convert to an array of one object ----
-  if (typeof uiCourseIdsToDelete === "string") {
+  // Convert To An Array Of One Object
+  if (typeof uiCourseIds === "string") {
     let idArray = [];
-    idArray.push(uiCourseIdsToDelete);
-    uiCourseIdsToDelete = idArray;
+    idArray.push(uiCourseIds);
+    uiCourseIds = idArray;
   }
 
-  /**
-   * Remove "taught modules" which are related to deleted courses
-   * from every "faculty member"
-   */
+  /* REMOVE "TAUGHT MODULES" FROM "facultyMember" COLLECTION
+   * --------------------------------------------------- */
+  let facultyTaughtModuleIDs = [];
   FacultyMember.find({})
     .populate("taughtModules.moduleID")
     .then(members => {
       if (members) {
         members.forEach(member => {
-          uiCourseIdsToDelete.forEach(uiID => {
+          uiCourseIds.forEach(uiCourseID => {
             /**
              * Because the array is being re-indexed when a "taught module" is
              * removed as a result it let one item and not removed all of
              * them. A solution is to iterate in reverse.
              */
             for (let i = member.taughtModules.length - 1; i >= 0; i--) {
-              let dbCourseID = member.taughtModules[i].moduleID.courseID;
-              dbCourseID = dbCourseID.toString();
-              if (dbCourseID === uiID) {
+              const dbCourseID = member.taughtModules[i].moduleID.courseID;
+              if (dbCourseID.toString() === uiCourseID) {
+                facultyTaughtModuleIDs.push(member.taughtModules[i]._id);
                 member.taughtModules[i].remove();
               }
             }
@@ -999,18 +1149,45 @@ router.delete("/facultyMember/courses/", (req, res) => {
           });
         });
       }
+      return facultyTaughtModuleIDs;
     })
-    /**
-     * Delete Modules Which Are Related To Deleted Courses
-     * From The Database
-     */
+    /* REMOVE "TAUGHT MODULES" FROM "students" COLLECTION
+     * --------------------------------------------------- */
+    .then(() => {
+      if (facultyTaughtModuleIDs) {
+        Student.find({}).then(students => {
+          if (students) {
+            students.forEach(student => {
+              facultyTaughtModuleIDs.forEach(facultyTaughtModuleID => {
+                student.taughtModules.forEach(studentTaughtModule => {
+                  const studentTaughtModuleID = studentTaughtModule.taughtModuleID.toString();
+                  if (
+                    studentTaughtModuleID === facultyTaughtModuleID.toString()
+                  ) {
+                    studentTaughtModule.remove();
+                  }
+                });
+              });
+              // Save changes in Database
+              student.save().catch(err => {
+                // Catch any errors
+                console.log(err.message);
+                return;
+              });
+            });
+          }
+        });
+      }
+    })
+    /* REMOVE "MODULES" FROM "modules" COLLECTION
+     * --------------------------------------------------- */
     .then(() => {
       Module.find({}).then(modules => {
         if (modules) {
           modules.forEach(module => {
-            uiCourseIdsToDelete.forEach(uiID => {
-              let dbCourseID = module.courseID.toString();
-              if (dbCourseID === uiID) {
+            uiCourseIds.forEach(uiCourseID => {
+              const dbCourseID = module.courseID.toString();
+              if (dbCourseID === uiCourseID) {
                 Module.deleteOne({ _id: module.id })
                   // Catch any errors
                   .catch(err => {
@@ -1024,14 +1201,16 @@ router.delete("/facultyMember/courses/", (req, res) => {
         }
       });
     })
-    // ==== Delete Courses From The Database ====
+    /* DELETE COURSES FROM "courses" COLLECTION
+     * --------------------------------------------------- */
     .then(() => {
       Course.find().then(courses => {
         if (courses) {
           courses.forEach(course => {
-            uiCourseIdsToDelete.forEach(uiID => {
-              if (course.id === uiID) {
-                Course.deleteOne({ _id: course.id })
+            const dbCourseID = course.id;
+            uiCourseIds.forEach(uiCourseID => {
+              if (dbCourseID === uiCourseID) {
+                Course.deleteOne({ _id: dbCourseID })
                   // Catch any errors
                   .catch(err => {
                     req.flash("error_msg", err.message);
@@ -1045,7 +1224,8 @@ router.delete("/facultyMember/courses/", (req, res) => {
       });
     });
 
-  // ======== Flash Success Message & Redirect Back To The Page ========
+  /* FLASH SUCCESS MESSAGE & REDIRECT BACK TO THE PAGE
+   * --------------------------------------------------- */
   req.flash("success_msg", "Courses deleted successfully.");
   res.redirect("/dashboards/facultyMember");
 });
@@ -1409,7 +1589,7 @@ router.delete("/facultyMember/taughtModules/:id", (req, res) => {
   res.redirect("/dashboards/facultyMember");
 });
 
-// -------- Update "Facultymember" Collection - Delete Taught Modules --------
+// -------- Update "Students" Collection - Delete Taught Modules --------
 router.delete("/student/taughtModules/:id", (req, res) => {
   /* GATHER UI DATA
    * ----------------------------------------------- */
@@ -1849,23 +2029,32 @@ router.get("/facultyMember/taughtModules/grades/:id", (req, res) => {
     });
 });
 
+// -------- Update "facultymember" Collection - Add Grades --------
 router.post("/facultyMember/taughtModules/grades/:id", (req, res) => {
-  /* GATHER UI DATA
+  /* GATHER NECESSARY UI DATA
    * ----------------------------------------------- */
   const ui = req.body;
 
   /* PREPARE UI DATA FOR PROCESSING
    * ----------------------------------------------- */
   const uiData = [];
-  ui.studentID.forEach((id, index) => {
+  if (typeof ui.studentID === "string") {
     const data = {
-      studentID: id,
-      grade: ui.grade[index]
+      studentID: ui.studentID,
+      grade: ui.grade
     };
     uiData.push(data);
-  });
-
-  /* UPDATE "GRADES" INTO "FACULTYMEMBERS" COLLECTION
+  } else {
+    ui.studentID.forEach((id, index) => {
+      const data = {
+        studentID: id,
+        grade: ui.grade[index]
+      };
+      uiData.push(data);
+    });
+  }
+  
+  /* UPDATE "GRADES" INTO "facultymembers" COLLECTION
    * ----------------------------------------------- */
   FacultyMember.find({})
     .then(members => {
@@ -1898,8 +2087,40 @@ router.post("/facultyMember/taughtModules/grades/:id", (req, res) => {
         });
       }
     })
+    /* UPDATE "GRADES" INTO "students" COLLECTION
+     * ----------------------------------------------- */
     .then(() => {
-      // ======== Flash Success Message & Redirect Back To The Page ========
+      uiData.forEach(item => {
+        Student.findOne({ userID: item.studentID }).then(student => {
+          if (student) {
+            student.taughtModules.forEach(taughtModule => {
+              if (
+                taughtModule.taughtModuleID.toString() === ui.taughtModuleID
+              ) {
+                taughtModule.mark = item.grade;
+                // console.log(taughtModule);
+              }
+            });
+
+            // ------------ Save Changes In Database ------------
+            student.save().catch(err => {
+              console.log(
+                `router.post("/dashboards/facultyMember/taughtModules/grades/:id") ${err.message}`
+              );
+              req.flash(
+                "error_msg",
+                `Adding grades into "students" collection error: ${err.message}`
+              );
+              res.redirect("/dashboards/facultyMember");
+              return;
+            });
+          }
+        });
+      });
+    })
+    /* FLASH SUCCESS MESSAGE & REDIRECT BACK TO THE PAGE
+     * --------------------------------------------------- */
+    .then(() => {
       req.flash("success_msg", "Grades have been saved successfully.");
       res.redirect("/dashboards/facultyMember");
     });

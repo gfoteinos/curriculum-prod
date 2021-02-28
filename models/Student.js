@@ -28,6 +28,9 @@ const StudentSchema = new Schema({
       classroom: {
         type: String
       }
+    },
+    mark: {
+      type: String
     }
   }]
 });
